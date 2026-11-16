@@ -15,8 +15,8 @@ for(const id of ids){assert.ok(CLS.mage.find(a=>a.id===id).eff(5));assert.ok(TIE
 const run=(id,pre)=>{setup();G.cls[id]=10;G.tv++;recalc();const es=[foe(),foe(1e6,150,30),foe(1e6,60,-20)];if(pre)pre(es);G.ht[id]=0;
  for(let i=0;i<200;i++){G.hp=S.maxHp;update(.05)}return es};
 let es=run('i_cold');assert.ok(es.some(e=>e.hp<e.max));
-// Paso fantasma: invulnerable y ralentiza a los enemigos cercanos (se mide justo tras lanzarlo, antes de que expire).
-setup();G.cls.i_ghost=10;G.tv++;recalc();{const gs=[foe(1e6,60,0),foe(1e6,90,20)];G.ht.i_ghost=0;for(let i=0;i<6&&!(G.heroInv>0);i++)update(.05);assert.ok(G.heroInv>0,'invulnerable');assert.ok(gs.some(e=>e.slow&&e.slow.a>0),'ralentiza');}
+// Misiles mágicos: salen en todas direcciones y hacen daño.
+es=run('i_ghost');assert.ok(es.some(e=>e.hp<e.max)&&G.dmgBy['Misiles mágicos']>0,'misiles');
 es=run('i_wall');assert.ok(es.some(e=>e.hp<e.max));
 es=run('i_emp');assert.ok(es.some(e=>e.hp<e.max));
 es=run('i_tornado');assert.ok(es.some(e=>e.hp<e.max));

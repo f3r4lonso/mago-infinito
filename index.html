@@ -369,17 +369,13 @@ body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
 <script src="assets/sprites.js"></script>
 <script src="assets/invocaciones/pack-ciclope.js"></script>
 <script src="assets/heroes/mage/pack.js"></script>
-<script src="assets/heroes/mage/pack-nuevo.js"></script>
 <script src="assets/tower/pack.js"></script>
 <script src="assets/enemies/pack.js"></script>
 <script src="assets/heroes/alchemist/pack.js"></script>
 <script src="assets/heroes/alchemist/pack2.js"></script>
 <script src="assets/heroes/alchemist/pack3.js"></script>
-<script src="assets/heroes/alchemist/pack-nuevo.js"></script>
 <script src="assets/heroes/archer/pack.js"></script>
-<script src="assets/heroes/archer/pack-nuevo.js"></script>
 <script src="assets/heroes/assassin/pack.js"></script>
-<script src="assets/heroes/assassin/pack-nuevo.js"></script>
 <script src="assets/heroes/assassin/fx.js"></script>
 <script src="assets/heroes/archer/fx.js"></script>
 <script src="assets/heroes/barbarian/fx.js"></script>
@@ -400,29 +396,17 @@ body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
 <script src="assets/heroes/paladin/pack2.js"></script>
 <script src="assets/heroes/paladin/pack3.js"></script>
 <script src="assets/heroes/paladin/pack4.js"></script>
-<script src="assets/heroes/paladin/pack-nuevo.js"></script>
 <script src="assets/heroes/druid/pack.js"></script>
-<script src="assets/heroes/druid/pack-nuevo.js"></script>
-<script src="assets/heroes/druid/pack-forma.js"></script>
 <script src="assets/heroes/barbarian/pack.js"></script>
-<script src="assets/heroes/barbarian/pack-nuevo.js"></script>
 <script src="assets/heroes/werewolf/pack.js"></script>
-<script src="assets/heroes/werewolf/pack-nuevo.js"></script>
-<script src="assets/heroes/werewolf/pack-forma.js"></script>
 <script src="assets/heroes/troll/pack.js"></script>
-<script src="assets/heroes/troll/pack-nuevo.js"></script>
 <script src="assets/heroes/monk/pack.js"></script>
-<script src="assets/heroes/monk/pack-nuevo.js"></script>
 <script src="assets/heroes/necro/pack.js"></script>
-<script src="assets/heroes/necro/pack-nuevo.js"></script>
 <script src="assets/heroes/priest/pack.js"></script>
-<script src="assets/heroes/priest/pack-nuevo.js"></script>
 <script src="assets/heroes/devourer/pack.js"></script>
-<script src="assets/heroes/devourer/pack-nuevo.js"></script>
 <script src="assets/heroes/shaman/pack.js"></script>
 <script src="assets/heroes/shaman/pack-nuevo.js"></script>
 <script src="assets/heroes/dwarf/pack.js"></script>
-<script src="assets/heroes/dwarf/pack-nuevo.js"></script>
 <script src="assets/tier-glyphs.js"></script>
 <script src="assets/summons/pack.js"></script>
 <script>
@@ -617,8 +601,8 @@ const soloPowerEnabled=id=>!G?.solo||!G.soloDisabled?.[id];
 const clv=id=>soloPowerEnabled(id)?learnedClv(id):0;
 const hpw=()=>(G&&HEROES[G.hero].pw)||1;
 const hdmg=l=>(10+3.5*l)*DMG_K*S.dmg*hpw()*(1+teamAura());
-const allyHp=b=>b*foeDmg(G.t)/.6;
-const tsc=()=>Math.pow(Math.max(1,hpScale(G.t)/1.7),.3);
+const allyHp=b=>b*foeDmg(diffT())/.6;
+const tsc=()=>Math.pow(Math.max(1,hpScale(diffT())/1.7),.3);
 const f1=x=>x.toFixed(1);
 const CLS={
  mage:[
@@ -807,7 +791,7 @@ const dotLeft=e=>{let s=0;for(const t in e.dots)s+=e.dots[t].dps*mult(e,t)*e.dot
 const enemyCap=()=>LOWQ?140:220;
 function spawnEnemy(boss,def,o){
   o=o||{};
-  const pool=EN.filter(d=>d.from*1.6<=eT(G.t)&&!(boss&&d.swarm));
+  const pool=EN.filter(d=>d.from*1.6<=eT(diffT())&&!(boss&&d.swarm));
   const d=def||pool[Math.floor(Math.random()*pool.length)];
   if(!boss&&!def&&d.swarm&&!G.solo){
     const a=Math.random()*Math.PI*2;
@@ -815,11 +799,11 @@ function spawnEnemy(boss,def,o){
     return;
   }
   const a=o.a??Math.random()*Math.PI*2,R=Math.max(420,Math.hypot(W,H)/2/Z+30)+(o.rad||0);
-  const hpM=hpScale(G.t),hk=o.hpK||1;
+  const hpM=(G.rounds&&G.waveHp)?G.waveHp:hpScale(diffT()),hk=o.hpK||1;
   const e={d,n:(boss?'Jefe: ':'')+d.n,e:d.e,armor:d.armor,res:d.res,col:d.col||ECOL[d.n]||'#ffffff',
     x:o.x??hx()+Math.cos(a)*R,y:o.y??hy()+Math.sin(a)*R,
-    hp:d.hp*hpM*(boss?6:1)*hk,r:d.r*(boss?1.8:1),
-    sp:d.sp*(1+Math.min(.8,eT(G.t)/600)),dmg:d.dmg*foeDmg(G.t)*(boss?.9:1),
+    hp:d.hp*hpM*(boss?(G.rounds?Math.min(6,3+.3*(G.round||1)):6):1)*hk,r:d.r*(boss?1.8:1),
+    sp:d.sp*(1+Math.min(.8,eT(diffT())/600)),dmg:d.dmg*foeDmg(diffT())*(boss?(G.rounds?.65:.9):1),
     xp:d.xp*(boss?8:1)*hk,gold:d.gold*(boss?8:1)*hk,boss:!!boss,
     pending:0,dots:{},slow:null,acc:0,accT:.7,accType:'fire',flash:0,dead:false,
     gen:o.gen||0,revive:boss?0:d.revive||0,split:boss?null:d.split||null,regen:d.regen||0,
@@ -831,9 +815,9 @@ function spawnEnemy(boss,def,o){
     else if(Math.random()<.65)rng={range:300,cd:3,spd:250,col:'#ff5a5a',burst:3};
   }
   e.rng=rng;e.shotCd=rng?rng.cd*Math.random():0;
-  {const k=1/cntF(G.t);e.hp*=k;e.dmg*=Math.sqrt(k);e.xp*=k;e.gold*=k;e.r*=Math.min(1.5,Math.pow(k,.2))}
+  {const k=G.rounds?1:1/cntF(G.t);e.hp*=k;e.dmg*=Math.sqrt(k);e.xp*=k;e.gold*=k;e.r*=Math.min(1.5,Math.pow(k,.2))}
   if(o.hpAbs){e.hp=o.hpAbs;e.dmg=o.dmg;e.sp=o.sp;e.r=o.r;e.xp=o.xp;e.gold=o.gold}
-  if(!boss&&!o.hpAbs&&!o.gen&&eT(G.t)>240&&Math.random()<Math.min(.3,.04+(eT(G.t)-240)/2400)){
+  if(!boss&&!o.hpAbs&&!o.gen&&(o.elite||(!G.rounds&&eT(G.t)>240&&Math.random()<Math.min(.3,.04+(eT(G.t)-240)/2400)))){
     const af=ELITE[Math.floor(Math.random()*ELITE.length)];af.f(e);
     e.n='Élite '+af.n+' '+e.n;e.elite=true;e.xp*=2;e.gold*=2;
   }
@@ -877,7 +861,7 @@ function kill(e){
   e.dead=true;G.kills++;foeDie(e);
   if(G.items.fang)eachHero(()=>{G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.0004*G.items.fang)});
   G.gold+=Math.ceil(e.gold*GOLDK*(1+G.t/120)*S.goldM);
-  gainXp(e.xp*XPK*xpTimeBonus(G.t)*S.xpM);towerKillXp(e);
+  gainXp(e.xp*(G.rounds&&G.waveXpK?G.waveXpK:XPK*xpTimeBonus(G.t))*S.xpM);towerKillXp(e);
   if(G.dragon)dragonXp(e.xp*XPK*(1+G.t/100)*.7);
   heroOnKill(e);
   if(e.split&&e.gen<e.split.gen){
@@ -900,6 +884,8 @@ function gainXp(a){
   for(const i of ids)heroCtx(i,()=>{
     G.xp+=share*(i===killer?1.15:1);
     while(G.xp>=need()){
+      if(G.rounds&&(G.wLv&&G.wLv[HCUR]||0)>=2){G.xp=Math.min(G.xp,need()-1);break}   /* como mucho 2 niveles por ola */
+      G.wLv=G.wLv||{};G.wLv[HCUR]=(G.wLv[HCUR]||0)+1;
       G.xp-=need();G.lvl++;
       if(CLS[G.hero].every(a=>learnedClv(a.id)>=CLSMAX)){G.bonus++;txt(cx(),cy()-70,'Todo al máximo: +10% daño','#ffd24a',16)}else G.pending++;
       recalc();G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.2);
@@ -2019,6 +2005,7 @@ function avoidHeroTowers(fromBx=G.bx,fromBy=G.by){
   for(let i=0;i<steps;i++){x+=dx/steps;y+=dy/steps;separate(true)}
   G.bx=x-baseX;G.by=y-baseY;
 }
+const towerThreat2=e=>{let b=1e12;for(const o of aliveTowers()){const q=towerPosition(o.i),d=(q.x-e.x)**2+(q.y-e.y)**2;if(d<b)b=d}return b};
 function updateMelee(dt){
   if(G.hero==='devourer'&&primalMove(dt))return;
   const m=HEROES[G.hero].melee||RANGED_MOVE;
@@ -2030,7 +2017,8 @@ function updateMelee(dt){
     if(G.dash.t<=0||Math.hypot(tx-G.bx,ty-G.by)<8){const d=G.dash;G.dash=null;d.fn&&d.fn()}
   }else if(m===RANGED_MOVE){
     let t=null,bd=1e12;const vis=heroVision(),shot=heroShot();
-    for(const e of G.enemies){if(e.dead)continue;const dd=(e.x-px)**2+(e.y-py)**2;if(dd<bd&&dd<=(vis+e.r)**2){bd=dd;t=e}}
+    const def=G.rounds&&!G.solo;let bs=1e12;
+    for(const e of G.enemies){if(e.dead)continue;const dd=(e.x-px)**2+(e.y-py)**2,sc=dd+(def?.5*towerThreat2(e):0);if(sc<bs&&dd<=(vis+e.r)**2){bs=sc;bd=dd;t=e}}   /* prioridad: los que amenazan a las torres */
     if(t){
       rangedTarget=t;
       const d=Math.sqrt(bd),a=Math.atan2(t.y-py,t.x-px);
@@ -2039,11 +2027,12 @@ function updateMelee(dt){
       else{tx=G.bx;ty=G.by}
     }
   }else{
-    let t=null,bd=1e12;
+    let t=null,bd=1e12;const def=G.rounds&&!G.solo;
     for(const e of G.enemies){
       if(e.dead||Math.hypot(e.x-hx()-(G.hoff||0),e.y-hy())>heroVision())continue;
-      const dd=(e.x-px)**2+(e.y-py)**2;if(dd<bd){bd=dd;t=e}
+      const dd=(e.x-px)**2+(e.y-py)**2,sc=dd+(def?.5*towerThreat2(e):0);if(sc<bd){bd=sc;t=e}
     }
+    if(!t&&def&&G.enemies.some(q=>!q.dead)){tx=G.bx;ty=G.by}   /* el cuerpo a cuerpo no retrocede: se queda guardando su puesto mientras haya enemigos */
     if(t){const a=Math.atan2(t.y-py,t.x-px),st=t.r+m.reach*.6;tx=t.x-Math.cos(a)*st-hx()-(G.hoff||0);ty=t.y-Math.sin(a)*st-hy();if(G.t-G.punchAt>.4)G.aim=a}
   }
   const dx=tx-G.bx,dy=ty-G.by,dl=Math.hypot(dx,dy);
@@ -2635,6 +2624,13 @@ function update(dt){
   if(G.solo&&G.soloWeak){
     G.soloSpawnTimer-=dt;
     if(!G.noSpawn&&G.soloSpawnTimer<=0){spawnSoloEnemies();G.soloSpawnTimer=3}
+  }else if(G.rounds){
+    while(G.waveQ&&G.waveQ.length&&G.waveQ[0].t<=G.roundT&&!G.noSpawn){
+      const w=G.waveQ[0],room=Math.max(0,enemyCap()-G.enemies.length);if(!room){break}
+      const k=Math.min(room,w.n),a=w.a;
+      for(let i=0;i<k;i++)spawnWaveUnit(w,a);
+      w.n-=k;if(w.n<=0)G.waveQ.shift();
+    }
   }else{
   const rate=spawnRate(G.t);
   G.spawnAcc+=rate*dt;
@@ -2690,8 +2686,11 @@ function update(dt){
     e.flash=Math.max(0,e.flash-dt);
     if(e.stone>0)e.stone-=dt;if(e.stun>0)e.stun-=dt;if(e.root>0)e.root-=dt;if(e.rep>0)e.rep-=dt;
     let tgx=mx,tgy=my,tIdx=-1,tgtH=0,bestD=1e12;
-    for(const h of HPL){if(h.dead)continue;const d=Math.hypot(h.x-e.x,h.y-e.y);if(d<bestD){bestD=d;tgx=h.x;tgy=h.y;tgtH=h.i}}
+    const defend=G.rounds&&!G.solo&&TWR.length>0;   /* en las olas, los enemigos van a por las torres y solo pelean con un héroe que se les cruza */
+    let hB=null,hD=1e12;
+    for(const h of HPL){if(h.dead)continue;const d=Math.hypot(h.x-e.x,h.y-e.y);if(defend){if(d<e.r+65&&d<hD){hD=d;hB=h}continue}if(d<bestD){bestD=d;tgx=h.x;tgy=h.y;tgtH=h.i}}
     for(const t of TWR){const d=Math.hypot(t.x-e.x,t.y-e.y)-TOWER_R-(e.d&&e.d.siege?600:0);if(d<bestD){bestD=d;tgx=t.x;tgy=t.y;tIdx=t.i;tgtH=0}}
+    if(defend&&hB&&!(tIdx>=0&&bestD<e.r+6)){tgx=hB.x;tgy=hB.y;tgtH=hB.i;tIdx=-1}
     G.tgtHero=tgtH;e._tx=tgx;e._ty=tgy;
     const dx=tgx-e.x,dy=tgy-e.y,dist=Math.hypot(dx,dy),distA=Math.hypot(mx-e.x,my-e.y);
     let dmK=1;if(AUR.length&&!(e.d&&e.d.aura)){for(const a of AUR){if(Math.hypot(a.x-e.x,a.y-e.y)<a.d.aura.r){sp*=1+a.d.aura.sp;dmK=1+a.d.aura.dm;break}}}
@@ -2711,7 +2710,7 @@ function update(dt){
     else if(ally&&ad<e.r+16&&ad<dist)ally.hp-=e.dmg*dt*(ally.dk||1);
     else if(dist>e.r+(tIdx>=0?TOWER_R+2:20)){if(!(e.root>0)){e.x+=dx/dist*sp*dt;e.y+=dy/dist*sp*dt}}
     else if(e.d&&e.d.bomb){
-      const dm=e.dmg*dmK*14;if(tIdx>=0)hurtTower(tIdx,dm*TOWER_DMG);else hurt(dm*S.def);
+      const dm=e.dmg*dmK*(G.rounds?8:14);if(tIdx>=0)hurtTower(tIdx,dm*TOWER_DMG);else hurt(dm*S.def);
       e.dead=true;G.fx.push({k:'ring',x:e.x,y:e.y,r:46,t:.35,c:'#ff8a3a'});txt(e.x,e.y-16,'💥','#ff8a3a',16);
     }
     else if(tIdx>=0)hurtTower(tIdx,e.dmg*dmK*((e.d&&e.d.siege)||1)*TOWER_DMG*dt);
@@ -5634,7 +5633,7 @@ function drawHud(){
     {const pp=pendAll();if(pp>0){ctx.fillStyle='#ffd24a';ctx.fillText('★ '+pp+' punto'+(pp>1?'s':'')+' de héroe',14,yy);yy+=20}}
     }
   ctx.textAlign='right';
-  ctx.fillText((G.rounds?'Ronda '+G.round+' · '+(G.modal==='round'?'descanso':G.roundT>=G.roundLen?'0:00 · '+G.enemies.filter(e=>!e.dead).length+' restantes':fmtT(Math.max(0,G.roundLen-G.roundT))):fmtT(G.t))+(G.speed>1?'  ⏩x'+G.speed:''),W-14,24);
+  ctx.fillText((G.rounds?'Ola '+G.round+' · '+(G.modal==='round'?'descanso':G.roundT>=G.roundLen?G.enemies.filter(e=>!e.dead).length+' enemigos restantes':'enemigos llegando'):fmtT(G.t))+(G.speed>1?'  ⏩x'+G.speed:''),W-14,24);
   ctx.fillStyle='#8f7cff';ctx.font='12px Segoe UI,sans-serif';ctx.fillText('Mejor: '+fmtT(best),W-14,44);
   ctx.textAlign='center';
 }
@@ -6528,6 +6527,70 @@ const ROUND_MIN=180,ROUND_MAX=240;
 const roundLen=n=>Math.min(ROUND_MAX,ROUND_MIN+5*(n-1));
 const roundCleared=()=>!!G.rounds&&G.roundT>=G.roundLen&&!G.enemies.some(e=>!e.dead);
 const shopOk=()=>!!G&&!G.over&&(G.rounds?G.modal==='round':!G.modal);
+/* ===== OLAS: cada ola es un guion de grupos con un desafío distinto ===== */
+const waveTime=n=>32*(n-1);
+const waveHpCurve=n=>2.3*Math.pow(1+.17*(n-1),1.45);   /* vida de los enemigos por ola: crece de forma gradual, a la par de los 1-2 niveles por ola de héroes y torre */   /* tiempo de dificultad equivalente de la ola n (segundos): cada ola es claramente más fuerte */
+const diffT=()=>G&&G.rounds&&G.waveT!=null?G.waveT:(G?G.t:0);
+const WAVE_KINDS=[
+ {k:'horde',nom:'Horda',desc:'enemigos variados en oleadas sucesivas'},
+ {k:'fast',nom:'Marea veloz',desc:'muchísimas criaturas rápidas'},
+ {k:'siege',nom:'Asedio',desc:'arietes, zapadores y catapultas contra las torres'},
+ {k:'elite',nom:'Élites',desc:'enemigos élite con rasgos peligrosos'},
+ {k:'boss',nom:'Jefes',desc:'varios jefes con escolta'},
+ {k:'combo',nom:'Combinación mortal',desc:'sanadores, tanques, tiradores e invulnerables a la vez'}
+];
+function buildWave(n){
+  const T=eT(waveTime(n)),av=nm=>{const d=EN.find(x=>x.n===nm);return d&&d.from*1.6<=T?d:null},avs=a=>a.map(av).filter(Boolean);
+  const pool=EN.filter(d=>d.from*1.6<=T&&!d.siege&&!d.bomb&&!d.swarm),rnd=a=>a[Math.floor(Math.random()*a.length)];
+  const N=n<=1?12:Math.min(110,Math.round(14+4*n)),kind=n<=1?WAVE_KINDS[0]:WAVE_KINDS[(n-1)%6],q=[];
+  const add=(d,c,t,o)=>{if(d&&c>0)q.push(Object.assign({t,d,n:Math.round(c),hpK:1,a:Math.random()*6.283},o||{}))};
+  const groups=(d,total,gn,t0,gap,o)=>{for(let i=0;i<gn;i++)add(d,total/gn,t0+i*gap,o)};
+  const light=pool.filter(d=>d.hp<=60&&!d.ranged),heavy=pool.filter(d=>d.hp>60&&!d.ranged),rng=pool.filter(d=>d.ranged);
+  const bossN=Math.min(8,1+Math.floor(n/3));
+  if(kind.k==='horde'){
+    const ty=[rnd(light.length?light:pool),rnd(light.length?light:pool),heavy.length?rnd(heavy):rnd(pool)];
+    ty.forEach((d,i)=>groups(d,N/3*(i===2?.55:1),3,i*3,5));
+    if(rng.length&&n>=3)groups(rnd(rng),N/6,2,6,8);
+  }else if(kind.k==='fast'){
+    const f=avs(['Rata de cloaca','Murciélago','Lobo huargo','Goblin','Hada de cristal','Escorpión dorado','Elemental eléctrico','Fénix','Dragoncillo dorado']);
+    const fl=f.length?f:pool;
+    for(let i=0;i<6;i++)add(rnd(fl),Math.min(70,N*1.3)/6,i*3,{hpK:.5});
+    const zap=av('Zapador');if(zap&&n>=4)groups(zap,Math.min(14,3+n/2),2,6,6,{hpK:.55});
+  }else if(kind.k==='siege'){
+    const m=n/3;
+    add(av('Ariete de asedio'),Math.min(8,2+m),0);add(av('Zapador'),Math.min(12,4+n/2),4,{hpK:.55});
+    add(av('Catapulta'),Math.min(5,1+n/5),8);add(av('Comandante orco'),Math.min(3,1+n/8),10);
+    groups(rnd(light.length?light:pool),N/2,3,2,7);
+  }else if(kind.k==='elite'){
+    const ty=[rnd(heavy.length?heavy:pool),rnd(pool),rnd(pool)];
+    ty.forEach((d,i)=>groups(d,N*.4/3,2,i*4,8,{elite:true}));
+    if(rng.length)groups(rnd(rng),N/8,2,8,8,{elite:true});
+  }else if(kind.k==='boss'){
+    for(let i=0;i<bossN;i++)add(rnd(heavy.length?heavy:pool),1,3+i*5,{boss:true});
+    groups(rnd(light.length?light:pool),N*.6,4,0,6);add(av('Curandero trasgo'),2,4);
+  }else{
+    add(rnd(avs(['Troll','Mamut de hielo','Gólem','Hidra','Demonio']).concat(heavy)),2+n/4,0);
+    add(av('Curandero trasgo'),2+n/5,3);
+    groups(rnd(avs(['Hechicero oscuro','Francotirador','Arquero esqueleto']).concat(rng)),4+n/2,2,2,6);
+    add(rnd(avs(['Sombra','Guardián sagrado','Caballero de cristal']).concat(heavy)),2+n/4,6);
+    for(let i=0;i<Math.floor(n/8);i++)add(rnd(heavy.length?heavy:pool),1,10+i*5,{boss:true});
+    groups(rnd(light.length?light:pool),N*.4,3,4,6,{hpK:.6});
+  }
+  if(n%5===0&&n>=10)for(let i=0;i<1+Math.floor(n/10);i++)add(rnd(heavy.length?heavy:pool),1,2+i*4,{boss:true});
+  q.sort((a,b)=>a.t-b.t);
+  return {n,kind,q};
+}
+function spawnWaveUnit(w,a){
+  const ang=a+(Math.random()-.5)*.9;
+  spawnEnemy(!!w.boss,w.d,{a:ang,rad:Math.random()*90,hpK:w.hpK,elite:!!w.elite});
+}
+function waveXp(W){   /* reparte la experiencia de la ola para que héroes y torre suban 1-2 niveles */
+  let sum=0;for(const w of W.q)sum+=w.n*w.d.xp*(w.boss?8:1)*w.hpK*(w.elite?2:1);
+  sum=Math.max(1,sum);const ids=HIDX().length;let need0=0;
+  for(const i of HIDX())heroCtx(i,()=>{need0+=need()});need0/=Math.max(1,ids);
+  G.waveXpK=1.5*need0*ids/(1.2*sum*Math.max(.5,S.xpM));
+  G.waveTXpK=1.3*tNeed(tProgress())/(sum*.575*Math.max(.5,S.xpM));
+}
 function beginRounds(){G.rounds=true;G.round=1;G.roundT=0;G.roundLen=roundLen(1);openRest(0)}
 function endRound(){
   if(G.over||!roundCleared())return false;
@@ -6544,20 +6607,22 @@ function openRest(done){
   for(const o of aliveTowers())o.u.hp=towerMax(uLvl(o.u));
   runAutoUpgrades(64);refreshAll();
   setResting(true);if(window.openRestDrawer)window.openRestDrawer();
-  const len=roundLen(G.round),m=Math.floor(len/60),sc=len%60;
+  const W=buildWave(G.round);G.waveNext=W;
   $('#roundbar').style.display='block';
-  $('#roundbar').innerHTML='<b style="font-size:17px">'+(done?'✅ Ronda '+done+' superada':'🛡️ Prepárate')+'</b>'+
+  $('#roundbar').innerHTML='<b style="font-size:17px">'+(done?'✅ Ola '+done+' superada':'🛡️ Prepárate')+'</b>'+
     '<div class="sub" style="margin:6px 0">Gasta tu experiencia y tu oro en el panel inferior: las mejoras solo se compran entre rondas.</div>'+
-    '<button class="btn" id="goRound">▶ Empezar ronda '+G.round+' ('+m+':'+String(sc).padStart(2,'0')+') · Enter</button>';
+    '<div class="sub" style="margin:6px 0;color:#ffb070">Próxima ola '+G.round+': <b>'+W.kind.nom+'</b> — '+W.kind.desc+'</div>'+
+    '<button class="btn" id="goRound">▶ Empezar ola '+G.round+' · Enter</button>';
   $('#goRound').onclick=startRound;
 }
 function startRound(){
   if(!G||G.modal!=='round')return;
   if(window.closeDrawers)window.closeDrawers();
   setResting(false);
-  G.modal=null;G.paused=false;G.roundT=0;G.roundLen=roundLen(G.round);
+  G.modal=null;G.paused=false;G.roundT=0;
   G.spawnAcc=0;
-  for(const [key,delay] of [['nextBoss',45],['nextWave',Math.max(30,55-eT(G.t)/60*2)],['nextSiege',Math.max(45,75-eT(G.t)/60*1.5)]])if(G[key]<=G.t)G[key]=G.t+delay;
+  {const W=G.waveNext&&G.waveNext.n===G.round?G.waveNext:buildWave(G.round);G.waveQ=W.q.map(x=>({...x,t:x.t*1.6}));G.waveT=waveTime(G.round);G.waveHp=waveHpCurve(G.round);G.roundLen=(G.waveQ.length?G.waveQ[G.waveQ.length-1].t:0)+3;G.wLv={};G.wTw=0;waveXp(W);
+   txt(cx(),cy()-110,'🌊 Ola '+G.round+': '+W.kind.nom,'#ff9a5a',24)}
   $('#roundbar').style.display='none';
 }
 
@@ -7987,7 +8052,7 @@ const tProgress=()=>{if(!G||!G.tower)return 1;let p=1;for(const u of towerUnits(
 const tLvl=tProgress;
 const towerCount=()=>(G&&G.tower?1+(G.tower.satellites||[]).length:1);
 const TS=1.3,TOWER_R=39,TOWER_DMG=.7;
-const towerMax=(l=1)=>Math.round(400+100*l);
+const towerMax=(l=1)=>Math.round((400+100*l)*((typeof G!=='undefined'&&G&&G.rounds&&G.round)?1+.35*(G.round-1):1));   /* en las olas la torre se refuerza con cada ola */
 const aliveTowers=()=>G.solo?[]:syncTowers().map((u,i)=>({u,i})).filter(o=>!o.u.dead);
 function hurtTower(i,d){
   if(G.solo)return;
@@ -8149,6 +8214,8 @@ function towerGainXp(a){
     u.xp=(u.xp||0)+a;a=0;
     const need=tNeed(tProgress());
     if(u.xp<need)break;
+    if(G.rounds&&(G.wTw||0)>=2){u.xp=need-1;break}   /* la torre sube como mucho 2 niveles por ola */
+    G.wTw=(G.wTw||0)+1;
     u.xp-=need;a=u.xp;u.xp=0;u.lvl=uLvl(u)+1;
     const mx=towerMax(u.lvl);if(!u.dead)u.hp=Math.min(mx,(u.hp==null?mx:u.hp)+100+mx*.06);
     if(ai===0)syncSkillLevels();
@@ -8163,7 +8230,7 @@ function towerGainXp(a){
   }
 }
 function towerKillXp(e){
-  const base=e.xp*XPK*xpTimeBonus(G.t)*S.xpM*TOWER_BALANCE.towerXp,share=Math.min(1,(e.tdmg||0)/Math.max(1,e.max,e.damageTaken||0));
+  const base=(G.rounds&&G.waveTXpK?e.xp*G.waveTXpK*S.xpM:e.xp*XPK*xpTimeBonus(G.t)*S.xpM*TOWER_BALANCE.towerXp),share=Math.min(1,(e.tdmg||0)/Math.max(1,e.max,e.damageTaken||0));
   towerGainXp(base*(.15+.85*share));
 }
 

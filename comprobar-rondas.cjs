@@ -11,7 +11,7 @@ assert.equal(endRound(),false);assert.ok(e.hp>0);
 for(let i=0;i<100;i++)update(.05);assert.equal(G.enemies.length,1,'No hay apariciones, oleadas, jefes ni asedios en limpieza');
 assert.equal(G.spawnAcc,50,'No se acumulan nuevas apariciones tras el tiempo');
 kill(e);update(.05);assert.equal(G.modal,'round');assert.equal(G.round,2);assert.equal(G.enemies.length,0);
-startRound();assert.equal(G.roundT,0);assert.equal(G.spawnAcc,0);assert.ok(G.nextBoss>G.t&&G.nextWave>G.t&&G.nextSiege>G.t,'Sin eventos atrasados al iniciar');
+startRound();assert.equal(G.roundT,0);assert.equal(G.spawnAcc,0);assert.ok(G.waveQ&&G.waveQ.length>0&&G.waveT===waveTime(2),'La ola 2 trae su propio guion y su dificultad');
 // Eliminar al último antes del tiempo tampoco termina la ronda.
 setup();const early=foe();kill(early);update(.05);assert.equal(G.round,1);assert.equal(G.modal,null);
 G.roundT=G.roundLen-.01;update(.05);assert.equal(G.round,2);assert.equal(G.modal,'round');
