@@ -1598,7 +1598,7 @@ function castSpecial(id){
   }else if(id==='skel'){
     const perKind=towerSkeletonLimit(L,lv,f)/2;
     for(const kind of ['skel','skelA']){
-      const alive=G.allies.filter(a=>a.tower&&a.src==='Soldados esqueleto'&&a.kind===kind&&a.hp>0).length;
+      const alive=G.allies.filter(a=>a.tower&&(a.towerIndex??0)===(G.org?.index??0)&&a.src==='Soldados esqueleto'&&a.kind===kind&&a.hp>0).length;
       for(let i=alive;i<perKind;i++){
         const a=Math.random()*6.283,hp=96*(1+.15*L)*spK(lv)*f.hpm*TOWER_BALANCE.skeletonHealth;
         const ally=addAlly(kind,x0+Math.cos(a)*40,y0+Math.sin(a)*40,hp,(18+4*L)*sd*1.4,(20+.5*(lv-1))*duration,'Soldados esqueleto');ally.tower=true;
@@ -1732,40 +1732,44 @@ function towerSkeletonLimit(level=tLvl(),powerLevel=G.spLv.skel,f=tf('skel')){
 function addAlly(kind,x,y,hp,dmg,life,src){
   if(S.allyK>1){hp*=S.allyK;if(dmg!=null)dmg*=S.allyK}   /* Estandarte de mando */
   const a={tsAt:tsc(),born:G.t,kind,x,y,hp,max:hp,life,cd:0,r:kind==='golem'?16:kind==='treant'?17:11,ang:Math.random()*6.283,dmgAbs:dmg,fly:!!ALLYK[kind].fly,src};
+  a.owner=HCUR;if(G.org)a.towerIndex=G.org.index??0;
   G.allies.push(a);return a;
 }
+const ownAlly=a=>!a.tower&&(a.owner??0)===HCUR;
 const TEMP_ALLY=new Set(['cub','wolf']);   /* invocados cuya ficha dice que duran un tiempo (Crías de panda, Manada espectral): caducan; el resto es permanente hasta caer */
 function updateAllies(dt){
-  const L=G.lvl;
   for(const a of G.allies){
-    if(TEMP_ALLY.has(a.kind)&&a.life<900)a.life-=dt;else a.life=999;
-    a.cd-=dt;if(a.roarT>0)a.roarT-=dt;
-    const k=ALLYK[a.kind||'skel'];
-    const ox=a.tower?towX():cx(),oy=a.tower?towY():cy();
-    SRC=a.src||(a.kind==='golem'?'Golems de piedra':a.kind==='mummy'?'Momias':a.kind==='vamp'?'Vampiros':'Soldados esqueleto');
-    let t=null,bd=1e12;
-    for(const e of G.enemies){
-      if(e.dead)continue;
-      if(Math.hypot(e.x-ox,e.y-oy)>S.range+80)continue;
-      const dd=(e.x-a.x)**2+(e.y-a.y)**2;if(dd<bd){bd=dd;t=e}
-    }
-    let tx,ty,near=false;
-    if(t){tx=t.x;ty=t.y;near=Math.sqrt(bd)<=(k.range||a.r+t.r+4)}
-    else{a.ang+=dt*(a.fly?1.6:0);const rr=a.fly?85:70;tx=ox+Math.cos(a.ang)*rr;ty=oy+Math.sin(a.ang)*rr}
-    if(near){
-      if(a.cd<=0){
-        a.cd=k.rate/bardAllySpeed(a)/(a.roarT>0?a.roarS:1);a.atkAt=G.t;a.tx=t.x;a.ty=t.y;
-        const base=(a.dmgAbs!=null?a.dmgAbs:(18+4*L)*S.dmg*(a.dmgK||1))*(a.scaleT?tsc()/a.tsAt:1)*(a.roarT>0?a.roarK:1);
-        if(a.kind==='skelA'){
-          const p={kind:'home',x:a.x,y:a.y-6,spd:430,size:4,type:'phys',dmg:base,tgt:t,exp:base*mult(t,'phys'),life:3,src:SRC,arrow:true,skelArrow:true};
-          p.ang=Math.atan2(t.y-p.y,t.x-p.x);t.pending+=p.exp;G.projs.push(p);
-        }else dealDamage(t,base,k.type||(a.kind==='vamp'?'dark':'phys'));
-        if(a.kind==='vamp')eachHero(()=>{G.hp=Math.min(S.maxHp,G.hp+S.maxHp*(.004+.0003*clv('n_vamp'))*tf('n_vamp').hm)});
+    heroCtx(a.owner??0,()=>{
+      const L=G.lvl;
+      if(TEMP_ALLY.has(a.kind)&&a.life<900)a.life-=dt;else a.life=999;
+      a.cd-=dt;if(a.roarT>0)a.roarT-=dt;
+      const k=ALLYK[a.kind||'skel'];
+      const ox=a.tower?towX(a.towerIndex??0):cx(),oy=a.tower?towY(a.towerIndex??0):cy();
+      SRC=a.src||(a.kind==='golem'?'Golems de piedra':a.kind==='mummy'?'Momias':a.kind==='vamp'?'Vampiros':'Soldados esqueleto');
+      let t=null,bd=1e12;
+      for(const e of G.enemies){
+        if(e.dead)continue;
+        if(Math.hypot(e.x-ox,e.y-oy)>S.range+80)continue;
+        const dd=(e.x-a.x)**2+(e.y-a.y)**2;if(dd<bd){bd=dd;t=e}
       }
-    }else{
-      const dx=tx-a.x,dy=ty-a.y,d=Math.hypot(dx,dy);
-      if(d>3){const st=Math.min(d,k.spd*dt);a.x+=dx/d*st;a.y+=dy/d*st}
-    }
+      let tx,ty,near=false;
+      if(t){tx=t.x;ty=t.y;near=Math.sqrt(bd)<=(k.range||a.r+t.r+4)}
+      else{a.ang+=dt*(a.fly?1.6:0);const rr=a.fly?85:70;tx=ox+Math.cos(a.ang)*rr;ty=oy+Math.sin(a.ang)*rr}
+      if(near){
+        if(a.cd<=0){
+          a.cd=k.rate/bardAllySpeed(a)/(a.roarT>0?a.roarS:1);a.atkAt=G.t;a.tx=t.x;a.ty=t.y;
+          const base=(a.dmgAbs!=null?a.dmgAbs:(18+4*L)*S.dmg*(a.dmgK||1))*(a.scaleT?tsc()/a.tsAt:1)*(a.roarT>0?a.roarK:1);
+          if(a.kind==='skelA'){
+            const p={kind:'home',x:a.x,y:a.y-6,spd:430,size:4,type:'phys',dmg:base,tgt:t,exp:base*mult(t,'phys'),life:3,src:SRC,arrow:true,skelArrow:true};
+            p.ang=Math.atan2(t.y-p.y,t.x-p.x);t.pending+=p.exp;G.projs.push(p);
+          }else dealDamage(t,base,k.type||(a.kind==='vamp'?'dark':'phys'));
+          if(a.kind==='vamp')eachHero(()=>{G.hp=Math.min(S.maxHp,G.hp+S.maxHp*(.004+.0003*clv('n_vamp'))*tf('n_vamp').hm)});
+        }
+      }else{
+        const dx=tx-a.x,dy=ty-a.y,d=Math.hypot(dx,dy);
+        if(d>3){const st=Math.min(d,k.spd*dt);a.x+=dx/d*st;a.y+=dy/d*st}
+      }
+    });
   }
   for(const a of G.allies)if(!(a.life>0&&a.hp>0))allyDie(a);
   G.allies=G.allies.filter(a=>a.life>0&&a.hp>0);
@@ -1895,7 +1899,10 @@ function shot(t,dmg,b,h){
 /* Luchadores cuerpo a cuerpo (monje, paladín): como el dragón, salen a buscar al enemigo
    más cercano dentro de una correa alrededor del centro y vuelven cuando no hay nadie. */
 const RANGED_MOVE={spd:215,leash:420,keep:110};
-const HRANGE={archer:[430,620],dwarf:[430,620],mage:[360,560],necro:[340,540],troll:[340,540],storm:[340,540]};
+const HRANGE={
+  demon:[240,440],alchemist:[270,470],druid:[300,500],troll:[330,530],necro:[360,560],
+  shaman:[390,590],priest:[420,620],mage:[450,650],archer:[480,680],dwarf:[510,710]
+};
 const heroShot=()=>(HRANGE[G.hero]||[320,520])[0]*(G.hero==='dwarf'?1+.01*clv('d_aim'):1);
 const heroVision=()=>HEROES[G.hero].melee?HEROES[G.hero].melee.leash+60:(HRANGE[G.hero]||[320,520])[1];
 /* Colisión con la base de las torres: pasos cortos y deslizamiento lateral para rodearlas. */
@@ -1927,6 +1934,7 @@ function avoidHeroTowers(fromBx=G.bx,fromBy=G.by){
 function updateMelee(dt){
   if(G.hero==='devourer'&&primalMove(dt))return;
   const m=HEROES[G.hero].melee||RANGED_MOVE;
+  let rangedTarget=null;
   const ox=G.bx,oy=G.by,px=cx(),py=cy();
   let tx=0,ty=0,sp=m.spd*(G.haste>0?1.3:1)*(1+.01*clv('k_wind'))*(G.hero==='devourer'?(1+.01*clv('pb_momentum'))*tf('pb_momentum').atk:1),lim=m.leash;
   if(G.dash){
@@ -1936,6 +1944,7 @@ function updateMelee(dt){
     let t=null,bd=1e12;const vis=heroVision(),shot=heroShot();
     for(const e of G.enemies){if(e.dead)continue;const dd=(e.x-px)**2+(e.y-py)**2;if(dd<bd&&dd<=(vis+e.r)**2){bd=dd;t=e}}
     if(t){
+      rangedTarget=t;
       const d=Math.sqrt(bd),a=Math.atan2(t.y-py,t.x-px);
       if(d<m.keep+t.r){tx=G.bx-Math.cos(a)*60;ty=G.by-Math.sin(a)*60}
       else if(d>shot*.85){const st=d-shot*.8;tx=G.bx+Math.cos(a)*st;ty=G.by+Math.sin(a)*st}
@@ -1954,6 +1963,24 @@ function updateMelee(dt){
   const ol=Math.hypot(G.bx,G.by);if(ol>lim){G.bx*=lim/ol;G.by*=lim/ol}
   {const mg=26,x=W/2+(G.hoff||0)+G.bx,y=H/2+G.by;   /* el héroe nunca sale de la zona visible al perseguir (H07) */
    if(x<mg)G.bx+=mg-x;else if(x>W-mg)G.bx-=x-(W-mg);if(y<mg+10)G.by+=mg+10-y;else if(y>H-mg)G.by-=y-(H-mg)}
+  if(m===RANGED_MOVE&&G.hl){
+    for(const i of HIDX()){
+      if(i===HCUR||heroDead(i)||HEROES[G.heroes[i]].melee)continue;
+      const p=heroPos(i),dx=cx()-p.x,dy=cy()-p.y,d=Math.hypot(dx,dy),gap=48;
+      if(d>=gap)continue;
+      if(rangedTarget){
+        const a=Math.atan2(rangedTarget.y-cy(),rangedTarget.x-cx()),nx=-Math.sin(a),ny=Math.cos(a);
+        const along=dx*nx+dy*ny,across=-dx*ny+dy*nx;
+        const shift=(Math.sign(along)||(HCUR<i?-1:1))*Math.sqrt(Math.max(0,gap*gap-across*across))-along;
+        G.bx+=nx*shift;G.by+=ny*shift;
+      }else{
+        const a=d>.001?Math.atan2(dy,dx):(HCUR<i?-Math.PI/2:Math.PI/2);
+        G.bx+=Math.cos(a)*(gap-d);G.by+=Math.sin(a)*(gap-d);
+      }
+    }
+    G.bx=Math.max(26-hx()-G.hoff,Math.min(W-26-hx()-G.hoff,G.bx));
+    G.by=Math.max(36-hy(),Math.min(H-26-hy(),G.by));
+  }
   avoidHeroTowers(ox,oy);
   const mv=Math.hypot(G.bx-ox,G.by-oy);G.mv=mv/Math.max(dt,1e-3);
   if(mv>.5&&G.dash==null&&G.mv<sp*1.1&&Math.random()<dt*10)G.fx.push({k:'p',x:cx()+(Math.random()-.5)*14,y:cy()+20,t:.35,c:'#c8b48a'});
@@ -2010,7 +2037,7 @@ function heroOnKill(e){
   if(G.hero!=='necro'||G.inCorpse)return;
   const r=clv('n_raise');
   const fr=tf('n_raise');
-  if(r&&Math.random()<Math.min(.85,.15+.02*r+fr.pc)){let ns=0;for(const q of G.allies)if(q.kind==='skel'||q.kind==='skelA')ns++;const cap=6+Math.floor(r/3)+fr.cnt*2;const n=Math.min((r>=16?3:r>=8?2:1)+fr.cnt,cap-ns);for(let i=0;i<n;i++)addAlly(Math.random()<.5?'skelA':'skel',e.x+(i-1)*10,e.y,allyHp(50+10*r)*fr.hpm,hdmg(r)*1.0*tsc(),16+.4*r,'Esqueletos del nigromante').perm=true}
+  if(r&&Math.random()<Math.min(.85,.15+.02*r+fr.pc)){let ns=0;for(const q of G.allies)if(ownAlly(q)&&(q.kind==='skel'||q.kind==='skelA'))ns++;const cap=6+Math.floor(r/3)+fr.cnt*2;const n=Math.min((r>=16?3:r>=8?2:1)+fr.cnt,cap-ns);for(let i=0;i<n;i++)addAlly(Math.random()<.5?'skelA':'skel',e.x+(i-1)*10,e.y,allyHp(50+10*r)*fr.hpm,hdmg(r)*1.0*tsc(),16+.4*r,'Esqueletos del nigromante').perm=true}
   const c=clv('n_corpse');
   const fc=tf('n_corpse');
   if(c&&Math.random()<Math.min(.7,.12+.01*c+fc.pc)){
@@ -2045,7 +2072,7 @@ function updateHero(dt){
   }else if(h==='necro'){
     if((l=clv('n_vamp'))){
       const fva=tf('n_vamp'),want=Math.min(6+fva.cnt,2+Math.floor(l/4)+fva.cnt);
-      let have=0;for(const a of G.allies)if(a.kind==='vamp')have++;
+      let have=0;for(const a of G.allies)if(ownAlly(a)&&a.kind==='vamp')have++;
       if(have<want){T.vampT=(T.vampT??1.5)-dt;if(T.vampT<=0){T.vampT=3.5;{const v=addAlly('vamp',x0,y0,allyHp(90+15*l)*fva.hpm,hdmg(l)*1.1*tsc(),1e9,'Vampiros');v.scaleT=true}}}
     }
     if((l=clv('n_mummy'))&&rdy('n_mummy')){
@@ -2263,7 +2290,7 @@ function updateHero(dt){
     }
     if((l=clv('p_angel'))){
       const fan=tf('p_angel'),want=Math.min(4+fan.cnt,1+Math.floor(l/5)+fan.cnt);
-      let have=0;for(const a of G.allies)if(a.kind==='angel')have++;
+      let have=0;for(const a of G.allies)if(ownAlly(a)&&a.kind==='angel')have++;
       if(have<want){T.angelT=(T.angelT??1)-dt;if(T.angelT<=0){T.angelT=3;const v=addAlly('angel',x0,y0,allyHp(110+18*l)*fan.hpm,hdmg(l)*1.2*tsc(),1e9,'Ángeles guardianes');v.scaleT=true}}
     }
     if((l=clv('p_barrier'))&&rdy('p_barrier')){
@@ -4278,7 +4305,7 @@ function heroTick3(h,dt,T,x0,y0,rdy,done,retry){
   if(h==='troll'){
     if((l=clv('t_regen'))){f=tf('t_regen');if(G.hp<S.maxHp*(f.thr||.5))G.hp=Math.min(S.maxHp,G.hp+.5*l*dt)}
     if((l=clv('t_raptor'))){f=tf('t_raptor');
-      const want=Math.min(7,1+Math.floor(l/6)+f.cnt);let have=0;for(const q of G.allies)if(q.kind==='raptor')have++;
+      const want=Math.min(7,1+Math.floor(l/6)+f.cnt);let have=0;for(const q of G.allies)if(ownAlly(q)&&q.kind==='raptor')have++;
       if(have<want){T.rapT=(T.rapT??1)-dt;if(T.rapT<=0){T.rapT=3;const v=addAlly('raptor',x0,y0,allyHp(120+22*l)*f.hpm,hdmg(l)*1.25*tsc(),1e9,'Raptor domesticado');v.scaleT=true}}
     }
     if((l=clv('t_trap'))&&rdy('t_trap')){
@@ -4345,7 +4372,7 @@ function heroTick3(h,dt,T,x0,y0,rdy,done,retry){
         G.haste=Math.max(G.haste||0,4);ring(x0,y0,R,'#c8d4ff',.6);ring(x0,y0,R*.6,'#ffffff',.5);txt(x0,y0-80,'🌙 ¡AUUUUU!','#c8d4ff',20);done('w_howl',Math.max(10,20-.5*l))}
     }
     if((l=clv('w_pack'))&&rdy('w_pack')){
-      f=tf('w_pack');let have=0;for(const q of G.allies)if(q.kind==='wolf')have++;
+      f=tf('w_pack');let have=0;for(const q of G.allies)if(ownAlly(q)&&q.kind==='wolf')have++;
       if(countNear(x0,y0,320)<2||have>=10)retry('w_pack');
       else{const n=2+Math.floor(l/7)+f.cnt;for(let i=0;i<n;i++){const a=Math.random()*6.283;addAlly('wolf',x0+Math.cos(a)*45,y0+Math.sin(a)*45,allyHp(110+20*l)*f.hpm,hdmg(l)*1.1*tsc(),(20+.5*l)*f.dur,'Manada espectral')}
         ring(x0,y0,60,'#a8c8ff',.4);txt(x0,y0-70,'🐺 ¡La manada!','#a8c8ff',16);done('w_pack',Math.max(14,28-.7*l))}
@@ -4390,7 +4417,7 @@ function heroTick3(h,dt,T,x0,y0,rdy,done,retry){
         ring(b.x,b.y,R,'#5ab04a',.5);ring(b.x,b.y,R*.6,'#a8e87a',.5);txt(b.x,b.y-30,'🌵','#a8e87a',18);done('u_thorns',Math.max(8,15-.35*l))}
     }
     if((l=clv('u_treants'))&&rdy('u_treants')){
-      f=tf('u_treants');let have=0;for(const q of G.allies)if(q.kind==='treant')have++;
+      f=tf('u_treants');let have=0;for(const q of G.allies)if(ownAlly(q)&&q.kind==='treant')have++;
       if(countNear(x0,y0,320)<2||have>=10)retry('u_treants');
       else{const n=Math.min(10-have,3+Math.floor(l/8)+f.cnt);for(let i=0;i<n;i++){const a=Math.random()*6.283;addAlly('treant',x0+Math.cos(a)*50,y0+Math.sin(a)*50,allyHp(240+48*l)*f.hpm,hdmg(l)*1.2*tsc(),(25+.5*l)*f.dur,'Fuerza de la naturaleza')}
         ring(x0,y0,70,'#6fcf6f',.4);txt(x0,y0-70,'🌳 ¡Fuerza de la naturaleza!','#6fcf6f',16);done('u_treants',Math.max(18,34-.8*l))}
@@ -6556,7 +6583,7 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
     if(!countNear(x0,y0,rg('i_forge')+200))retry('i_forge');else{
       cast('i_forge','EEQ','¡Espíritus de fuego!');SRC='Espíritu de fuego';
       const n=2+Math.floor(l/10)+f.cnt,life=(20+.4*l)*f.dur;
-      G.allies=G.allies.filter(a=>a.kind!=='spirit'||(a.src!=='Espíritu de fuego')||a.dead);
+      G.allies=G.allies.filter(a=>!ownAlly(a)||a.kind!=='spirit'||(a.src!=='Espíritu de fuego')||a.dead);
       for(let i=0;i<n;i++){const an=i/n*6.283;addAlly('spirit',x0+Math.cos(an)*40,y0+Math.sin(an)*40,allyHp(40+6*l)*f.hpm,hdmg(l)*.8*f.dm,life,'Espíritu de fuego')}
       ring(x0,y0,60,'#ff9a3d',.5);done('i_forge',INV.i_forge.cd(l))}
   }
@@ -6870,7 +6897,7 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
     }
   }
   if(h==='necro'&&(l=clv('n_abom'))&&rdy('n_abom')){
-    f=tf('n_abom');const sk=G.allies.filter(a=>(a.kind==='skel'||a.kind==='skelA')&&a.hp>0),per=2,k=Math.min(1+f.cnt,Math.floor(sk.length/per));
+    f=tf('n_abom');const sk=G.allies.filter(a=>ownAlly(a)&&(a.kind==='skel'||a.kind==='skelA')&&a.hp>0),per=2,k=Math.min(1+f.cnt,Math.floor(sk.length/per));
     if(k<1)retry('n_abom');
     else{
       for(let i=0;i<k;i++){
@@ -6926,7 +6953,7 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
     }
     if((l=clv('b_fire'))){
       f=tf('b_fire');const want=1+f.cnt;let have=0;
-      for(const a of G.allies)if(a.kind==='wboar'){
+      for(const a of G.allies)if(ownAlly(a)&&a.kind==='wboar'){
         have++;a.hp=Math.min(a.max,a.hp+a.max*.01*dt);a.chT=(a.chT??2)-dt;
         if(a.chT<=0&&countNear(a.x,a.y,95)>0){
           a.chT=Math.max(3,6-.1*l)*f.cd;SRC='Jabalí embestidor';const d=hdmg(l)*(1.1+.015*l)*f.dm;
@@ -7020,14 +7047,14 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
     }
   }
   if(h==='werewolf'&&(l=clv('w_alpha'))){
-    f=tf('w_alpha');const want=1+f.cnt;let have=0;for(const a of G.allies)if(a.kind==='alpha')have++;
+    f=tf('w_alpha');const want=1+f.cnt;let have=0;for(const a of G.allies)if(ownAlly(a)&&a.kind==='alpha')have++;
     if(have<want){T.alT=(T.alT??1)-dt;
       if(T.alT<=0){T.alT=10;const v=addAlly('alpha',x0+R5(-30,30),y0+20,allyHp(260+45*l)*f.hpm,hdmg(l)*1.7*tsc(),1e9,'Lobo alfa');v.perm=true;v.r=13;v.taunt=140;v.dk=.7;v.scaleT=true;ring5(v.x,v.y,40,'#a8c8ff',.5);txt(v.x,v.y-30,'🐺','#fff',22)}}
     else{T.alH=(T.alH??8)-dt;if(T.alH<=0&&countNear(x0,y0,300)>=2){T.alH=14;G.haste=Math.max(G.haste||0,3+f.haste);ring5(x0,y0,150,'#a8c8ff',.6);txt(x0,y0-80,'🐺 ¡Aullido del alfa!','#a8c8ff',18)}}
   }
   if(h==='druid'){
     if((l=clv('u_storm'))){
-      f=tf('u_storm');let bear=null;for(const a of G.allies)if(a.kind==='sbear'){bear=a;break}
+      f=tf('u_storm');let bear=null;for(const a of G.allies)if(ownAlly(a)&&a.kind==='sbear'){bear=a;break}
       if(!bear){T.sbT=(T.sbT??0)-dt;
         if(T.sbT<=0){T.sbT=15;const v=addAlly('sbear',x0+R5(-40,40),y0+20,allyHp(300+55*l)*f.hpm,hdmg(l)*1.2*tsc(),1e9,'Oso espiritual');v.perm=true;v.r=15;v.taunt=200;v.dk=.6;v.scaleT=true;ring5(v.x,v.y,44,'#c9946a',.5);txt(v.x,v.y-32,'🐻','#fff',22)}}
       else{
@@ -7041,7 +7068,7 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
       }
     }
     if((l=clv('u_swarm'))&&rdy('u_swarm')){
-      f=tf('u_swarm');let bear=null;for(const a of G.allies)if(a.kind==='sbear'){bear=a;break}
+      f=tf('u_swarm');let bear=null;for(const a of G.allies)if(ownAlly(a)&&a.kind==='sbear'){bear=a;break}
       const far=bear&&Math.hypot(bear.x-x0,bear.y-y0)>200,hurtNow=bear&&G.hp<S.maxHp*.4&&countNear(x0,y0,130)>=2;
       if(!bear||!(far||hurtNow))retry('u_swarm');
       else{
@@ -7442,7 +7469,7 @@ function assassinTick(dt,T,x0,y0,rdy,done,retry){
     }
   }
   if((l=clv('x_clone'))&&rdy('x_clone')){
-    f=tf('x_clone');let have=0;for(const a of G.allies)if(a.kind==='sclone')have++;
+    f=tf('x_clone');let have=0;for(const a of G.allies)if(ownAlly(a)&&a.kind==='sclone')have++;
     const want=Math.min(4,1+Math.floor(l/12)+f.cnt);
     if(countNear(x0,y0,320)<2||have>=want)retry('x_clone');
     else{
@@ -7721,7 +7748,7 @@ const TSRC=new Set(['Rayo arcano de la torre']);       /* fuentes de daño que c
 for(const s of SK){TSRC.add(s.n);TSRC.add('★ '+s.n)}
 const TSRC_POW=()=>{for(const sp of SPS)TSRC.add(sp.n)};
 
-function towerBegin(index=0){G.orgN=(G.orgN||0)+1;G.org={x:towX(index),y:towY(index)}}
+function towerBegin(index=0){G.orgN=(G.orgN||0)+1;G.org={x:towX(index),y:towY(index),index}}
 /* Habilidades de una torre. La torre 0 usa el estado global; las demás tienen el suyo (enfriamientos, orbitales, pulpo, poderes). */
 function towerAbilities(index,unit,dt){
   if(unit.dead)return;

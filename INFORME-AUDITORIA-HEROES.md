@@ -319,3 +319,29 @@ comprobar-progresion, comprobar-torre y comprobar-auto-mejoras fallan con expect
 SHA-256 de index.html probado: `270d601382ba90a8fcc1f50681f7f6ef449359314b08d3cc3cf3cc7eab6cf13f`. Coincide entre motor y navegador: **sí**.
 
 No se corrigieron las mecánicas ni los sprites durante esta auditoría. Las pruebas son una revisión amplia con escenarios controlados y capturas, no una demostración exhaustiva de todas las combinaciones posibles, probabilidades, fases de animación o dispositivos físicos. Los cambios posteriores a esta instantánea requieren una nueva pasada.
+
+## Resolución de los hallazgos
+
+Cambios hechos después de la auditoría (no hay una nueva pasada completa de las 1.264 escenas; ver las pruebas al final).
+
+| # | Estado | Qué se hizo |
+|---|---|---|
+| H01 | Hecho | Las transformaciones escalan el cuerpo PNG desde los pies y lo envuelven en el color de su forma (oso, lobo, metamorfosis, dragón, rugido). Metamorfosis y Forma de dragón crecen un 12 % y un 15 %. No hay sprites de cuerpo distintos: harían falta hojas nuevas. |
+| H02 | Hecho | Toda habilidad activa marca `G.castAt`: el cuerpo hace la pose de lanzamiento aunque el básico esté apagado, y deja un destello breve. |
+| H03 | Hecho | Probar prepara los objetivos que pide la habilidad (4-7), un jefe para Rayo de luz y avisa con "Esperando a que se cumpla su condición". |
+| H04 | Hecho | Cada prueba activa sus dependencias a nivel mínimo mientras dura (esqueletos, oso, Mojado, charcos, Embestida…) y las devuelve al detener. |
+| H05 | Hecho | Morir reinicia el campo pero conserva niveles, habilidad elegida, ajustes y si la prueba estaba en marcha. |
+| H06 | Hecho | Crías de panda y Manada espectral caducan según su ficha; el resto sigue siendo permanente. |
+| H07 | Hecho | El héroe que persigue se mantiene dentro de la zona visible. |
+| H08 | Hecho | El suelo del Campo de hielo sigue al mago. |
+| H09 | Hecho | El selector de dirección solo ofrece Derecha e Izquierda, que son las que se pueden dibujar. |
+| H10 | Hecho | La velocidad del panel ralentiza o acelera también el combate y los efectos. |
+| H11 | Hecho | Probar prepara vida baja, golpe letal (Resurrección), furia y objetivos que caminan (trampas, minas); el modo test empieza con oro de sobra para el dragón. |
+| H12 | Hecho | Invisibilidad vuelve el cuerpo casi transparente. |
+| H13 | Parcial | Caminar aplasta el sprite al apoyar cada pie y recibir daño lo sacude. Siguen sin existir fotogramas de piernas ni de impacto: es animación procedural por decisión. |
+| H14 | Hecho | Los efectos de más de 220 px y los aditivos son más transparentes. No cambia ningún radio mecánico. |
+| H15 | Parcial | Cada lanzamiento deja un destello y una pose propia. Un indicador persistente para las pasivas sigue pendiente. |
+| H16 | Hecho | El botón y la descripción avisan de que Probar sube una habilidad de nivel 0 a nivel 1. |
+| H17 | Hecho | `comprobar-progresion`, `-torre` y `-auto-mejoras` actualizadas al diseño actual (mejoras en niveles 10/20/30/40, poderes sin puntos por nivel, 10 poderes, niveles hasta 50). Paso fantasma ahora comprueba invulnerabilidad y ralentización. |
+
+Prueba nueva: `comprobar-preparacion-test.cjs` (H03, H04, H05, H11, H16).
