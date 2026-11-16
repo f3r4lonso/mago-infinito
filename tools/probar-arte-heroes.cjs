@@ -68,7 +68,7 @@ function poses(hero){   /* cuerpo del héroe: reposo, caminar, ataque, recibir d
   for(const s of st){
     if(G.ht)for(const k of Object.values(FORMA))G.ht[k]=0;
     if(s.forma){G.ht[s.forma]=30;G.soloAnimation='auto'}else G.soloAnimation='idle';
-    Object.assign(s,{n:0,face:1});
+    Object.assign(s,{n:0,face:1});if(s.forma)s.form=({paladin:'dragon',demon:'demon'})[hero]||0;   /* forma: dragón (paladín) o demonio (cazador) */
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#b99d6b';ctx.fillRect(0,0,W,H);
     drawHeroOn(ctx,W/2,H/2,hero,1.7,0,1.25,s);
     const c=document.createElement('canvas');c.width=CW;c.height=CH;

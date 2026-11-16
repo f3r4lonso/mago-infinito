@@ -390,6 +390,7 @@ body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
 <script src="assets/heroes/necro/fx.js"></script>
 <script src="assets/heroes/paladin/fx.js"></script>
 <script src="assets/heroes/demon/pack.js"></script>
+<script src="assets/heroes/demon/pack2.js"></script>
 <script src="assets/heroes/paladin/pack.js"></script>
 <script src="assets/heroes/paladin/pack2.js"></script>
 <script src="assets/heroes/paladin/pack3.js"></script>
@@ -3304,7 +3305,7 @@ function drawHero(px,py){
   const atk=Math.max(0,1-since/.3),u=since<DUR?since/DUR:-1,hurt=Math.max(0,1-(G.t-(G.hurtAt==null?-9:G.hurtAt))/.25);
   const pa=G.t-G.punchAt,lu=HEROES[G.hero].melee&&pa<.16?Math.sin(pa/.16*Math.PI)*9:0,run=Math.min(1,(G.mv||0)/200);
   if(run>.3&&dt>0){const s=Math.floor(G.t*11/Math.PI);if(s!==G.hstep){G.hstep=s;if(G.fx.length<300)G.fx.push({k:'p',x:px+(Math.random()-.5)*12,y:py+27,vx:(Math.random()-.5)*30,vy:-10-Math.random()*20,t:.4,c:'#c8b48acc'})}}
-  const st={run,atk,u,n:G.atkN||0,since,face:G.hface,vx:G.hvx,hurt,form:(G.hero==='paladin'&&G.ht&&G.ht.wrathOn>0)?'dragon':0};   /* form: forma de dragón del paladín (Forma de dragón) */
+  const st={run,atk,u,n:G.atkN||0,since,face:G.hface,vx:G.hvx,hurt,form:(G.hero==='paladin'&&G.ht&&G.ht.wrathOn>0)?'dragon':(G.hero==='demon'&&G.ht&&G.ht.metaOn>0)?'demon':0,cast:G.castAt!=null&&G.castAt>=Math.max(G.atkAt==null?-9:G.atkAt,G.punchAt==null?-9:G.punchAt)};   /* form: forma de dragón (paladín) o de demonio (cazador) · cast: la acción actual es una habilidad, no el ataque básico */   /* form: forma de dragón del paladín (Forma de dragón) */
   ctx.save();ctx.translate(px+Math.cos(G.aim)*lu*.6,py+Math.sin(G.aim)*lu*.6);
   drawHeroOn(ctx,0,0,G.hero,G.t,G.aim,1.25,st);ctx.restore();
 }

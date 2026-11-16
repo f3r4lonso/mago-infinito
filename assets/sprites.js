@@ -173,11 +173,15 @@ var SPR=(function(){
     ay=ay==null?1:ay;ax=ax==null?.5:ax;
     const m=meta||{},u=st.u==null?-1:st.u;let id=(u>=0&&api.has(atk))?atk:idle;
     /* formas (paladín en dragón): el cuerpo se sustituye por su animación mientras dura la transformación */
-    if(st.form&&m.forms&&m.forms[st.form]){const F=m.forms[st.form];let did;
+    if(st.form&&m.forms&&m.forms[st.form]&&m.forms[st.form].stand){const F=m.forms[st.form],sq=(u>=0&&st.cast&&F.cast)?F.cast:F.atk;let did;
+      if((st.hurt||0)>.35&&F.hurt)did=F.hurt;else if(u>=0)did=sq[Math.min(sq.length-1,Math.floor(u*sq.length))];else if((st.run||0)>.2)did=F.walk[Math.floor(t*F.fps)%F.walk.length];else did=F.idle[Math.floor(t*4)%F.idle.length];
+      if(api.has(did)){const sp2=ids[did],W2=F.H*sp2.w/sp2.h,run2=(st.run||0)*.4,bob2=Math.sin(t*2.3)*.6-Math.abs(Math.sin(t*11))*3*run2;c.save();c.scale(fx,1);c.translate(0,31+bob2);c.rotate((.09*Math.sign(st.vx||1)*run2)*(fx<0?-1:1));c.translate(st.hurt>0?-4*st.hurt*Math.sin(t*38):0,0);api.draw(c,did,0,0,{w:W2,ax:F.ax,ay:F.ay});c.restore();return true}}
+    if(st.form&&m.forms&&m.forms[st.form]&&!m.forms[st.form].stand){const F=m.forms[st.form];let did;
       if((st.hurt||0)>.5&&F.hurt)did=F.hurt;else if(u>=0)did=F.atk[Math.min(F.atk.length-1,Math.floor(u*F.atk.length))];else did=F.fly[Math.floor(t*F.fps*(1+.5*(st.run||0)))%F.fly.length];
       if(api.has(did)){c.save();c.scale(fx,1);c.translate(0,F.y+Math.sin(t*3)*2.5);c.rotate(.14*(st.run||0)*Math.sign(st.vx||1)*(fx<0?-1:1));api.draw(c,did,0,0,{w:F.W,ax:.5,ay:.5});c.restore();return true}}
     /* ataques cuerpo a cuerpo alternados (tajo, estocada, tajo ascendente): uno por cada golpe, avanzando por sus fotogramas */
-    if(u>=0&&m.atks){const q=m.atks[(st.n||0)%m.atks.length],cand=q[Math.min(q.length-1,Math.floor(u*q.length))];if(api.has(cand))id=cand}
+    if(u>=0&&(m.atks||m.casts)){const lista=(st.cast&&m.casts)?m.casts:m.atks;if(lista){const q=lista[(st.n||0)%lista.length],cand=q[Math.min(q.length-1,Math.floor(u*q.length))];if(api.has(cand))id=cand}}
+    if(u<0&&(st.run||0)<=.2&&m.idleSeq&&api.has(m.idleSeq[0]))id=m.idleSeq[Math.floor(t*4)%m.idleSeq.length];   /* reposo animado */
     /* caminar y recibir daño con sprites propios (si el héroe los trae): la animación por código se atenúa */
     if(u<0&&(st.run||0)>.2&&m.walk&&api.has(m.walk[0]))id=m.walk[Math.floor(t*9)%m.walk.length];
     if((st.hurt||0)>.35&&m.hurt&&api.has(m.hurt))id=m.hurt;
