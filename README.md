@@ -152,11 +152,11 @@ En la pantalla de inicio, el botón **Jugar con 1 héroe** empieza la partida co
 
 ## Arte en PNG (versión 2, en curso)
 
-El **mago invocador** ya se dibuja con sprites PNG: personaje, disparo arcano, 12 iconos de habilidad, iconos de mejora y la mayoría de los efectos de sus habilidades. El resto de héroes, enemigos, torre y dragón siguen en vectorial.
+El **mago invocador** y la **torre** ya se dibujan con sprites PNG: personaje, disparo arcano, torre por pisos, cíclope, esqueletos, iconos de habilidad y de poder, iconos de mejora y la mayoría de los efectos. El resto de héroes, los enemigos y el dragón siguen en vectorial.
 
-- Los sprites viven en `assets/heroes/mage/` (dos atlas y `pack.js`) y se cargan con `assets/sprites.js` (script normal: sigue funcionando con doble clic).
+- Los sprites viven en `assets/heroes/mage/` y `assets/tower/` (dos atlas y `pack.js` cada uno) y se cargan con `assets/sprites.js` (script normal: sigue funcionando con doble clic).
 - Si un sprite falta o el PNG no carga, se usa el dibujo vectorial de siempre. Con `index.html?sprites=off` se fuerza el dibujo vectorial para comparar.
-- Las hojas originales están en `assets/mago_hoja1.png` y `assets/mago_hoja2.png`. Para regenerar los atlas: `python tools/empaquetar_mago.py` (requiere `pillow` y `numpy`).
+- Las hojas originales están en `assets/mago_hoja1.png` y `assets/mago_hoja2.png`. Hojas de la torre: `assets/torre_hoja1.png` y `assets/torre_hoja2.png`. Para regenerar los atlas: `python tools/empaquetar_mago.py` y `python tools/empaquetar_torre.py` (requiere `pillow` y `numpy`).
 - Los iconos de mejora no se recortan de la hoja: el código compone el icono de la habilidad, el marco de color del nivel y el símbolo del efecto.
 - Vista previa con una partida real del mago: `node tools/previsualizar-mago-v2.cjs` y abrir `preview-mago-v2.html#120`.
 - Prompts de arte y plantillas guía: `PROMPTS-ARTE-MAGO.md` y `guias-arte/`. Plan completo: `PLAN-V2.md`.

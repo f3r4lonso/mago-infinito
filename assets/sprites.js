@@ -130,18 +130,18 @@ var SPR=(function(){
      Dibuja en coordenadas locales de la torre (origen en el suelo). Devuelve false si faltan sprites. */
   api.towerBody=function(c,n,t,flash,runes){
     if(!api.has('t_roof')||!api.has('t_floor_a')||!api.has('t_base'))return false;
-    api.draw(c,'t_base',0,-6,{w:54});
-    let yb=-9,top=-9,wLast=30;
+    api.draw(c,'t_base',0,-5,{w:46});
+    let yb=-8,top=-8,wLast=24;
     for(let i=0;i<n;i++){
-      const h=39.5*(1-.07*Math.max(0,i-1)),a=i===0,w=h*(a?148/195:112/195);
+      const h=31*(1-.07*Math.max(0,i-1)),a=i===0,w=h*(a?148/195:112/195);
       api.draw(c,a?'t_floor_a':'t_floor_b',0,yb,{h,ax:.5,ay:1});
       top=yb-h;wLast=w;yb-=h*.71;
     }
     const rw=wLast*1.12,rh=rw*204/116;
-    api.draw(c,'t_roof',0,top+8,{w:rw,ax:.5,ay:1});
-    const apex=top+8-rh,cy=apex-8+Math.sin(t*2.4)*2.4;
+    api.draw(c,'t_roof',0,top+7,{w:rw,ax:.5,ay:1});
+    const apex=top+7-rh,cy=apex-7+Math.sin(t*2.4)*2.4;
     hGlow(c,0,cy,15+flash*16+Math.sin(t*5)*2,'#7ff0e0',.55);
-    api.draw(c,'t_crystal',0,cy,{w:26,a:.95});
+    api.draw(c,'t_crystal',0,cy,{w:22,a:.95});
     for(let i=0;i<runes;i++){const a=t*1.4+i*6.283/runes;hGlow(c,Math.cos(a)*26,cy+12+Math.sin(a)*8,5,'#9ff4ff',.85)}
     return true;
   };
