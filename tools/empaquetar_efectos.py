@@ -9,10 +9,19 @@ import numpy as np
 from empaquetar_torre_lib import fondo,quitar_fondo,empaquetar
 D0,D1=62,135
 # héroe -> [(hoja, columnas, filas, [(prefijo, primera celda 1-based, nº de fotogramas, lado máximo), ...]), ...]
+D='habilidades y efectos/'
 H={
  'assassin':[
-  ('acesino_efectos1.jpg',6,4,[('x_slash',1,6,200),('x_trail',7,3,260),('x_trapa',10,3,90),('x_trapb',13,5,200),('x_vanish',18,3,200),('x_stab',21,4,200)]),
-  ('acesino_efectos2.jpg',6,4,[('x_dag',1,4,64),('x_dagh',5,3,110),('x_smoke',8,5,200),('x_stealth',13,4,160),('x_mark',17,5,64)]),
+  (D+'acesino_efectos1.jpg',6,4,[('x_slash',1,6,200),('x_trail',7,3,260),('x_trapa',10,3,90),('x_trapb',13,5,200),('x_vanish',18,3,200),('x_stab',21,4,200)]),
+  (D+'acesino_efectos2.jpg',6,4,[('x_dag',1,4,64),('x_dagh',5,3,110),('x_smoke',8,5,200),('x_stealth',13,4,160),('x_mark',17,5,64)]),
+ ],
+ 'archer':[
+  (D+'archer_efectos1.jpg',6,4,[('a_snc',1,2,90),('a_snb',3,3,320),('a_sni',6,4,230),('a_chain',10,3,320),('a_ring',13,4,150),('a_frp',17,2,80),('a_fri',19,4,170),('a_prc',23,2,100)]),
+  (D+'archer_efectos2.jpg',6,4,[('a_foc',1,4,200),('a_str',5,2,130),('a_wind',7,4,170),('a_gust',11,4,230),('a_aura',15,4,230)]),
+ ],
+ 'barbarian':[
+  (D+'guerrero_efectos1.jpg',6,4,[('b_fire',1,6,200),('b_whirl',7,6,200),('b_axe',13,3,56),('b_roar',16,4,230),('b_rage',20,4,170)]),
+  (D+'guerrero_efectos2.jpg',6,4,[('b_exec',1,6,200),('b_shout',7,3,230),('b_claw',[10,11,12,17,18],5,200),('b_dust',13,3,220)]),
  ],
 }
 def centros(v):
@@ -37,6 +46,12 @@ def fondo_robusto(rgb):
     return np.median(rgb[m],axis=0) if m.sum()>300 else fondo(rgb)
 def clave(rgb):
     a=np.array(quitar_fondo(rgb,fondo_robusto(rgb),D0,D1))
+    # el fondo de algunas hojas no es magenta puro: tiene esquinas rosa palido y un borde rosa oscuro (marco redondeado de cada celda)
+    f=rgb.astype(float);R,G,B=f[...,0],f[...,1],f[...,2]
+    pal=np.clip((G-90)/80,0,1)+np.where(np.minimum(R,B)>=185,0,1)            # rosa/lila palido -> transparente (el blanco real tiene G alto y se conserva)
+    rose=np.where((R>180)&(G<70)&(B>110)&(B<215),0,1)                         # rosa oscuro del marco (la sangre y el fuego tienen B bajo)
+    k=np.clip(pal,0,1)*rose
+    a[...,3]=(a[...,3]*k).astype(np.uint8)
     linea=(rgb[...,0]>40)&(rgb[...,0]<150)&(rgb[...,1]<60)&(rgb[...,2]>60)&(rgb[...,2]<180)   # restos de la cuadrícula en el borde
     borde=np.zeros(linea.shape,bool);borde[:14,:]=True;borde[-14:,:]=True;borde[:,:14]=True;borde[:,-14:]=True
     a[linea&borde,3]=0
@@ -52,8 +67,9 @@ for hid,hojas in H.items():
         im=np.array(Image.open('assets/'+f).convert('RGB')).astype(int);xs,ys=celdas_de(im,cols,rows)
         for pref,c0,n,maxl in grupos:
             fr=[]
-            for i in range(n):
-                r,c=divmod(c0-1+i,cols);fr.append(clave(im[ys[r][0]:ys[r][1],xs[c][0]:xs[c][1]]))
+            lista=c0 if isinstance(c0,list) else [c0+i for i in range(n)]
+            for cel in lista:
+                r,c=divmod(cel-1,cols);fr.append(clave(im[ys[r][0]:ys[r][1],xs[c][0]:xs[c][1]]))
             bb=[bbox(s) for s in fr];u=(min(b[0] for b in bb),min(b[1] for b in bb),max(b[2] for b in bb),max(b[3] for b in bb))
             k=min(1,maxl/max(u[2]-u[0],u[3]-u[1]))
             for i,s in enumerate(fr):

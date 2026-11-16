@@ -11,7 +11,7 @@ D0,D1=62,135
 # basic: src (nombre del ataque basico en el juego), w, ax, spin ; melee: efecto al golpear cuerpo a cuerpo
 H={
  'archer':dict(f='archer1.jpg',cols=7,rows=4,idle=1,atk=2,proj=3,hit=4,basic=dict(src='Flecha',w=38,ax=.82),hw=34,icons='archer2.jpg',kit='a_crit a_aspd a_multi a_pierce a_frost a_shackle a_snipe a_windrun a_gust a_aura a_hawk a_focus'),
- 'assassin':dict(f='acesino1.jpg',grid=True,cols=7,rows=6,idle=1,atk=2,hit=5,melee=True,hw=40,H=58,icons='acesino2.jpg',kit='x_poison x_crit x_dodge x_blink x_smoke x_stealth x_mark x_daggers x_clone x_trap x_exec x_dance'),
+ 'assassin':dict(f='acesino1.jpg',grid=True,cols=7,rows=6,idle=1,atk=2,hit=5,melee=True,hw=40,H=58,atks=.78,radial=True,icons='acesino2.jpg',kit='x_poison x_crit x_dodge x_blink x_smoke x_stealth x_mark x_daggers x_clone x_trap x_exec x_dance'),
  'demon':dict(f='demonhunter1.jpg',cols=7,rows=4,idle=1,atk=2,proj=13,hit=14,basic=dict(src='Guadañas viles',w=34,ax=.5,spin=14),hw=38),
  'paladin':dict(f='dragonkings1.jpg',cols=7,rows=4,idle=1,atk=2,melee=True),
  'druid':dict(f='druida1.jpg',cols=7,rows=4,idle=1,atk=2,proj=4,hit=5,basic=dict(src='Cólera',w=44,ax=.8),hw=38),
@@ -91,6 +91,7 @@ for hid,cfg in H.items():
     atkax=None
     if abs(atk.width-idle.width)<=2 and abs(atk.height-idle.height)<=2:atk=atk.resize(idle.size,Image.LANCZOS)
     else:atkax=round(((box[0]+box[2])/2)/atk.width,3)   # ataque de varias celdas: el cuerpo queda en la primera
+    if cfg.get('atks'):atk=atk.resize((round(atk.width*cfg['atks']),round(atk.height*cfg['atks'])),Image.LANCZOS)   # la pose de ataque viene dibujada mas grande que la de reposo
     a=np.array(atk);fr_=cfg.get('fade_r',24);fl_=cfg.get('fade_l',0)
     a[:,-fr_:,3]=(a[:,-fr_:,3]*np.linspace(1,0,fr_)[None,:]).astype(np.uint8)
     if fl_:a[:,:fl_,3]=(a[:,:fl_,3]*np.linspace(0,1,fl_)[None,:]).astype(np.uint8)
