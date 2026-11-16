@@ -58,6 +58,9 @@ def clave(rgb):
     h,w=a.shape[:2];yy,xx=np.mgrid[0:h,0:w]   # el arte que toca el borde de la celda se desvanece para que no quede un corte recto
     d=np.minimum(np.minimum(xx,w-1-xx),np.minimum(yy,h-1-yy));a[...,3]=(a[...,3]*np.clip(d/18,0,1)).astype(np.uint8)
     return Image.fromarray(a,'RGBA')
+STRICT={'a_gust','a_wind','a_foc','a_str','a_aura'}   # grupos con una neblina morada alrededor: se recorta el alfa bajo para quitarla
+def estricto(img):
+    a=np.array(img).astype(float);a[...,3]=np.clip((a[...,3]-85)/(255-85),0,1)*255;return Image.fromarray(a.astype(np.uint8),'RGBA')
 def bbox(s):
     a=np.array(s)[...,3];ys,xs=np.where(a>14)
     return (int(xs.min()),int(ys.min()),int(xs.max()+1),int(ys.max()+1))
@@ -69,7 +72,7 @@ for hid,hojas in H.items():
             fr=[]
             lista=c0 if isinstance(c0,list) else [c0+i for i in range(n)]
             for cel in lista:
-                r,c=divmod(cel-1,cols);fr.append(clave(im[ys[r][0]:ys[r][1],xs[c][0]:xs[c][1]]))
+                r,c=divmod(cel-1,cols);fr.append(estricto(clave(im[ys[r][0]:ys[r][1],xs[c][0]:xs[c][1]])) if pref in STRICT else clave(im[ys[r][0]:ys[r][1],xs[c][0]:xs[c][1]]))
             bb=[bbox(s) for s in fr];u=(min(b[0] for b in bb),min(b[1] for b in bb),max(b[2] for b in bb),max(b[3] for b in bb))
             k=min(1,maxl/max(u[2]-u[0],u[3]-u[1]))
             for i,s in enumerate(fr):

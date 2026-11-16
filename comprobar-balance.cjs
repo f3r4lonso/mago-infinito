@@ -36,7 +36,7 @@ if(process.argv.includes('--guardar')){
  vm.runInContext(`{
   newGame('mage');G.noSpawn=true;G.tower.hp=100;update(.5);assert.ok(Math.abs(G.tower.hp-100.5)<1e-8,'Regeneración reducida');
   G.t=0;G.tower.xp=0;towerKillXp({xp:1,tdmg:100,max:100,damageTaken:100});assert.equal(G.tower.xp,.75);
-  newGame('mage');gainXp(10);assert.equal(G.xp,3,'Experiencia de héroes reducida');
+  newGame('mage');SRC='Rayo arcano de la torre';gainXp(10);assert.equal(G.xp,3,'Experiencia de héroes reducida');
   spawnEnemy(false,EN[0],{x:towX()+10000,y:towY(),hpAbs:100000,dmg:0,sp:0,r:12,xp:0,gold:0});
   const far=G.enemies.at(-1);far.res={};
   for(let i=0;i<20;i++)spawnEnemy(false,EN[0],{x:towX()+60+i,y:towY(),hpAbs:100000,dmg:0,sp:0,r:12,xp:0,gold:0});
