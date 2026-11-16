@@ -23,6 +23,13 @@ var SPR=(function(){
   /* se puede apagar con ?sprites=off para comparar con el dibujo vectorial */
   try{if(/[?&]sprites=off/.test(location.search))api.enabled=false}catch(e){}
 
+  /* metadatos de héroe: sprite de reposo/ataque, anclaje y ataque básico (lo escribe tools/empaquetar_heroes.py) */
+  const metas={},basicBySrc={},meleeBy={};
+  api.addMeta=function(hero,m){metas[hero]=m;if(m.basic)basicBySrc[m.basic.src]=m.basic;if(m.melee)meleeBy[hero]=m.melee};
+  api.heroMeta=h=>metas[h]||null;
+  api.basicOf=src=>basicBySrc[src]||null;
+  api.meleeOf=h=>meleeBy[h]||null;
+  metas.alchemist={idle:'alchemist_idle',atk:'alchemist_atk',ax:.5,ay:1,H:82};
   api.has=id=>{const s=ids[id];return !!(api.enabled&&s&&s.A.ok)};
 
   /* encaja el sprite en una caja bw x bh sin deformarlo, apoyado por abajo en (x,y). Devuelve la altura dibujada (0 si no hay sprite). */
@@ -78,6 +85,7 @@ var SPR=(function(){
     al_mix:['R','D','C','D+R'], al_antidote:['L','C','L','L+C'], al_coat:['S','L','S','S+L'], al_distill:['C','L','C','C'],
     al_fumes:['R','D','H','D+C'], al_transmute:['R','D','C','D+R'], al_gold:['P','D','P','P+D+C'], al_plague:['R','D','P','R+D+P']
   };
+  api.addGlyphs=o=>Object.assign(GL,o);
   function glyph(c,g,x,y,r){
     c.save();c.translate(x,y);c.lineWidth=Math.max(1,r*.22);c.lineCap='round';c.lineJoin='round';c.strokeStyle='#fff';c.fillStyle='#fff';
     switch(g){
@@ -159,7 +167,8 @@ var SPR=(function(){
   };
 
   /* ---------- héroe con sprite de reposo y de ataque (misma celda: alineados) ---------- */
-  api.spriteHero=function(c,idle,atk,t,fx,st,H){
+  api.spriteHero=function(c,idle,atk,t,fx,st,H,ay,ax){
+    ay=ay==null?1:ay;ax=ax==null?.5:ax;
     const u=st.u==null?-1:st.u,id=(u>=0&&api.has(atk))?atk:idle;
     if(!api.has(id))return false;
     const run=st.run||0,k=st.atk||0,sp=ids[id],W=H*sp.w/sp.h;
@@ -168,7 +177,7 @@ var SPR=(function(){
     const lean=(.09*Math.sign(st.vx||1)*run)*(fx<0?-1:1)+Math.sin(t*1.7)*.012;
     const sx=1+(u>=0?.04*k:0)+Math.sin(t*2.3)*.01,sy=1-(u>=0?.04*k:0)-Math.sin(t*2.3)*.01;
     c.translate(0,31+bob);c.rotate(lean);c.scale(sx,sy);
-    api.draw(c,id,0,0,{w:W,ax:.5,ay:1,a:st.hurt>0?1-.25*st.hurt:1});
+    api.draw(c,id,0,0,{w:W,ax:ax,ay:ay,a:st.hurt>0?1-.25*st.hurt:1});
     c.restore();
     if(st.hurt>0)hGlow(c,0,-20,34,'rgba(255,60,60,'+(.45*st.hurt)+')');
     return true;

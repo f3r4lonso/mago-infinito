@@ -152,7 +152,7 @@ En la pantalla de inicio, el botón **Jugar con 1 héroe** empieza la partida co
 
 ## Arte en PNG (versión 2, en curso)
 
-El **mago invocador**, el **alquimista**, la **torre** y los **42 enemigos** ya se dibujan con sprites PNG: personaje, disparo arcano, torre por pisos, cíclope, esqueletos, iconos de habilidad y de poder, iconos de mejora y la mayoría de los efectos. El resto de héroes y el dragón siguen en vectorial. Los enemigos usan 2 fotogramas de caminar (`assets/enemigos1.png`, `enemigos2.jpg` y `enemigos3.jpg`; `python tools/empaquetar_enemigos.py`) y conservan por código la corona de jefe, el aro de élite y los efectos de estado.
+El **mago invocador**, el **alquimista**, los otros **14 héroes** (cuerpo en reposo y atacando, y ataque básico), la **torre** y los **42 enemigos** ya se dibujan con sprites PNG: personaje, disparo arcano, torre por pisos, cíclope, esqueletos, iconos de habilidad y de poder, iconos de mejora y la mayoría de los efectos. El resto de héroes y el dragón siguen en vectorial. Los enemigos usan 2 fotogramas de caminar (`assets/enemigos1.png`, `enemigos2.jpg` y `enemigos3.jpg`; `python tools/empaquetar_enemigos.py`) y conservan por código la corona de jefe, el aro de élite y los efectos de estado.
 
 - Los sprites viven en `assets/heroes/mage/` y `assets/tower/` (dos atlas y `pack.js` cada uno) y se cargan con `assets/sprites.js` (script normal: sigue funcionando con doble clic).
 - Si un sprite falta o el PNG no carga, se usa el dibujo vectorial de siempre. Con `index.html?sprites=off` se fuerza el dibujo vectorial para comparar.
@@ -166,3 +166,5 @@ El **mago invocador**, el **alquimista**, la **torre** y los **42 enemigos** ya 
 - Prompts de arte de los 15 héroes restantes: carpeta `prompts-heroes/` (2 archivos por héroe, uno por hoja; empieza por `LEEME.md`). Se regenera con `node tools/generar-prompts-heroes.cjs`.
 
 - Prompts de arte de las unidades invocadas: carpeta prompts-invocadas/ (3 hojas, un archivo por hoja; empieza por LEEME.md).
+
+- Héroes en PNG: `python tools/empaquetar_heroes.py` (hojas `assets/archer1.jpg`, `acesino1.jpg`, `demonhunter1.jpg`…) y `node tools/generar-glifos.cjs` para los símbolos de las mejoras. Solo el arquero, el asesino y el hombre lobo tienen iconos de habilidad propios; el resto de héroes mantiene los emojis hasta que haya hoja de iconos.
