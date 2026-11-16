@@ -280,6 +280,44 @@ body.one #heroSec2,body.one #heroSec3,body.one #heroSec4{display:none!important}
   .slot{height:70px}
   .slot .si{font-size:26px}.slot .sl{font-size:11px}.slot .sc{font-size:12px}
 }
+#soloItemsFold{display:none}
+body.solo:not(.start-screen) #bottomp{display:block;max-height:44vh;overflow:auto}
+body.solo #heroSec{width:100%}body.solo #ptsbox,body.solo #heroSec>.btitle>.auto-upgrade,body.solo #skbar{display:none!important}
+body.solo #soloItemsFold{display:block;margin-top:10px;border-top:1px solid #544466;padding-top:8px}
+#soloItemsFold>summary,#soloTestOptions>summary{cursor:pointer;font-size:12px;padding:8px 2px;color:#d5c6f5}
+#soloTestOptions{margin:8px 0}#soloToolsMount #soloBar{position:static!important;max-height:none!important;max-width:none!important;overflow:visible!important}
+#soloToolsMount #soloBar>button{display:none}#soloToolsMount #soloBar>div{flex-direction:row!important;flex-wrap:wrap;align-items:center;gap:6px!important}
+#soloToolsMount #soloBar .btn{min-height:32px;margin:0}#soloToolsMount #soloEnemyModeInfo{max-width:175px}
+body.solo #heroSk{display:block}
+.test-note{font-size:11px;color:var(--mut);line-height:1.4;margin:6px 0}
+body.solo #bar,body.solo #drMini,body.solo #drWin,body.solo #soloResetSkills{display:none!important}
+body.solo #tbar,body.solo #bottomp>.dhead{display:none!important}
+body.solo #bottomp[data-mode] #heroSec,body.solo #bottomp[data-mode] #invSec{display:block}
+#soloExitTest{display:none}body.solo #soloExitTest{display:block;margin-left:auto;min-height:40px;padding:6px 12px;background:transparent;border:1px solid #51445f;color:#bcb3cb;border-radius:8px;cursor:pointer}
+body.solo #heroSec>.btitle{height:auto;min-height:40px;overflow:visible;margin-bottom:8px}
+.solo-simple{display:grid;grid-template-columns:minmax(0,1fr) 150px 140px;gap:12px;align-items:end}
+.solo-choice,.solo-level>span,.solo-settings label{font-size:11px;color:#b8accb;display:block;min-width:0}
+.solo-simple select,.solo-settings select,.solo-simple input{display:block;width:100%;min-width:0;height:44px;font:inherit;font-size:16px;color:#f4edf9;background:#171222;border:1px solid #5f4b75;border-radius:9px;padding:8px;margin-top:5px}
+.solo-level[hidden]{display:none!important}.solo-level>div{display:flex;gap:4px;align-items:center}.solo-level input{text-align:center;flex:1;padding:4px;width:56px}
+.solo-simple button{height:44px;min-width:40px;border:1px solid #5f4b75;background:#2a203a;color:#fff;border-radius:9px;font:inherit;cursor:pointer}.solo-level button{margin-top:5px}.solo-simple button:disabled{opacity:.35}
+.solo-simple .solo-play{grid-column:3;background:#8063e8;border-color:#a48af5;font-weight:700;padding:8px 16px}
+.solo-simple:has(.solo-level[hidden]){grid-template-columns:minmax(0,1fr) 140px}.solo-simple:has(.solo-level[hidden]) .solo-play{grid-column:2}
+.solo-caption{font-size:12px;color:#a99bbd;line-height:1.45;margin:10px 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#soloTestOptions{margin:0}#soloTestOptions>summary{font-size:12px;color:#ab9fba;padding:8px 0;cursor:pointer;min-height:34px}
+.solo-settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0}.solo-settings .solo-support{grid-column:1/-1;display:flex;align-items:center;gap:8px;min-height:36px}.solo-support input{width:18px;height:18px}
+body.solo #soloItemsFold{margin:6px 0}
+@media(max-width:900px){
+ body.solo:not(.start-screen) #bottomp{height:min(270px,45vh);max-height:45vh;padding:8px 12px 12px}
+ body.solo:not(.start-screen) #game{bottom:min(270px,45vh)}
+ .solo-simple,.solo-simple:has(.solo-level[hidden]){grid-template-columns:1fr 1fr;gap:8px}.solo-choice{grid-column:1/-1}.solo-simple .solo-play{grid-column:2}.solo-simple:has(.solo-level[hidden]) .solo-play{grid-column:1/-1}
+ .solo-settings{grid-template-columns:1fr;gap:8px}.solo-settings select{font-size:14px}.solo-caption{font-size:11px;margin:6px 0}body.solo #heroSec>.btitle{min-height:34px;margin-bottom:4px}body.solo #soloExitTest{min-height:34px}
+}
+@media(min-width:600px) and (max-width:900px) and (max-height:480px){
+ .solo-simple{grid-template-columns:minmax(0,1fr) 120px 110px;gap:8px}.solo-choice{grid-column:auto}.solo-simple .solo-play{grid-column:3}
+ .solo-simple:has(.solo-level[hidden]){grid-template-columns:minmax(0,1fr) 110px}.solo-simple:has(.solo-level[hidden]) .solo-play{grid-column:2}
+ .solo-simple select,.solo-simple input{font-size:14px}.solo-caption{-webkit-line-clamp:1}
+ body.solo #heroSec>.btitle{min-height:26px;margin:0}body.solo #soloExitTest{min-height:26px;padding:2px 10px}
+}
 </style>
 </head>
 <body>
@@ -292,7 +330,7 @@ body.one #heroSec2,body.one #heroSec3,body.one #heroSec4{display:none!important}
 </div>
 <div class="panel" id="bottomp">
   <div class="bsec" id="heroSec">
-    <div class="btitle"><span id="heroName"></span><button id="soloResetSkills" class="ctl" title="Devuelve los puntos de habilidades y limpia el campo de prueba">↺ Reset habilidades</button><span class="pts" id="ptsbox" title="Puntos de héroe disponibles. Cada nivel da 1 punto. Pulsa un icono para subirlo: gasta un punto y, si no hay, oro.">★ <b id="pts">0</b></span></div>
+    <div class="btitle"><span id="heroName"></span><button id="soloResetSkills" class="ctl" title="Pone las habilidades a cero y limpia el campo de prueba">↺ Reset habilidades</button><span class="pts" id="ptsbox" title="Puntos de héroe disponibles. Cada nivel da 1 punto. Pulsa un icono para subirlo: gasta un punto y, si no hay, oro.">★ <b id="pts">0</b></span></div>
     <div id="heroSk" class="slots"></div>
   </div>
   <div class="bsec" id="heroSec2">
@@ -315,6 +353,7 @@ body.one #heroSec2,body.one #heroSec3,body.one #heroSec4{display:none!important}
     <div class="btitle"><span>🎒 Inventario</span></div>
     <div id="shop" class="slots"></div>
   </div>
+  <details id="soloItemsFold"><summary>🎒 Objetos y dragón · opcional</summary></details>
 </div>
 <div id="tip"></div>
 <div id="tbar">
@@ -328,6 +367,7 @@ body.one #heroSec2,body.one #heroSec3,body.one #heroSec4{display:none!important}
 <script src="assets/heroes/alchemist/pack.js"></script>
 <script src="assets/heroes/archer/pack.js"></script>
 <script src="assets/heroes/assassin/pack.js"></script>
+<script src="assets/heroes/assassin/fx.js"></script>
 <script src="assets/heroes/demon/pack.js"></script>
 <script src="assets/heroes/paladin/pack.js"></script>
 <script src="assets/heroes/druid/pack.js"></script>
@@ -529,7 +569,9 @@ const HEROES={
  paladin:{n:'Caballero dragón',icon:'🐲',hp:200,pw:1.5,col:'#e8a03a',desc:'Mezcla de Dragon Knight y Paladín, cuerpo a cuerpo: escupe llamaradas, se transforma en dragón, golpea con el escudo, cura y quema con su aura, da invulnerabilidad al equipo y machaca con el martillo divino.',melee:{spd:210,leash:210,reach:36},basic:{n:'Espada sagrada',type:'phys',cd:.8,spd:1500,m:1.6,col:'#fff2b0'}}
 };
 const CLSMAX=50;
-const clv=id=>(G&&G.cls&&G.cls[id])||0;
+const learnedClv=id=>(G&&G.cls&&G.cls[id])||0;
+const soloPowerEnabled=id=>!G?.solo||!G.soloDisabled?.[id];
+const clv=id=>soloPowerEnabled(id)?learnedClv(id):0;
 const hpw=()=>(G&&HEROES[G.hero].pw)||1;
 const hdmg=l=>(10+3.5*l)*DMG_K*S.dmg*hpw();
 const allyHp=b=>b*foeDmg(G.t)/.6;
@@ -627,11 +669,11 @@ const CLS={
   {id:'k_hundred',n:'Cien puños',icon:'💥',desc:'Golpeas en un instante a muchos enemigos a tu alcance, tres veces cada uno.',eff:l=>(6+Math.floor(l/2))+' enemigos x3 golpes · cada '+f1(Math.max(10,20-.5*l))+' s'}
  ]
 };
-const clsCost=id=>Math.round(90*Math.pow(1.3,Math.min(20,clv(id)))*lateK(clv(id)));
+const clsCost=id=>Math.round(90*Math.pow(1.3,Math.min(20,learnedClv(id)))*lateK(learnedClv(id)));
 function heroUp(id,mode){
   if(!shopOk())return false;
-  const l=clv(id);if(l>=CLSMAX)return false;
-  if(G.pending<=0)return false;G.pending--;
+  const l=learnedClv(id);if(l>=CLSMAX)return false;
+  if(!G.solo){if(G.pending<=0)return false;G.pending--}
   G.cls[id]=l+1;G.tv=(G.tv||0)+1;recalc();tierPop(id,l+1);
   if(G.hp>S.maxHp)G.hp=S.maxHp;
   if(typeof refreshAll==='function')refreshAll();
@@ -652,6 +694,7 @@ function newGame(...args){
   document.body?.classList.remove('start-screen');
   const solo=SOLO_NEXT||(!args.length&&!!G&&!!G.solo);SOLO_NEXT=false;
   const one=!solo&&(ONE_NEXT||(!args.length&&!!G&&!!G.one));ONE_NEXT=false;
+  configureSoloPanelLayout(solo);
   setResting(false);
   if(typeof document!=='undefined'&&document.body&&document.body.classList){document.body.classList.toggle('solo',solo);document.body.classList.toggle('one',one)}
   if(!solo&&typeof document!=='undefined'&&document.getElementById){const sb=document.getElementById('soloBar');if(sb)sb.remove()}
@@ -671,7 +714,7 @@ function newGame(...args){
   G.tower={lvl:1,xp:0,satellites:[],cd:.5,shotAt:-9,aim:0,hp:500,dead:false};G.org=null;G.orgN=0;
   G.hero=hero0;G.cls={};for(const a of CLS[hero0])G.cls[a.id]=0;
   G.ht={};G.walls=null;G.mines=[];G.turrets=[];G.sdrags=[];G.aim=0;
-  G.heroes=team;G.mapId=selectedMap;G.hoff=solo?0:one?-100:HOFFS[0];G.solo=solo;G.one=one;if(solo){G.nextSiege=1e9;G.soloWeak=true;G.soloSpawnTimer=0}
+  G.heroes=team;G.mapId=selectedMap;G.hoff=solo?0:one?-100:HOFFS[0];G.solo=solo;G.one=one;if(solo){G.nextSiege=1e9;G.soloWeak=true;G.soloSpawnTimer=0;G.soloDisabled={}}
   G.hl=team.map((h,i)=>i?mkHState(h,i):{});
   for(const h of team.slice(1))for(const a of CLS[h])G.cls[a.id]=0;
   recalc();G.hp=S.maxHp;for(let i=1;i<G.hl.length;i++)G.hl[i].hp=G.hl[i].mhp;
@@ -719,7 +762,7 @@ function spawnEnemy(boss,def,o){
   o=o||{};
   const pool=EN.filter(d=>d.from*1.6<=eT(G.t)&&!(boss&&d.swarm));
   const d=def||pool[Math.floor(Math.random()*pool.length)];
-  if(!boss&&!def&&d.swarm){
+  if(!boss&&!def&&d.swarm&&!G.solo){
     const a=Math.random()*Math.PI*2;
     for(let i=0;i<d.swarm;i++)spawnEnemy(false,d,{a:a+(Math.random()-.5)*.5,rad:Math.random()*60,hpK:.55});
     return;
@@ -811,7 +854,7 @@ function gainXp(a){
     G.xp+=share*(i===killer?1.15:1);
     while(G.xp>=need()){
       G.xp-=need();G.lvl++;
-      if(CLS[G.hero].every(a=>clv(a.id)>=CLSMAX)){G.bonus++;txt(cx(),cy()-70,'Todo al máximo: +10% daño','#ffd24a',16)}else G.pending++;
+      if(CLS[G.hero].every(a=>learnedClv(a.id)>=CLSMAX)){G.bonus++;txt(cx(),cy()-70,'Todo al máximo: +10% daño','#ffd24a',16)}else G.pending++;
       recalc();G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.2);
       txt(cx(),cy()-50,'¡Nivel '+G.lvl+'!','#ffffff',22);
     }
@@ -839,6 +882,7 @@ function addDot(e,type,dps,dur,stack){
 function hitEnemy(p,e){
   SRC=p.src||p.type;
   {const bs=SPR.on?SPR.basicOf(p.src):null;if(bs&&bs.hit&&G.fx.length<300)G.fx.push({k:'spr',id:bs.hit,x:e.x,y:e.y,w:(bs.hw||36)*(p.crit?1.25:1),d:.3,t:.3,fi:0,fo:.6,g0:.5,g1:1.1})}
+  if(p.arrow&&!p.skelArrow&&G.hero==='assassin'&&asSpr())sprFx({seq:asSeq('x_dagh',3),x:e.x,y:e.y-e.r*.3,w:p.crit?64:46,d:.3,fi:0,fo:.2});
   if(p.flask&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'al_splash',x:e.x,y:e.y+4,w:40,d:.4,t:.4,fi:0,fo:.6,g0:.5,g1:1.1});
   if(p.src==='Rayo arcano de la torre'&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'t_impact',x:e.x,y:e.y,w:30,d:.25,t:.25,fi:0,fo:.7,g0:.5,g1:1.2,add:true});
   if(p.src==='Disparo arcano'&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'impact',x:e.x,y:e.y,w:p.crit?52:36,d:.3,t:.3,fi:0,fo:.7,g0:.5,g1:1.2,add:true});
@@ -1904,6 +1948,7 @@ function updateMelee(dt){
   if(G.dash&&Math.random()<.8)G.fx.push({k:'p',x:cx()+(Math.random()-.5)*16,y:cy()+(Math.random()-.5)*16,t:.4,c:'#ffe27a'});
 }
 function fireBasic(){
+  if(!soloPowerEnabled('basic')){G.basicCd=0;return}
   if(G.hero==='dwarf'&&G.ht.sniAim){G.basicCd=.1;return}
   if(G.hero==='devourer'&&(G.ht.pbTrample>0||G.ht.pbCharge||G.ht.pbPulverize)){G.basicCd=0;return}
   const h=G.hero,b=HEROES[h].basic;
@@ -2403,7 +2448,7 @@ function drawEShots(){
 }
 
 /* ============ ACTUALIZACIÓN ============ */
-function soloRestart(){startSolo(G.hero)}
+function soloRestart(){startSolo(G.hero,G.soloWeak,{...G.soloDisabled})}
 function update(dt){
   if(G.solo&&G.soloReset)soloRestart();
   if(G.rounds&&G.modal)return;
@@ -2421,10 +2466,12 @@ function update(dt){
   const rate=spawnRate(G.t);
   G.spawnAcc+=rate*dt;
   while(G.spawnAcc>=1){G.spawnAcc--;if(!G.noSpawn&&G.enemies.length<(LOWQ?110:160))spawnEnemy(false)}
+  if(!G.solo){
   if(G.nextSiege==null)G.nextSiege=120;
   if(G.t>=G.nextSiege){G.nextSiege+=Math.max(45,75-eT(G.t)/60*1.5);spawnSiege()}
   if(G.t>=G.nextWave){G.nextWave+=Math.max(30,55-eT(G.t)/60*2);if(!G.noSpawn)spawnWave()}
   if(G.t>=G.nextBoss){G.nextBoss+=45;if(!G.noSpawn)spawnEnemy(true);txt(cx(),cy()-80,'¡Llega un jefe!','#ff5a5a',22)}
+  }
   }
   for(const i of HIDX())heroCtx(i,()=>{if(G.dead){G.deadT-=dt;if(G.deadT<=0)heroRevive();return}updateMelee(dt);if(G.basicCd-dt<=0)fireBasic();else G.basicCd-=dt});
   // torre del mago: ataque básico, habilidades comunes y poderes salen de la torre
@@ -3104,7 +3151,7 @@ function drawHeroOn(c,x,y,h,t,aim,sc,st){
   const bob=Math.sin(t*2.3)*.7;c.fillStyle='rgba(0,0,0,.3)';c.beginPath();c.ellipse(0,25,15-bob,4.6,0,0,6.3);c.fill();
   const hc=HEROES[h]?HEROES[h].col:'#ffffff';c.strokeStyle=hc+'55';c.lineWidth=1.6;c.beginPath();c.ellipse(0,25,19+Math.sin(t*2.6)*1.5,6,0,0,6.3);c.stroke();
   if(h==='mage'&&SPR.on&&SPR.mageHero(c,t,aim,fx,st)){c.restore();return}
-  {const hm=SPR.on&&h!=='mage'?SPR.heroMeta(h):null;if(hm&&SPR.spriteHero(c,hm.idle,hm.atk,t,fx,st,hm.H,hm.ay,hm.ax)){c.restore();return}}
+  {const hm=SPR.on&&h!=='mage'?SPR.heroMeta(h):null;if(hm&&SPR.spriteHero(c,hm.idle,hm.atk,t,fx,st,hm.H,hm.ay,hm.ax,hm.atkax)){c.restore();return}}
   c.scale(fx,1);
   {const FS=heroForm(h);if(FS!==1){c.translate(0,24);c.scale(FS,FS);c.translate(0,-24)}}
   if(B.size){c.translate(0,24);c.scale(B.size,B.size);c.translate(0,-24)}
@@ -3130,6 +3177,9 @@ function drawHeroOn(c,x,y,h,t,aim,sc,st){
 }
 /* héroe real de la partida: giro suave al apuntar, inercia, envolvente del ataque */
 function drawHero(px,py){
+  if(G.solo&&G.soloAnimation&&G.soloAnimation!=='auto'){
+    const pose=soloAnimationPose();drawHeroOn(ctx,px,py,G.hero,pose.time,pose.aim,1.25,pose.state);return;
+  }
   const dt=Math.min(.05,Math.max(0,G.t-(G.hlast==null?G.t:G.hlast)));G.hlast=G.t;
   const aim=G.aim,tf=Math.cos(aim)<0?-1:1;
   G.hface=(G.hface==null?1:G.hface);G.hface+=(tf-G.hface)*Math.min(1,dt*15);
@@ -3504,7 +3554,7 @@ function tierRecalc(){
   G.tdef=def;G.trg=reg;G.tdv=G.tv||0;
 }
 function tierHtml(id){
-  const T=TIERS[id];if(!T)return'';const l=clv(id)||(G&&G.skills&&G.skills[id])||(G&&G.spLv&&G.spLv[id])||0;
+  const T=TIERS[id];if(!T)return'';const l=learnedClv(id)||(G&&G.skills&&G.skills[id])||(G&&G.spLv&&G.spLv[id])||0;
   return '<div class="sec" style="color:#ffd24a;margin-top:6px">★ Mejoras de habilidad</div>'+T.map((t,i)=>'<div class="ut'+(l>=TIER_LV[i]?' on':'')+'">'+SPR.tierIconHtml('mage',id,i,32)+(l>=TIER_LV[i]?'✔ ':'')+'Nv'+TIER_LV[i]+': <b>'+t[0]+'</b><br>'+t[1]+'</div>').join('');
 }
 function tierPop(id,lv){
@@ -5314,6 +5364,7 @@ function draw(){
     if(SPR.on){const bs=SPR.basicOf(p.src);if(bs){const ang=(p.kind==='orb'||p.kind==='boom')?Math.atan2(p.vy,p.vx):(p.ang||0);if(SPR.draw(ctx,bs.proj,p.x,p.y,{w:bs.w*(p.crit?1.25:1),ax:bs.ax,rot:bs.spin?G.t*bs.spin:ang}))continue}}
     if(p.primalWave){drawPrimalRock(ctx,p.x,p.y,8,G.t*3);continue}
     if(p.flask){if(!(SPR.on&&SPR.draw(ctx,'al_proj',p.x,p.y,{w:24,rot:G.t*7})))drawAlchemistFlask(ctx,p.x,p.y,p.size||6,G.t*7);continue}
+    if(p.arrow&&!p.skelArrow&&G.hero==='assassin'&&asSpr()&&SPR.draw(ctx,'x_dag_2',p.x,p.y,{w:p.crit?34:26,ax:.5,rot:p.kind==='orb'?Math.atan2(p.vy,p.vx):(p.ang||0)}))continue;
     if(p.arrow){drawArrow(p);continue}
     if(p.axe){drawAxe(p);continue}
     if(p.glaive){drawGlaive(p);continue}
@@ -5349,7 +5400,7 @@ function draw(){
   ctx.restore();
   drawHud();
   drawTooltip();
-  if(G.paused&&!G.modal&&!G.over){ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 34px Segoe UI,sans-serif';ctx.fillText('PAUSA',W/2,H/2)}
+  if(G.paused&&!G.modal&&!G.over&&!G.solo){ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 34px Segoe UI,sans-serif';ctx.fillText('PAUSA',W/2,H/2)}
 }
 function bar(x,y,w,h,f,c,label){
   ctx.fillStyle='#000a';ctx.fillRect(x,y,w,h);ctx.fillStyle=c;ctx.fillRect(x,y,w*Math.max(0,Math.min(1,f)),h);
@@ -5357,6 +5408,7 @@ function bar(x,y,w,h,f,c,label){
   ctx.fillStyle='#fff';ctx.font='bold 11px Segoe UI,sans-serif';ctx.textAlign='left';ctx.fillText(label,x+6,y+h/2+1);ctx.textAlign='center';
 }
 function drawHud(){
+  if(G.solo)return;
   ctx.fillStyle='rgba(12,10,28,.6)';
   const dy=48,bh=78+dy+(pendAll()>0?20:0)+(G.haste>0?20:0);
   if(ctx.roundRect){ctx.beginPath();ctx.roundRect(6,6,262,bh,10);ctx.fill();ctx.beginPath();ctx.roundRect(W-204,6,198,50,10);ctx.fill()}
@@ -5512,7 +5564,7 @@ let AUTO_UPGRADE_BUSY=false;
 function upgradeOptions(section,consumables=false){
   const option=(id,level,max,cost,wallet,run,available=true)=>({section,id,key:'slot:'+section+':'+id,level,max,cost,wallet,run,available});
   const hm=/^hero(\d?)$/.exec(section);
-  if(hm){const i=hm[1]?+hm[1]-1:0;if(!G.heroes||!G.heroes[i])return[];return CLS[G.heroes[i]].map(a=>option(a.id,clv(a.id),CLSMAX,clsCost(a.id),i?'pending'+(i+1):'pending',mode=>heroCtx(i,()=>heroUp(a.id,mode))))}
+  if(hm){const i=hm[1]?+hm[1]-1:0;if(!G.heroes||!G.heroes[i])return[];return CLS[G.heroes[i]].map(a=>option(a.id,learnedClv(a.id),CLSMAX,clsCost(a.id),i?'pending'+(i+1):'pending',mode=>heroCtx(i,()=>heroUp(a.id,mode))))}
   if(section==='tower')return SK.map((a,i)=>option(a.id,G.skills[a.id],SKMAX,skFree()>0?0:skGoldCost(G.skills[a.id]),null,()=>skillBuy(i)));
   if(section==='inventory'){
     const items=ITEMS.map(a=>option(a.id,G.items[a.id],a.max,itemCost(a.id),null,()=>{const before=G.items[a.id];buy(a.id);return G.items[a.id]>before}));
@@ -5766,6 +5818,98 @@ const heroEls=[{},{},{},{}];
 let selCls=null,hovCls=null,infoMode='skill';
 const heroBuy=id=>heroUp(id,'pt');
 function buildHeroMenu(){for(const i of HIDX())heroCtx(i,()=>buildHeroPanel(i))}
+function configureSoloPanelLayout(solo){
+  if(typeof document.getElementById!=='function')return;
+  const fold=document.getElementById('soloItemsFold'),inventory=document.getElementById('invSec'),panel=document.getElementById('bottomp');
+  if(!fold||!inventory||!panel)return;
+  panel.appendChild(fold);
+  fold.open=false;
+  if(solo)fold.appendChild(inventory);else panel.insertBefore(inventory,fold);
+}
+function setSoloSkillLevel(id,value){
+  if(!G.solo||!CLS[G.hero].some(s=>s.id===id))return false;
+  const level=Number(value);if(!Number.isFinite(level))return false;
+  G.cls[id]=Math.max(0,Math.min(CLSMAX,Math.round(level)));
+  clearSoloHeroEffects();refreshAll();return true;
+}
+function setSoloAnimation(mode){
+  if(!G.solo||!['auto','idle','walk','attack','hurt'].includes(mode))return;
+  const wasPreview=G.soloAnimation&&G.soloAnimation!=='auto';
+  if(mode!=='auto'&&!wasPreview)G.soloAnimWasPaused=G.paused;
+  if(mode==='auto'&&wasPreview)G.paused=!!G.soloAnimWasPaused;
+  G.soloAnimation=mode;G.soloAnimTime=0;
+  if(mode!=='auto')G.paused=true;
+  refreshSoloTestPanel();
+}
+function soloAnimationPose(){
+  const time=G.soloAnimTime||0,mode=G.soloAnimation,aim=G.soloAnimAim||0,phase=(time% .8)/.8;
+  const u=mode==='attack'&&phase<.45?phase/.45:-1;
+  return{time,aim,state:{run:mode==='walk'?1:0,atk:u>=0?Math.sin(u*Math.PI):0,u,n:Math.floor(time/.8),since:u>=0?u*.34:9,face:Math.cos(aim)<0?-1:1,vx:mode==='walk'?(Math.cos(aim)<0?-200:200):0,hurt:mode==='hurt'?.65+.3*Math.sin(time*7):0}};
+}
+function previewSoloSkill(id,supportBasic=false){
+  if(!G.solo||(id!=='basic'&&!CLS[G.hero].some(s=>s.id===id)))return;
+  setSoloAnimation('auto');setAllSoloPowers(false);
+  if(id!=='basic'&&!learnedClv(id))setSoloSkillLevel(id,1);
+  setSoloPowerEnabled(id,true);
+  if(id!=='basic'&&supportBasic)setSoloPowerEnabled('basic',true);
+  if(!G.enemies.some(e=>!e.dead))for(let i=0;i<3;i++){
+    spawnEnemy(false,EN[0],{x:cx()+45+i*22,y:cy()+(i-1)*15,hpAbs:5000,dmg:0,sp:0,r:12,xp:0,gold:0});
+    const target=G.enemies.at(-1);target.res={};target.n='Objetivo de prueba';
+  }
+  G.paused=false;
+  if(id==='basic')fireBasic();else{G.ht[id]=0;updateHero(.01)}
+  refreshSoloTestPanel();
+}
+function buildSoloTestPanel(box){
+  box.innerHTML='<div class="solo-simple"><label class="solo-choice">Qué probar<select id="soloTestChoice"><option value="basic">Ataque básico</option><optgroup label="Habilidades">'+CLS[G.hero].map(s=>'<option value="'+s.id+'">'+esc(s.n)+'</option>').join('')+'</optgroup><optgroup label="Animaciones"><option value="anim:idle">Reposo</option><option value="anim:walk">Caminar</option><option value="anim:attack">Animación de ataque</option><option value="anim:hurt">Recibir daño</option></optgroup></select></label>'+
+    '<div class="solo-level" id="soloLevelControl"><span>Nivel · gratis</span><div><button id="soloLevelDown" aria-label="Bajar nivel">−</button><input id="soloSkillLevel" type="number" min="0" max="50" aria-label="Nivel de la habilidad"><button id="soloLevelUp" aria-label="Subir nivel">+</button></div></div><button id="soloTestPlay" class="solo-play">▶ Probar</button></div>'+
+    '<p class="solo-caption" id="soloTestCaption" aria-live="polite"></p><details id="soloTestOptions"><summary>Ajustes</summary><div class="solo-settings">'+
+    '<label>Enemigos<select id="soloEnemyMode"><option value="none">Solo objetivos de prueba</option><option value="weak">Pocos y débiles</option><option value="progressive">Continuos y progresivos</option></select></label>'+
+    '<label>Dirección<select id="soloAnimDirection"><option value="0">Derecha</option><option value="3.141592653589793">Izquierda</option><option value="-1.5707963267948966">Arriba</option><option value="1.5707963267948966">Abajo</option></select></label>'+
+    '<label>Velocidad de animación<select id="soloAnimSpeed"><option value="0.5">Lenta · ×0,5</option><option value="1" selected>Normal · ×1</option><option value="2">Rápida · ×2</option></select></label>'+
+    '<label class="solo-support"><input id="soloSupportBasic" type="checkbox"> Usar ataque básico de apoyo</label></div><p class="test-note">El ataque de apoyo permite probar habilidades que se activan al golpear. Las habilidades con requisitos necesitan cumplirlos.</p></details>';
+  $('#soloTestChoice').onchange=e=>selectSoloTest(e.target.value);
+  $('#soloTestPlay').onclick=()=>G.soloTestRunning?stopSoloTest():runSoloTest();
+  $('#soloSkillLevel').onchange=e=>{setSoloSkillLevel(G.soloTestChoice,e.target.value);if(G.soloTestRunning)runSoloTest()};
+  $('#soloLevelDown').onclick=()=>{setSoloSkillLevel(G.soloTestChoice,learnedClv(G.soloTestChoice)-1);if(G.soloTestRunning)runSoloTest()};
+  $('#soloLevelUp').onclick=()=>{setSoloSkillLevel(G.soloTestChoice,learnedClv(G.soloTestChoice)+1);if(G.soloTestRunning)runSoloTest()};
+  $('#soloEnemyMode').onchange=e=>{const mode=e.target.value;setSoloWeak(mode!=='progressive');G.noSpawn=mode==='none';refreshSoloTestPanel()};
+  $('#soloAnimDirection').onchange=e=>{G.soloAnimAim=Number(e.target.value)};
+  $('#soloAnimSpeed').onchange=e=>{G.soloAnimSpeed=Number(e.target.value)};
+  $('#soloSupportBasic').onchange=e=>{G.soloSupportBasic=e.target.checked;if(G.soloTestRunning)runSoloTest()};
+  const fold=document.getElementById('soloItemsFold');if(fold)$('#soloTestOptions').appendChild(fold);
+  document.getElementById('soloExitTest')?.remove();
+  const exit=document.createElement('button');exit.id='soloExitTest';exit.textContent='Salir';exit.onclick=()=>showStart();$('#heroName').parentNode.appendChild(exit);
+  refreshSoloTestPanel();
+}
+function selectSoloTest(id){
+  if(!G.solo||!(id==='basic'||['anim:idle','anim:walk','anim:attack','anim:hurt'].includes(id)||CLS[G.hero].some(s=>s.id===id)))return;
+  stopSoloTest();G.soloTestChoice=id;refreshSoloTestPanel();
+}
+function stopSoloTest(){
+  if(!G.solo)return;
+  G.soloTestRunning=false;setAllSoloPowers(false);setSoloAnimation('idle');refreshSoloTestPanel();
+}
+function runSoloTest(){
+  if(!G.solo)return;
+  const id=G.soloTestChoice||'basic';
+  if(id.startsWith('anim:'))setSoloAnimation(id.slice(5));
+  else previewSoloSkill(id,!!G.soloSupportBasic);
+  G.soloTestRunning=true;refreshSoloTestPanel();
+}
+function refreshSoloTestPanel(){
+  if(!G?.solo||typeof document.getElementById!=='function')return;
+  const choice=$('#soloTestChoice');if(!choice)return;
+  const id=G.soloTestChoice||'basic',skill=CLS[G.hero].find(s=>s.id===id),level=learnedClv(id);
+  choice.value=id;$('#soloLevelControl').hidden=!skill;
+  const input=$('#soloSkillLevel');if(document.activeElement!==input)input.value=level;
+  $('#soloLevelDown').disabled=level<=0;$('#soloLevelUp').disabled=level>=CLSMAX;
+  $('#soloTestPlay').textContent=G.soloTestRunning?'■ Detener':'▶ Probar';
+  $('#soloTestPlay').setAttribute('aria-pressed',String(!!G.soloTestRunning));
+  $('#soloTestCaption').textContent=skill?skill.desc:id==='basic'?'Prueba el golpe básico sin otras habilidades.':'Observa la animación sin combate.';
+  $('#soloEnemyMode').value=G.noSpawn?'none':G.soloWeak?'weak':'progressive';
+  $('#soloSupportBasic').checked=!!G.soloSupportBasic;
+}
 function buildHeroPanel(i){
   const sx=i?String(i+1):'',box=$('#heroSk'+sx);box.innerHTML='';
   const previousMelody=$('#bardMelody'+sx);if(previousMelody)previousMelody.remove();
@@ -5773,24 +5917,26 @@ function buildHeroPanel(i){
   const hd=HEROES[G.hero];
   $('#heroName'+sx).textContent=hd.icon+' '+hd.n;
   if(G.solo&&i===0)$('#soloResetSkills').onclick=resetSoloSkills;
+  if(G.solo&&i===0&&typeof document.getElementById==='function'){buildSoloTestPanel(box);return}
   if(G.hero==='bard'){const b=document.createElement('button');b.id='bardMelody'+sx;b.className='ctl';b.style.cssText='display:block;width:auto;max-width:100%;height:26px;min-height:26px;font-size:11px;padding:3px 8px;margin:0 0 5px';b.title='Alterna las melodías aprendidas. Durante Gran concierto la secuencia es automática.';b.onclick=()=>heroCtx(i,bardSwitch);box.before(b)}
   CLS[G.hero].forEach(a=>{els[a.id]=mkSlot(box,SPR.iconHtml(a.id,null,a.icon),()=>heroCtx(i,()=>heroBuy(a.id)),()=>heroCtx(i,()=>heroTip(a)),'slot:hero'+sx+':'+a.id);els[a.id].b._rid=a.id});
 }
 function heroTip(a){return heroTip0(a)+tierHtml(a.id)}
 function heroTip0(a){
-  const l=clv(a.id);
+  const l=learnedClv(a.id);
   return '<h3>'+SPR.iconHtml(a.id,26,a.icon)+' '+a.n+'</h3><div class="sub">'+HEROES[G.hero].n+' · Nivel '+l+' / '+CLSMAX+'</div><p>'+a.desc+'</p>'+
-    kvh('Ahora',l?a.eff(l):'—')+(RNG[a.id]?kvh('Alcance',Math.round(rg(a.id))):'')+(l<CLSMAX?kvh('Siguiente nivel',a.eff(l+1))+kvh('Coste','1 punto de experiencia'):'');
+    kvh('Ahora',l?a.eff(l):'—')+(RNG[a.id]?kvh('Alcance',Math.round(rg(a.id))):'')+(l<CLSMAX?kvh('Siguiente nivel',a.eff(l+1))+kvh('Coste',G.solo?'Gratis en modo test':'1 punto de experiencia'):'');
 }
 function refreshHero(){for(const i of HIDX())heroCtx(i,()=>refreshHeroPanel(i))}
 function refreshHeroPanel(i){
+  if(G.solo&&i===0&&typeof document.getElementById==='function'){refreshSoloTestPanel();return}
   const sx=i?String(i+1):'',heroEl=heroEls[i];
   $('#pts'+sx).textContent=G.pending;$('#ptsbox'+sx).classList.toggle('on',G.pending>0);
   if(G.hero==='bard'){const b=$('#bardMelody'+sx);if(b){b.textContent='Melodía: '+({j_march:'Marcha',j_refuge:'Refugio',j_ballad:'Balada'}[bardSong()]||'Aprende una');b.disabled=G.ht.concertOn>0||BARD_SONGS.filter(id=>clv(id)).length<2}}
   const up=G.pending>0;
   for(const a of CLS[G.hero]){
     const e=heroEl[a.id];if(!e)continue;
-    const l=clv(a.id),c=clsCost(a.id),max=l>=CLSMAX;
+    const l=learnedClv(a.id),c=clsCost(a.id),max=l>=CLSMAX;
     setPowerStar(e.b,l);e.lv.textContent=l?l+'/'+CLSMAX:'—';
     e.cs.textContent=max?'MAX':(up?'+ punto':'—');
     e.b.classList.toggle('dim',!l);
@@ -5941,45 +6087,41 @@ function setSoloWeak(enabled){
 }
 function resetSoloSkills(){
   if(!G.solo)return;
-  let refund=G.pending;
-  for(const skill of CLS[G.hero]){refund+=G.cls[skill.id]||0;G.cls[skill.id]=0}
+  for(const skill of CLS[G.hero])G.cls[skill.id]=0;
   const fresh=mkHState(G.hero,0),keep=new Set(['hero','bx','by','hoff','lvl','xp','pending','mhp']);
   for(const key of HKEYS)if(!keep.has(key))G[key]=fresh[key];
-  G.pending=refund;G.haste=0;G.allies=[];G.dmgBy={};clearSoloArena();
+  G.haste=0;G.allies=[];G.dmgBy={};clearSoloArena();
   G.autoUpgrades=G.autoUpgrades.filter(key=>key.split(':')[1]!=='hero');
   G.tv=(G.tv||0)+1;recalc();G.hp=S.maxHp;saveH(0);refreshAll();
 }
-function startSolo(h){
-  SOLO_NEXT=true;newGame(h);G.nick='Prueba';
-  $('#overlay').style.display='none';
-  G.pending=3;recalc();refreshAll();
-  let b=$('#soloBar');
-  if(b)b.remove();
-  b=document.createElement('div');b.id='soloBar';b.style.cssText='position:absolute;left:6px;top:44px;z-index:6;display:flex;flex-direction:column;gap:3px;align-items:flex-start;opacity:.9';
-  $('#overlay').parentNode.appendChild(b);
-  const act=[['⬆ +1',()=>{G.lvl++;G.pending++;recalc()}],['⏫ +5',()=>{G.lvl+=5;G.pending+=5;recalc()}],['💰',()=>{G.gold+=1000}],
-    ['❤',()=>{if(G.dead)heroRevive();G.hp=S.maxHp}],['👹10',()=>{spawnSoloEnemies(G.soloWeak?3:10)}],['👑',()=>{spawnSoloEnemies(1,true)}],
-    ['🧹',clearSoloArena],['🔄',()=>{G.soloReset=true}],['⏩',()=>{G.t+=120}],['⏸',null],['↩',()=>{b.remove();showStart()}]];
-  const tips={'⬆ +1':'+1 nivel','⏫ +5':'+5 niveles','💰':'+1000 oro','❤':'Curar','👹10':'+10 enemigos','👑':'Jefe','🧹':'Limpiar enemigos','🔄':'Reiniciar ronda desde 0','⏩':'+2 min de dificultad','⏸':'Activar/desactivar apariciones','↩':'Volver al menú'};
-  const st='padding:1px 6px;font-size:11px;min-width:0;line-height:1.4';
-  const tg=document.createElement('button');tg.className='btn alt';tg.style.cssText=st;tg.textContent='🧪 ▾';
-  const row=document.createElement('div');row.style.cssText='display:flex;flex-direction:column;gap:3px';
-  tg.onclick=()=>{const hid=row.style.display!=='none';row.style.display=hid?'none':'flex';tg.textContent=hid?'🧪 ▸':'🧪 ▾';tg.blur()};
-  b.appendChild(tg);b.appendChild(row);
-  const label=document.createElement('label');label.style.cssText='font-size:11px;display:flex;align-items:center;gap:3px;background:#171327;padding:3px;border-radius:4px;max-width:150px';
-  const weakToggle=document.createElement('input');weakToggle.id='soloWeakEnemies';weakToggle.type='checkbox';weakToggle.checked=G.soloWeak;
-  label.appendChild(weakToggle);label.appendChild(document.createTextNode('Pocos enemigos débiles'));row.appendChild(label);
-  const controls={};
-  const sync=()=>{const weak=G.soloWeak;controls['👹10'].textContent=weak?'👹 +3 débiles':'👹10';controls['👑'].disabled=weak;controls['⏩'].disabled=weak;label.title='Uno cada 3 segundos, máximo 4. Sin jefes, oleadas ni escalado de fuerza.'};
-  weakToggle.onchange=()=>{setSoloWeak(weakToggle.checked);sync();weakToggle.blur()};
-  for(const [t,f] of act){
-    const x=document.createElement('button');x.className='btn alt';x.style.cssText=st;x.textContent=t;x.title=tips[t];
-    if(f)x.onclick=()=>{f();refreshAll();x.blur()};
-    else x.onclick=()=>{G.noSpawn=!G.noSpawn;x.style.opacity=G.noSpawn?.5:1;x.title=G.noSpawn?'Apariciones desactivadas':tips[t];x.blur()};
-    controls[t]=x;row.appendChild(x);
-  }
-  sync();
+function clearSoloHeroEffects(){
+  const fresh=mkHState(G.hero,0),keep=new Set(['hero','bx','by','hoff','lvl','xp','pending','mhp','hp','dead','deadT','tomb']);
+  for(const key of HKEYS)if(!keep.has(key))G[key]=fresh[key];
+  for(const p of G.projs)release(p);
+  G.allies=[];G.projs=[];G.fx=[];G.zones=[];G.delayed=[];G.haste=0;
+  for(const e of G.enemies)Object.assign(e,{dots:{},slow:null,stun:0,stone:0,root:0,rep:0,vt:0,vm:1,charm:0});
+  G.tv=(G.tv||0)+1;recalc();G.hp=Math.min(G.hp,S.maxHp);saveH(0);
 }
+function refreshSoloPowerUi(){
+  for(const input of ($('#soloPowerControls')?.querySelectorAll?.('input[data-test-power]')||[]))input.checked=soloPowerEnabled(input.dataset.testPower);
+}
+function setSoloPowerEnabled(id,enabled){
+  if(!G.solo||(id!=='basic'&&!CLS[G.hero].some(s=>s.id===id)))return;
+  G.soloDisabled=G.soloDisabled||{};
+  if(enabled)delete G.soloDisabled[id];else G.soloDisabled[id]=true;
+  clearSoloHeroEffects();refreshSoloPowerUi();refreshAll();
+}
+function setAllSoloPowers(enabled){
+  if(!G.solo)return;
+  G.soloDisabled=enabled?{}:Object.fromEntries(['basic',...CLS[G.hero].map(s=>s.id)].map(id=>[id,true]));
+  clearSoloHeroEffects();refreshSoloPowerUi();refreshAll();
+}
+function startSolo(h,weak=true,disabled={}){
+  SOLO_NEXT=true;newGame(h);G.nick="Prueba";G.soloWeak=weak;G.soloDisabled={...disabled};
+  G.pending=3;G.noSpawn=true;G.soloTestChoice="basic";G.soloSupportBasic=true;
+  stopSoloTest();recalc();refreshAll();requestAnimationFrame(resize);
+}
+
 function showRank(from){
   if(G.modal==='rank')return;
   const prev=from||(G.over?'over':'game');
@@ -7112,7 +7254,9 @@ HR.assassin={
  front(c,P){}
 };
 const asFoes=(x,y,R)=>G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=R+e.r);
-const asRing=(x,y,r,t,col)=>G.fx.push({k:'ring',x,y,r,t,c:col});
+const asSpr=()=>SPR.on&&SPR.has('x_stab_1');   /* efectos del asesino con sprites (assets/heroes/assassin/fx.js); si no, se dibujan por código */
+const asSeq=(p,n)=>Array.from({length:n},(_,i)=>p+'_'+(i+1));
+const asRing=(x,y,r,t,col)=>{if(!asSpr())G.fx.push({k:'ring',x,y,r,t,c:col})};
 function asTp(x,y){
   const m=HEROES.assassin.melee.leash+100;let dx=x-(W/2+(G.hoff||0)),dy=y-H/2;const d=Math.hypot(dx,dy);
   if(d>m){dx*=m/d;dy*=m/d}
@@ -7160,9 +7304,9 @@ function assassinTick(dt,T,x0,y0,rdy,done,retry){
     f=tf('x_blink');const cs=asFoes(x0,y0,rg('x_blink')).filter(e=>Math.hypot(e.x-x0,e.y-y0)>70).sort((a,b)=>b.max-a.max).slice(0,1+f.cnt);
     if(!cs.length)retry('x_blink');
     else{
-      SRC='Puñalada de sombra';asRing(x0,y0,50,.35,'#7a4aa8');
+      SRC='Puñalada de sombra';asRing(x0,y0,50,.35,'#7a4aa8');if(asSpr())sprFx({seq:asSeq('x_vanish',3),x:x0,y:y0+4,w:84,ax:.5,ay:.75,d:.4,fi:0,fo:.3});
       const d=hdmg(l)*(3+.08*l)*f.dm;
-      for(const c of cs){G.fx.push({k:'bolt',pts:[[cx(),cy()],[c.x,c.y]],t:.2,c:'#c9a0ff'});asTp(c.x-28,c.y);dealDamage(c,d,'phys');if(!c.dead&&!c.boss)c.stun=Math.max(c.stun||0,.6*f.dur)}
+      for(const c of cs){if(asSpr())sprFx({seq:asSeq('x_stab',4),x:c.x,y:c.y-c.r*.4,w:96,d:.4,fi:0,fo:.25});else G.fx.push({k:'bolt',pts:[[cx(),cy()],[c.x,c.y]],t:.2,c:'#c9a0ff'});asTp(c.x-28,c.y);dealDamage(c,d,'phys');if(!c.dead&&!c.boss)c.stun=Math.max(c.stun||0,.6*f.dur)}
       G.punchAt=G.t;asRing(cs[cs.length-1].x,cs[cs.length-1].y,60,.35,'#c9a0ff');txt(cx(),cy()-60,'🗡️ ¡Puñalada de sombra!','#c9a0ff',17);
       done('x_blink',Math.max(5,10-.25*l));
     }
@@ -7218,7 +7362,7 @@ function assassinTick(dt,T,x0,y0,rdy,done,retry){
       T.traps.splice(i,1);SRC='Trampa venenosa';
       const R=(70+1.5*l)*f.rad,d=hdmg(l)*1.6*f.dm;
       for(const o of G.enemies){if(o.dead||(o.x-m.x)**2+(o.y-m.y)**2>(R+o.r)**2)continue;dealDamage(o,d,'phys');addDot(o,'poison',d*.5,4,true);o.slow={a:.5,t:3*f.dur};if(f.stun&&!o.boss)o.stun=Math.max(o.stun||0,f.stun)}
-      asRing(m.x,m.y,R,.4,'#82e04e');
+      asRing(m.x,m.y,R,.4,'#82e04e');if(asSpr())sprFx({seq:asSeq('x_trapb',5),x:m.x,y:m.y+6,w:Math.max(80,R*1.9),ax:.5,ay:.7,d:.7,fi:0,fo:.3});
     }
   }
   if((l=clv('x_dance'))&&rdy('x_dance')){
@@ -7232,7 +7376,7 @@ function assassinTick(dt,T,x0,y0,rdy,done,retry){
       T.danceTk=.14;const ts=asFoes(cx(),cy(),520);
       if(ts.length){
         const e=ts[Math.floor(Math.random()*ts.length)],ox=cx(),oy=cy();
-        G.fx.push({k:'bolt',pts:[[ox,oy],[e.x,e.y]],t:.18,c:'#d09aff'});asTp(e.x-26,e.y);G.punchAt=G.t;G.atkN=(G.atkN||0)+1;
+        if(asSpr()){sprFx({seq:asSeq('x_trail',3),x:ox,y:oy,to:[e.x,e.y],h:60,d:.3,fi:0,fo:.4});sprFx({seq:asSeq('x_slash',6),x:e.x,y:e.y-e.r*.3,w:84,d:.28,fi:0,fo:.25,add:true})}else G.fx.push({k:'bolt',pts:[[ox,oy],[e.x,e.y]],t:.18,c:'#d09aff'});asTp(e.x-26,e.y);G.punchAt=G.t;G.atkN=(G.atkN||0)+1;
         SRC='★ Danza mortal';dealDamage(e,hdmg(l)*(1.4+.03*l)*f.dm*(2+.1*clv('x_crit')),'phys');asRing(e.x,e.y,36,.2,'#d09aff');
       }
     }
@@ -7243,11 +7387,22 @@ drawFx3=function(x0,y0){
   _d3As(x0,y0);
   if(G.hero!=='assassin')return;
   const T=G.ht,c=ctx;
+  if(asSpr()){
+    const tt=performance.now()/1000;
+    if(T.smoke){const s=T.smoke,fo=Math.min(1,s.t/.6);   /* nube de humo: varias bocanadas que ondulan por la zona */
+      const fr=['x_smoke_3','x_smoke_4','x_smoke_5','x_smoke_4'];
+      for(let i=0;i<7;i++){const a=i*0.898+tt*.18*(i%2?1:-1),r=s.R*(i?.5+.15*Math.sin(i*2.1):0),ph=Math.floor(tt*3+i*1.7)%4;
+        SPR.draw(c,fr[ph],s.x+Math.cos(a)*r,s.y+Math.sin(a)*r*.6,{w:s.R*.95,ax:.5,ay:.62,a:.42*fo})}}
+    if(T.traps)for(const m of T.traps)SPR.draw(c,'x_trapa_'+(1+Math.floor(tt*4+m.x)%3),m.x,m.y+3,{w:34,ax:.5,ay:.6});
+    if(T.hideOn>0)SPR.draw(c,'x_stealth_'+(1+Math.floor(tt*10)%4),cx(),cy()+16,{w:84,ax:.5,ay:.5,a:.9,add:true});
+    for(const e of G.enemies)if(!e.dead&&e.xm>G.t)SPR.draw(c,'x_mark_'+(1+Math.floor(tt*8+e.x)%5),e.x,e.y-e.r-22,{w:26,ax:.5,ay:.5,a:.95});
+    return;
+  }
   if(T.smoke){const s=T.smoke;c.save();for(let i=0;i<6;i++){const a=i*1.047+G.t*.4,r=s.R*.55;c.globalAlpha=.16;c.fillStyle='#9aa0b0';c.beginPath();c.arc(s.x+Math.cos(a)*r,s.y+Math.sin(a)*r*.6,s.R*.45,0,6.3);c.fill()}c.globalAlpha=.4;c.strokeStyle='#b8bccb';c.lineWidth=1.4;c.setLineDash([6,6]);c.beginPath();c.arc(s.x,s.y,s.R,0,6.3);c.stroke();c.restore()}
   if(T.traps)for(const m of T.traps){const p=.5+.5*Math.sin(G.t*5+m.x);c.save();c.translate(m.x,m.y);c.fillStyle='rgba(0,0,0,.3)';c.beginPath();c.ellipse(0,3,9,3,0,0,6.3);c.fill();c.fillStyle='#3d5a2a';c.beginPath();c.ellipse(0,0,8,4,0,0,6.3);c.fill();c.strokeStyle='rgba(130,224,78,'+(.4+.4*p)+')';c.lineWidth=1.4;c.beginPath();c.ellipse(0,0,11,5.5,0,0,6.3);c.stroke();c.restore()}
 };
 
-function teamAura(){const l=G&&G.cls&&G.cls.a_aura;return l&&G.heroes&&G.heroes.includes('archer')?(.05+.004*l)*tf('a_aura').dm:0}
+function teamAura(){const l=clv('a_aura');return l&&G.heroes&&G.heroes.includes('archer')?(.05+.004*l)*tf('a_aura').dm:0}
 defTiers('a_frost','Flechas de escarcha',[['Escarcha densa','+15% de ralentización.',{slow:[.15,2.5]}],['Congelación','+8% de prob. de congelar.',{pc:.08}],['Frío intenso','+15% de ralentización y +8% de prob. de congelar.',{slow:[.3,2.5],pc:.08}],['Invierno eterno','Ralentiza un 45% y +15% de prob. de congelar.',{slow:[.45,2.5],pc:.15}]]);
 defTiers('a_shackle','Grillete',[['Cadenas largas','+30% de duración.',{dur:1.3}],['Hierro frío','+50% de daño.',{dm:1.5}],['Doble grillete','Ata una pareja más.',{cnt:1}],['Prisión','+40% de daño, -20% de enfriamiento y +30% de duración.',{dm:1.4,cd:.8,dur:1.3}]]);
 defTiers('a_windrun','Carrera del viento',[['Pies ligeros','+5% de esquiva.',{dodge:.05}],['Viento largo','+30% de duración.',{dur:1.3}],['Brisa fresca','-20% de enfriamiento y +2 vida/s.',{cd:.8,reg:2}],['Tormenta de plumas','+5% de esquiva, +30% de duración y -15% de enfriamiento.',{dodge:.05,dur:1.3,cd:.85}]]);
@@ -7706,8 +7861,9 @@ function refreshTowerUi(){
 let uiT=0;
 function frame(now){
   const raw=(now-last)/1000;const dt=Math.min(.05,raw);last=now;
+  if(G.solo)G.soloAnimTime=(G.soloAnimTime||0)+Math.max(0,dt)*(G.soloAnimSpeed||1);
   if(raw>0&&raw<.5){avgDt=avgDt*.97+raw*.03;if(avgDt>.032)LOWQ=true;else if(avgDt<.021)LOWQ=false}
-  if(!G.paused&&!G.modal&&!G.over){
+  if(!G.paused&&!G.modal&&!G.over&&!(G.solo&&G.soloAnimation&&G.soloAnimation!=='auto')){
     for(let i=0;i<G.speed;i++)update(dt);
   }
   uiT+=dt;if(uiT>.25){uiT=0;refreshAll()}

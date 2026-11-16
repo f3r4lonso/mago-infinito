@@ -121,7 +121,7 @@ var SPR=(function(){
   };
 
   /* ---------- efectos con sprite (G.fx con k:'spr') ----------
-     campos: id | anim[], x,y | path[x1,y1,x2,y2] | pos(), w, h, ax, ay, d (duración total), wait, rot, spin,
+     campos: id | anim[] (bucle) | seq[] (fotogramas repartidos a lo largo de la vida del efecto), x,y | path[x1,y1,x2,y2] | pos(), w, h, ax, ay, d (duración total), wait, rot, spin,
              g0,g1 (escala inicial/final), fi,fo (aparición/desvanecimiento), a, add, vx,vy, to[x,y] (rayo estirado) */
   api.drawFx=function(c,f){
     const e=f.d-f.t,wt=f.wait||0;
@@ -131,7 +131,7 @@ var SPR=(function(){
     if(f.pos){const q=f.pos();x=q[0];y=q[1]}
     if(f.path){x=f.path[0]+(f.path[2]-f.path[0])*p;y=f.path[1]+(f.path[3]-f.path[1])*p}
     if(f.vx||f.vy){x+=(f.vx||0)*(e-wt);y+=(f.vy||0)*(e-wt)}
-    const id=f.anim?f.anim[Math.floor(now()*(f.fps||12))%f.anim.length]:f.id;
+    const id=f.seq?f.seq[Math.min(f.seq.length-1,Math.floor(p*f.seq.length))]:f.anim?f.anim[Math.floor(now()*(f.fps||12))%f.anim.length]:f.id;
     const g0=f.g0==null?1:f.g0,g1=f.g1==null?1:f.g1,k=g0+(g1-g0)*(1-Math.pow(1-p,2));
     const fi=f.fi==null?.12:f.fi,fo=f.fo==null?.35:f.fo;
     let a=(f.a==null?1:f.a)*(fi>0&&p<fi?p/fi:1)*(fo>0&&p>1-fo?Math.max(0,(1-p)/fo):1);
@@ -167,7 +167,7 @@ var SPR=(function(){
   };
 
   /* ---------- héroe con sprite de reposo y de ataque (misma celda: alineados) ---------- */
-  api.spriteHero=function(c,idle,atk,t,fx,st,H,ay,ax){
+  api.spriteHero=function(c,idle,atk,t,fx,st,H,ay,ax,atkax){
     ay=ay==null?1:ay;ax=ax==null?.5:ax;
     const u=st.u==null?-1:st.u,id=(u>=0&&api.has(atk))?atk:idle;
     if(!api.has(id))return false;
@@ -177,7 +177,7 @@ var SPR=(function(){
     const lean=(.09*Math.sign(st.vx||1)*run)*(fx<0?-1:1)+Math.sin(t*1.7)*.012;
     const sx=1+(u>=0?.04*k:0)+Math.sin(t*2.3)*.01,sy=1-(u>=0?.04*k:0)-Math.sin(t*2.3)*.01;
     c.translate(0,31+bob);c.rotate(lean);c.scale(sx,sy);
-    api.draw(c,id,0,0,{w:W,ax:ax,ay:ay,a:st.hurt>0?1-.25*st.hurt:1});
+    api.draw(c,id,0,0,{w:W,ax:(id===atk&&atkax!=null)?atkax:ax,ay:ay,a:st.hurt>0?1-.25*st.hurt:1});
     c.restore();
     if(st.hurt>0)hGlow(c,0,-20,34,'rgba(255,60,60,'+(.45*st.hurt)+')');
     return true;
