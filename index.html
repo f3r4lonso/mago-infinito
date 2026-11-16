@@ -912,7 +912,9 @@ function hitEnemy(p,e){
   if(p.sk==='wind'&&!e.dead&&!(e.root>0)){const vl=Math.hypot(p.vx,p.vy)||1,k=(e.boss?12:e.elite?30:46)*tf('wind').rad;e.x+=p.vx/vl*k;e.y+=p.vy/vl*k;if(!LOWQ)G.fx.push({k:'p',x:e.x,y:e.y,vx:p.vx*.15,vy:p.vy*.15,t:.3,c:'#cfeaff'})}
   newHeroesHit(p,e);
   if(p.goldK&&e.dead){const gb=Math.ceil(e.gold*GOLDK*(1+.15*p.goldK)*(1+G.t/120)*S.goldM);G.gold+=gb;txt(e.x,e.y-e.r-14,'+'+gb+' 🪙','#ffd24a',15)}
-  if(p.crit&&cmSpr())fxSeq('fx_crit',4,{x:e.x,y:e.y-e.r*.3,w:p.critT?74:54,d:.3,fi:0,fo:.3,add:true});
+  const ownCrit=p.critT&&(p.critT.indexOf('PALMA')>0||p.critT.indexOf('CABEZA')>0);
+  if(ownCrit&&p.critT.indexOf('PALMA')>0&&hxSpr('k_palm_1'))fxSeq('k_palm',4,{x:e.x,y:e.y-e.r*.3,w:96,d:.4,fi:0,fo:.3,add:true});
+  if(p.crit&&cmSpr()&&!ownCrit)fxSeq('fx_crit',4,{x:e.x,y:e.y-e.r*.3,w:p.critT?74:54,d:.3,fi:0,fo:.3,add:true});
   if(p.crit)txt(e.x,e.y-e.r-16,p.critT||'¡CRÍTICO x10!','#ff4040',18);
   if(p.stunC&&!e.dead&&Math.random()<p.stunC){e.stun=p.stunT||1;txt(e.x,e.y-e.r-12,'💫','#fff',14)}
   if(p.xl)txt(e.x,e.y-e.r-16,'¡XL!',TYPES[p.type].c,18);
@@ -929,7 +931,7 @@ function hitEnemy(p,e){
   if(p.splash){
     for(const o of G.enemies){if(o===e||o.dead)continue;
       if((o.x-p.x)**2+(o.y-p.y)**2<p.splash*p.splash){dealDamage(o,p.dmg*.5,p.type);if(p.slow&&!o.dead&&mult(o,p.type)>0)o.slow={a:p.slow,t:2.5}}}
-    G.fx.push(p.sk?{k:'boom',sk:p.sk,x:p.x,y:p.y,r:p.splash,t:.45,T:.45,c:TYPES[p.type].c,xl:p.xl}:{k:'ring',x:p.x,y:p.y,r:p.splash,t:.3,c:TYPES[p.type].c});
+    if(G.hero==='paladin'&&!p.sk&&hxSpr('pl_arc_1'))fxSeq('pl_arc',6,{x:p.x,y:p.y,w:p.splash*2.4,d:.4,fi:0,fo:.3,add:true});else G.fx.push(p.sk?{k:'boom',sk:p.sk,x:p.x,y:p.y,r:p.splash,t:.45,T:.45,c:TYPES[p.type].c,xl:p.xl}:{k:'ring',x:p.x,y:p.y,r:p.splash,t:.3,c:TYPES[p.type].c});
   }
   else if(p.sk&&G.fx.length<380)G.fx.push({k:'hit',sk:p.sk,x:e.x,y:e.y,a:p.ang??Math.atan2(p.vy||0,p.vx||1),t:.25,T:.25,c:p.col||TYPES[p.type].c,crit:p.crit});
 }
@@ -1509,7 +1511,7 @@ function convertSkelDragon(dg){
   const st=dragonStats(),l=clv('n_skeldragon'),fsd=tf('n_skeldragon'),k=(.7+.035*l)*fsd.hpm;
   G.sdrags.push({x:dg.x,y:dg.y,hp:st.max*k,max:st.max*k,r:st.r,aggro:st.aggro,atk:.5,flap:0,face:1,a:Math.random()*6.283,inv:false,dmgb:st.base*k,spd:st.spd,flame:G.dr.sk.flame,fcd:4});
   txt(dg.x,dg.y-40,'💀 ¡Dragón esqueleto!','#cfd3da',20);
-  G.fx.push({k:'ring',x:dg.x,y:dg.y,r:80,t:.4,c:'#cfd3da'});
+  if(hxSpr('n_vortex_1'))fxSeq('n_vortex',6,{x:dg.x,y:dg.y,w:200,d:.9,fi:0,fo:.4,add:true});else G.fx.push({k:'ring',x:dg.x,y:dg.y,r:80,t:.4,c:'#cfd3da'});
 }
 function updateSkelDragons(dt){
   if(!G.sdrags.length)return;
@@ -1891,7 +1893,7 @@ function shot(t,dmg,b,h){
     if(G.ht.wrathOn>0){const wm=1.3*tf('pl_wrath').dm;p.dmg*=wm;p.exp*=wm}
     const cl=clv('pl_cleave'),fcl=tf('pl_cleave');if(cl){p.splash=(40+2*cl)*fcl.rad;if(fcl.dm!==1){p.dmg*=fcl.dm;p.exp*=fcl.dm}if(fcl.slow)p.slow=fcl.slow[0]}
     const hl=clv('pl_holy');
-    if(hl){const hd=p.dmg*(.25+.03*hl),tt=t,hhm=tf('pl_holy').hm;G.delayed.push({t:.06,fn:()=>{if(tt.dead)return;SRC='Espada consagrada';dealDamage(tt,hd,'divine');G.hp=Math.min(S.maxHp,G.hp+S.maxHp*(.002+.0003*hl)*hhm)}})}
+    if(hl){const hd=p.dmg*(.25+.03*hl),tt=t,hhm=tf('pl_holy').hm;G.delayed.push({t:.06,fn:()=>{if(tt.dead)return;SRC='Espada consagrada';if(hxSpr('pl_slash_1'))fxSeq('pl_slash',6,{x:tt.x,y:tt.y-tt.r*.3,w:72,d:.35,fi:0,fo:.3,add:true});dealDamage(tt,hd,'divine');G.hp=Math.min(S.maxHp,G.hp+S.maxHp*(.002+.0003*hl)*hhm)}})}
   }
   if(h==='werewolf'){const bl=clv('w_bleed'),mo=G.ht.wolfOn>0,lf=clv('w_blood');
     if(mo){p.dmg*=1.4;p.exp*=1.4;p.col='#ff6a6a'}
@@ -2127,14 +2129,14 @@ function updateHeroEffects(dt,rdy,done,retry){
     if((l=clv('n_vamp'))){
       const fva=tf('n_vamp'),want=Math.min(6+fva.cnt,2+Math.floor(l/4)+fva.cnt);
       let have=0;for(const a of G.allies)if(ownAlly(a)&&a.kind==='vamp')have++;
-      if(have<want){T.vampT=(T.vampT??1.5)-dt;if(T.vampT<=0){T.vampT=3.5;{const v=addAlly('vamp',x0,y0,allyHp(90+15*l)*fva.hpm,hdmg(l)*1.1*tsc(),1e9,'Vampiros');v.scaleT=true}}}
+      if(have<want){T.vampT=(T.vampT??1.5)-dt;if(T.vampT<=0){T.vampT=3.5;{if(hxSpr('n_spirits_1'))fxSeq('n_spirits',6,{x:x0,y:y0+6,w:100,ay:.85,d:.9,fi:0,fo:.4});const v=addAlly('vamp',x0,y0,allyHp(90+15*l)*fva.hpm,hdmg(l)*1.1*tsc(),1e9,'Vampiros');v.scaleT=true}}}
     }
     {queueHeroCast(rdy,'n_mummy',()=>{l=clv('n_mummy');if((l=clv('n_mummy'))&&rdy('n_mummy')){
       if(countNear(x0,y0,rg('n_mummy'))<2)retry('n_mummy');
       else{
         const fmu=tf('n_mummy'),n=2+Math.floor(l/6)+fmu.cnt;
         for(let i=0;i<n;i++){const a=Math.random()*6.283;addAlly('mummy',x0+Math.cos(a)*45,y0+Math.sin(a)*45,allyHp(200+38*l)*fmu.hpm,hdmg(l)*1.0*tsc(),(30+.5*l)*fmu.dur,'Momias')}
-        G.fx.push({k:'ring',x:x0,y:y0,r:60,t:.3,c:'#d8c79a'});
+        if(hxSpr('n_hand_1'))fxSeq('n_hand',6,{x:x0,y:y0+8,w:110,ay:.8,d:.9,fi:0,fo:.4});else G.fx.push({k:'ring',x:x0,y:y0,r:60,t:.3,c:'#d8c79a'});
         done('n_mummy',Math.max(14,26-.6*l));
       }
     }});}
@@ -2146,7 +2148,7 @@ function updateHeroEffects(dt,rdy,done,retry){
         const me=HCUR,k=Math.min(hit,8)/8*.6+.4;
         eachHero(()=>{G.hp=Math.min(S.maxHp,G.hp+S.maxHp*pc*k)});
         for(const a of G.allies)a.hp=Math.min(a.max,a.hp+a.max*pc*k);
-        if(hit)G.fx.push({k:'ring',x:x0,y:y0,r:R,t:.35,c:'#6a2a8a'})}
+        if(hit&&!hxSpr('n_wall_1'))G.fx.push({k:'ring',x:x0,y:y0,r:R,t:.35,c:'#6a2a8a'})}
     }
     {queueHeroCast(rdy,'n_souls',()=>{l=clv('n_souls');if((l=clv('n_souls'))&&rdy('n_souls')){
       const f=tf('n_souls');
@@ -2714,6 +2716,7 @@ function hOrcAxe(c,crit){
   gPoly(c,[26,-2,34,0,26,2],'#cfd3da',.8);
   gPoly(c,[18.4,-4,24.6,-4,24.6,4,18.4,4],'#4a4f58',.9);gEll(c,21.6,0,2.8,2.8,'#e8e0b8');hEll(c,20.6,-.4,.6,.8,'#140e22',0,0);hEll(c,22.6,-.4,.6,.8,'#140e22',0,0)}
 function drawAxe(p){
+  if(hxSpr('b_axe_1')&&SPR.draw(ctx,'b_axe_'+(1+Math.floor(G.t*20)%3),p.x,p.y,{w:Math.max(26,(p.size||11)*3.6),rot:p.rot||0}))return;
   ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot||0);const sc=(p.size||11)/11*.95;ctx.scale(sc,sc);ctx.translate(-24,0);
   hOrcAxe(ctx,!!p.crit);
   ctx.restore();
@@ -4823,6 +4826,8 @@ function drawClassFx(x0,y0){
     const R=(110+4*clv('z_immo'))*tf('z_immo').rad;
     if(zSpr()&&SPR.draw(ctx,'z_immo_'+(1+Math.floor(G.t*8)%4),x0,y0+12,{w:R*2.1,a:.62}));else{ctx.beginPath();ctx.arc(x0,y0,R,0,6.3);ctx.fillStyle='rgba(125,255,106,'+(.07+.03*Math.sin(G.t*5))+')';ctx.fill();ctx.strokeStyle='rgba(125,255,106,.55)';ctx.lineWidth=1.5;ctx.stroke();ctx.lineWidth=1}
   }
+  if(h==='paladin'&&hxSpr('pl_swirl_1')){if(clv('pl_aura'))SPR.draw(ctx,'pl_swirl_'+(1+Math.floor(G.t*6)%5),x0,y0-10,{w:(90+3*clv('pl_aura'))*tf('pl_aura').rad*1.7,a:.5,add:true});if(clv('pl_shield')&&hxSpr('pl_bubble_5'))SPR.draw(ctx,'pl_bubble_5',x0,y0-8,{w:96,a:.3,add:true})}
+  if(h==='necro'){if(clv('n_wall')&&hxSpr('n_wall_1'))SPR.draw(ctx,'n_wall_'+(1+Math.floor(G.t*6)%4),x0,y0+8,{w:(130+2*clv('n_wall'))*tf('n_wall').rad*2.1,a:.6});if(clv('n_pest')&&hxSpr('n_pest_1'))SPR.draw(ctx,'n_pest_'+(1+Math.floor(G.t*5)%6),x0,y0-4,{w:(120+4*clv('n_pest'))*tf('n_pest').rad*1.7,a:.4})}
   if(h==='barbarian'&&(G.rage||0)>2&&!bbSpr()){ctx.beginPath();ctx.arc(x0,y0,36+Math.min(12,G.rage),0,6.3);ctx.fillStyle='rgba(224,60,40,'+Math.min(.28,G.rage*.02)+')';ctx.fill()}
   if(h==='barbarian'&&G.ht&&G.ht.bersOn>0&&!bbSpr()){ctx.beginPath();ctx.arc(x0,y0,44+3*Math.sin(G.t*14),0,6.3);ctx.fillStyle='rgba(255,40,30,.22)';ctx.fill();ctx.strokeStyle='rgba(255,90,60,.7)';ctx.lineWidth=2;ctx.stroke();ctx.lineWidth=1}
   if(h==='demon'&&G.ht&&G.ht.bladeOn>0){const n=G.ht.bladeN||3;ctx.beginPath();ctx.arc(x0,y0,170,0,6.3);ctx.fillStyle='rgba(125,255,106,.07)';ctx.fill();
@@ -7025,7 +7030,7 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
         const used=sk.splice(0,per);let ax=0,ay=0;
         for(const s of used){ax+=s.x;ay+=s.y;s.hp=0;ring5(s.x,s.y,16,'#9be07b',.4)}ax/=per;ay/=per;
         const a=addAlly('abom',ax,ay,allyHp(420+70*l)*f.hpm,hdmg(l)*2.4*tsc(),(25+.5*l)*f.dur,'Abominación');a.r=17;a.taunt=170;a.dk=.6;
-        ring5(ax,ay,50,'#9be07b',.6);for(let j=0;j<10;j++)par5(ax,ay,R5(-90,90),R5(-90,20),.6,'#7a9a4acc');
+        if(hxSpr('n_rise_1'))fxSeq('n_rise',6,{x:ax,y:ay+8,w:130,ay:.85,d:.9,fi:0,fo:.4});else ring5(ax,ay,50,'#9be07b',.6);for(let j=0;j<10;j++)par5(ax,ay,R5(-90,90),R5(-90,20),.6,'#7a9a4acc');
       }
       txt(x0,y0-80,'🧟 ¡Abominación!','#9be07b',20);done('n_abom',Math.max(22,40-.9*l));
     }

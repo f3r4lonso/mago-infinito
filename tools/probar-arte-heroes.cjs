@@ -8,7 +8,7 @@
 const fs=require('fs'),path=require('path'),cp=require('child_process');
 process.chdir(path.join(__dirname,'..'));
 const CHROME='C:/Program Files/Google/Chrome/Application/chrome.exe';
-const OUT='auditoria-arte';fs.mkdirSync(OUT,{recursive:true});
+const OUT=process.env.OUT_DIR||'auditoria-arte';fs.mkdirSync(OUT,{recursive:true});
 /* habilidades con arte por héroe (las demás todavía se dibujan por código y no se prueban) */
 const PLAN={
  mage:['basic','i_cold','i_ghost','i_wall','i_emp','i_tornado','i_alacrity','i_sun','i_forge','i_meteor','i_blast','i_field','i_laguna'],
@@ -21,6 +21,7 @@ const PLAN={
  dwarf:['basic','d_grenade','d_mines','d_turret','d_rockets','d_shrapnel','d_blast','d_snipe'],shaman:['basic','c_thunder','c_tide'],priest:['basic','p_angel'],
  paladin:['basic','pl_hands','pl_wrath','pl_charge','pl_hammer','pl_beam','pl_bastion','pl_throw'],demon:['basic','z_dagger','z_coup','z_meta','z_immo','z_eyes','z_shadow','z_step','z_void','z_frag'],devourer:['basic','pb_onslaught','pb_trample','pb_uproar','pb_pulverize','pb_rock']
 };
+if(process.env.PLAN_FILE)Object.assign(PLAN,JSON.parse(fs.readFileSync(process.env.PLAN_FILE,'utf8')));   /* PLAN_FILE: probar todas las habilidades (auditoría de arte) */
 const heroes=process.argv.slice(2).length?process.argv.slice(2):Object.keys(PLAN);
 const source=fs.readFileSync('index.html','utf8');
 const start=source.indexOf('{const r0=loadRank();'),end=source.indexOf('</script>',start);
