@@ -18,8 +18,8 @@ const PLAN={
  barbarian:['basic','b_whirl','b_exec','b_berserk','b_shout','b_chain','b_fire','b_aspd','b_rage'],
  necro:['basic','n_raise','n_vamp','n_mummy','n_abom','n_skeldragon'],
  druid:['basic','u_treants','u_storm'],werewolf:['basic','w_pack','w_alpha'],monk:['basic','k_cubs'],troll:['basic','t_raptor','t_totem'],
- dwarf:['basic','d_turret','d_mines'],shaman:['basic','c_thunder','c_tide'],priest:['basic','p_angel'],
- paladin:['basic'],demon:['basic'],devourer:['basic']
+ dwarf:['basic','d_grenade','d_mines','d_turret','d_rockets','d_shrapnel','d_blast','d_snipe'],shaman:['basic','c_thunder','c_tide'],priest:['basic','p_angel'],
+ paladin:['basic'],demon:['basic','z_dagger','z_coup','z_meta','z_immo','z_eyes','z_shadow','z_step','z_void','z_frag'],devourer:['basic']
 };
 const heroes=process.argv.slice(2).length?process.argv.slice(2):Object.keys(PLAN);
 const source=fs.readFileSync('index.html','utf8');
