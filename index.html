@@ -324,10 +324,11 @@ body.one #heroSec2,body.one #heroSec3,body.one #heroSec4{display:none!important}
 <script src="assets/sprites.js"></script>
 <script src="assets/heroes/mage/pack.js"></script>
 <script src="assets/tower/pack.js"></script>
+<script src="assets/enemies/pack.js"></script>
 <script>
 "use strict";
 /* Si no se cargó assets/sprites.js (pruebas automáticas), SPR se comporta como "sin sprites" y se usa el dibujo vectorial. */
-if(typeof SPR==='undefined')var SPR={on:false,has:()=>false,draw:()=>false,iconHtml:(i,s,f)=>f,tierIconHtml:()=>'',drawFx:()=>true,mageHero:()=>false,towerBody:()=>false};
+if(typeof SPR==='undefined')var SPR={on:false,has:()=>false,draw:()=>false,iconHtml:(i,s,f)=>f,tierIconHtml:()=>'',drawFx:()=>true,mageHero:()=>false,towerBody:()=>false,drawFit:()=>0};
 /* efecto con sprite PNG para el resto del juego (torre, poderes) */
 function sprFx(o){if(SPR.on&&G.fx.length<300){o.k='spr';o.t=o.d;G.fx.push(o)}}
 /* ============ DATOS ============ */
@@ -392,7 +393,16 @@ const EN=[
  {n:'Ariete de asedio',e:'🪵',col:'#a0784a',armor:'Madera y hierro',hp:190,sp:30,dmg:20,xp:15,gold:8,r:19,from:60,siege:3,res:{phys:.5,fire:1.6,magic:1.1,poison:.5}},
  {n:'Zapador',e:'💣',col:'#ff6a3a',armor:'Tela',hp:22,sp:118,dmg:7,xp:6,gold:3,r:11,from:40,swarm:3,bomb:true,res:{fire:0,phys:1.1,ice:1.2,elec:1.3}},
  {n:'Comandante orco',e:'📯',col:'#e0a030',armor:'Armadura pesada',hp:150,sp:42,dmg:14,xp:16,gold:9,r:17,from:110,aura:{r:180,sp:.35,dm:.3},res:{phys:.7,divine:1.2,dark:1.1,poison:.9}},
- {n:'Catapulta',e:'🏗️',col:'#b08a58',armor:'Madera',hp:80,sp:26,dmg:30,xp:14,gold:8,r:18,from:140,siege:2,ranged:{range:420,cd:4,spd:300,col:'#c8a060'},res:{phys:.8,fire:1.7,magic:1.2,elec:1.1,poison:.6}}
+ {n:'Catapulta',e:'🏗️',col:'#b08a58',armor:'Madera',hp:80,sp:26,dmg:30,xp:14,gold:8,r:18,from:140,siege:2,ranged:{range:420,cd:4,spd:300,col:'#c8a060'},res:{phys:.8,fire:1.7,magic:1.2,elec:1.1,poison:.6}},
+ /* Enemigos con arte pixel art (hoja extra): cristalinos y criaturas doradas. Estadísticas parecidas a las de enemigos existentes del mismo nivel. */
+ {n:'Fragmento de cristal',e:'💎',armor:'Cristal',hp:16,sp:70,dmg:5,xp:3,gold:2,r:12,from:10,col:'#6fb8ff',res:{phys:1.2,magic:.7,ice:.7,elec:1.2,poison:.8}},
+ {n:'Escorpión dorado',e:'🦂',armor:'Quitina dorada',hp:28,sp:85,dmg:8,xp:5,gold:3,r:13,from:25,col:'#f0b429',res:{poison:0,phys:.9,ice:1.2,fire:1.1}},
+ {n:'Hada de cristal',e:'🧚',armor:'Cristal alado',hp:20,sp:110,dmg:6,xp:4,gold:2,r:11,from:50,col:'#9fd4ff',res:{phys:1.3,magic:.6,elec:1.4,fire:1}},
+ {n:'Dragoncillo dorado',e:'🐉',armor:'Escamas doradas',hp:32,sp:92,dmg:8,xp:6,gold:3,r:12,from:70,col:'#f0b429',res:{phys:1.1,elec:1.4,ice:1.3,fire:.8}},
+ {n:'Gema rodante',e:'🔮',armor:'Cristal',hp:55,sp:45,dmg:9,xp:7,gold:4,r:15,from:80,col:'#4a8fe0',res:{phys:.7,magic:.6,ice:.6,fire:1.3,elec:1.3}},
+ {n:'Pulpo dorado',e:'🐙',armor:'Piel viscosa',hp:60,sp:40,dmg:9,xp:8,gold:4,r:15,from:95,col:'#f0b429',res:{phys:.8,ice:.8,elec:1.3,fire:1.2}},
+ {n:'Cristalino',e:'🪨',armor:'Cristal',hp:100,sp:38,dmg:13,xp:12,gold:6,r:17,from:130,col:'#5aa0ff',res:{phys:.5,magic:.5,ice:.5,fire:1.4,elec:1.4,poison:.5}},
+ {n:'Cangrejo dorado',e:'🦀',armor:'Caparazón dorado',hp:95,sp:30,dmg:13,xp:11,gold:6,r:17,from:150,col:'#e0a020',res:{phys:.3,magic:1.5,elec:1.4,poison:.7}},
 ];
 const ECOL={'Esqueleto':'#cfd3da','Slime':'#6be06b','Goblin':'#9ccf4a','Zombi':'#86b36a','Espectro':'#9fb8ff','Gólem':'#b89c78','Elemental de fuego':'#ff7a3d','Elemental de hielo':'#7fd6ff','Demonio':'#ff4a4a','Autómata':'#9aa5b5','Arquero esqueleto':'#e6d28a','Hechicero oscuro':'#b684ff','Francotirador':'#ff7a7a'};
 const ITEMS=[
@@ -5021,6 +5031,25 @@ FA.hydra=(g,s,c,o)=>{
   neck(-.6,2,d,.25);neck(.6,4,d,.15);neck(0,0,b,.45);
 };
 const FOE_MAP={'Esqueleto':'skel','Slime':'slime','Goblin':'goblin','Zombi':'zombie','Espectro':'ghost','Gólem':'golem','Elemental de fuego':'fire','Elemental de hielo':'ice','Demonio':'demon','Autómata':'robot','Arquero esqueleto':'archer','Hechicero oscuro':'mage','Francotirador':'sniper','Rata de cloaca':'rat','Murciélago':'bat','Lobo huargo':'wolf','Araña madre':'spider','Gelatina gigante':'gel','Curandero trasgo':'healer','Revenante':'mummy','Troll':'troll','Cangrejo acorazado':'crab','Fénix':'phoenix','Vampiro':'vampire','Elemental eléctrico':'zap','Sombra':'shadow','Mamut de hielo':'mammoth','Guardián sagrado':'guardian','Caballero de cristal':'crystal','Hidra':'hydra','Ariete de asedio':'golem','Zapador':'goblin','Comandante orco':'troll','Catapulta':'robot'};
+/* Sprites PNG de enemigos: nombre -> id del atlas (los 4 últimos ya no comparten arte con otros) */
+/* arte vectorial de respaldo para los enemigos nuevos (si faltan los sprites) */
+Object.assign(FOE_MAP,{'Fragmento de cristal':'ice','Escorpión dorado':'spider','Hada de cristal':'bat','Dragoncillo dorado':'bat','Gema rodante':'slime','Pulpo dorado':'gel','Cristalino':'crystal','Cangrejo dorado':'crab'});
+const FOE_SPR=Object.assign({},FOE_MAP,{'Ariete de asedio':'ram','Zapador':'sapper','Comandante orco':'commander','Catapulta':'catapult',
+  'Fragmento de cristal':'gem','Escorpión dorado':'scorpion','Hada de cristal':'crystalfairy','Dragoncillo dorado':'wyvern','Gema rodante':'gemball','Pulpo dorado':'octopus','Cristalino':'crystalgolem','Cangrejo dorado':'boxcrab'});
+const FOE_FLY=new Set(['ghost','bat','phoenix','shadow','fire','zap','crystalfairy','wyvern']);
+const FOE_BAKED=new Set(['skel','slime','goblin','zombie','ghost','golem','fire','ice','demon','robot','archer','mage']);   /* la hoja 1 no trae sombra pintada: se dibuja por código */
+function drawBossCrown(c,x,y,w){c.save();c.translate(x,y);c.fillStyle='#ffd24a';c.strokeStyle='#140e22';c.lineWidth=1.2;c.beginPath();c.moveTo(-w/2,0);c.lineTo(-w/2,-w*.45);c.lineTo(-w*.25,-w*.2);c.lineTo(0,-w*.6);c.lineTo(w*.25,-w*.2);c.lineTo(w/2,-w*.45);c.lineTo(w/2,0);c.closePath();c.fill();c.stroke();c.restore()}
+/* dibuja el sprite de un enemigo. c ya está en (x, y+r*.9), volteado y con el rebote aplicado. Devuelve false si no hay sprite. */
+function drawFoeSprite(c,name,fr,r,boss,alt){
+  const id=FOE_SPR[name];if(!id||!SPR.has('e_'+id+'_1'))return false;
+  const fly=FOE_FLY.has(id),lift=fly?r*.4+Math.sin(G.t*4+r)*r*.09:0;
+  if(FOE_BAKED.has(id)){c.fillStyle='rgba(20,10,30,.3)';c.beginPath();c.ellipse(0,r*.12,r*(fly?.55:.85),r*.24,0,0,6.3);c.fill()}
+  const two=SPR.has('e_'+id+'_2');
+  if(!two){const ph=fr<4?1:-1;c.translate(0,r*.12-lift);c.scale(1+.045*ph,1-.045*ph);c.translate(0,-(r*.12-lift))}   /* un solo fotograma: rebote por código */
+  const h=SPR.drawFit(c,'e_'+id+'_'+(two&&(alt||fr>=4)?2:1),0,r*.12-lift,r*3.6,r*3.2);
+  if(boss&&h)drawBossCrown(c,0,r*.12-lift-h+3,r*.95);
+  return true;
+}
 function foeCrown(g){
   g.save();g.translate(0,-1.42);
   FH.poly(g,[-.5,.2,-.55,-.3,-.25,-.02,0,-.4,.25,-.02,.55,-.3,.5,.2],'#ffd24a');
@@ -5066,11 +5095,12 @@ function drawFoeBody(ctx,e,px,py){
   }
   ctx.save();ctx.translate(e.x+lx,e.y+e.r*.9);ctx.scale(sx*fl,sy);
   if(e.flash>0)ctx.globalAlpha=.5;
+  if(SPR.on&&drawFoeSprite(ctx,e.d.n,fr,e.r,e.boss,!!(e.rng&&e.shotCd>e.rng.cd-.25))){ctx.restore();ctx.globalAlpha=1;return}
   ctx.drawImage(cv,-w/2,-e.r*.9-w/2,w,w);
   ctx.restore();ctx.globalAlpha=1;
 }
 /* ===== MUERTES: cada tipo cae, se rompe, se funde o explota a su manera; los jefes con más efectos ===== */
-const FKIND={'Esqueleto':'bones','Arquero esqueleto':'bones','Slime':'splat','Gelatina gigante':'splat','Hidra':'splat','Goblin':'poof','Hechicero oscuro':'poof','Curandero trasgo':'leaves','Zombi':'fall','Francotirador':'fall','Rata de cloaca':'fall','Lobo huargo':'fall','Troll':'fall','Revenante':'fall','Mamut de hielo':'fall','Espectro':'ghost','Sombra':'ghost','Gólem':'crumble','Cangrejo acorazado':'crumble','Elemental de fuego':'flame','Fénix':'phoenix','Elemental de hielo':'shatter','Caballero de cristal':'shatter','Demonio':'demon','Vampiro':'demon','Autómata':'explode','Elemental eléctrico':'zap','Murciélago':'bat','Araña madre':'spider','Guardián sagrado':'holy'};
+const FKIND={'Esqueleto':'bones','Arquero esqueleto':'bones','Slime':'splat','Gelatina gigante':'splat','Hidra':'splat','Goblin':'poof','Hechicero oscuro':'poof','Curandero trasgo':'leaves','Zombi':'fall','Francotirador':'fall','Rata de cloaca':'fall','Lobo huargo':'fall','Troll':'fall','Revenante':'fall','Mamut de hielo':'fall','Espectro':'ghost','Sombra':'ghost','Gólem':'crumble','Cangrejo acorazado':'crumble','Elemental de fuego':'flame','Fénix':'phoenix','Elemental de hielo':'shatter','Caballero de cristal':'shatter','Demonio':'demon','Vampiro':'demon','Autómata':'explode','Elemental eléctrico':'zap','Murciélago':'bat','Araña madre':'spider','Guardián sagrado':'holy','Fragmento de cristal':'shatter','Hada de cristal':'shatter','Gema rodante':'shatter','Cristalino':'shatter','Escorpión dorado':'fall','Dragoncillo dorado':'fall','Pulpo dorado':'splat','Cangrejo dorado':'crumble'};
 const FDUR={bones:.9,splat:.8,poof:.6,leaves:.8,fall:.9,ghost:.9,crumble:.9,flame:.9,phoenix:1.1,shatter:.8,demon:.8,explode:.7,zap:.6,bat:.8,spider:.8,holy:.9};
 const frnd=(a,b)=>a+Math.random()*(b-a);
 function fpart(d,o){d.P.push(Object.assign({x:d.x,y:d.y,vx:0,vy:0,gr:0,rot:0,vr:0,s:3,c:'#fff',T:.6,t:0,dl:0,sh:'circ',fr:0},o))}
@@ -5150,9 +5180,13 @@ function drawDying(ctx){
   for(const d of L){
     const u=Math.min(1,d.t/d.T),R=d.r,st=foeDeathSprite(d,u,d.t);
     if(st.al>0.01&&!d.nospr){
+      if(SPR.on&&FOE_SPR[d.n]&&SPR.has('e_'+FOE_SPR[d.n]+'_1')){
+        ctx.save();ctx.globalAlpha=Math.min(1,st.al);ctx.translate(d.x+st.dx,d.y+R*.9+st.dy);ctx.rotate(st.rot);ctx.scale(st.sx*d.fl,st.sy);
+        drawFoeSprite(ctx,d.n,0,R,d.boss,false);ctx.restore();ctx.globalAlpha=1;
+      }else{
       const rr=foeBucket(R),cv=foeFrame(d.n,rr,d.boss,d.fr,d.col),k=R/rr,w=Math.ceil(rr*4.2)*k;
       ctx.save();ctx.globalAlpha=Math.min(1,st.al);ctx.translate(d.x+st.dx,d.y+R*.9+st.dy);ctx.rotate(st.rot);ctx.scale(st.sx*d.fl,st.sy);
-      ctx.drawImage(cv,-w/2,-R*.9-w/2,w,w);ctx.restore();ctx.globalAlpha=1;
+      ctx.drawImage(cv,-w/2,-R*.9-w/2,w,w);ctx.restore();ctx.globalAlpha=1;}
     }
     for(const p of d.P){
       if(d.t<p.dl)continue;

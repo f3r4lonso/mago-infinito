@@ -25,6 +25,14 @@ var SPR=(function(){
 
   api.has=id=>{const s=ids[id];return !!(api.enabled&&s&&s.A.ok)};
 
+  /* encaja el sprite en una caja bw x bh sin deformarlo, apoyado por abajo en (x,y). Devuelve la altura dibujada (0 si no hay sprite). */
+  api.drawFit=function(c,id,x,y,bw,bh,o){
+    const s=ids[id];if(!api.enabled||!s||!s.A.ok)return 0;
+    const k=Math.min(bw/s.w,bh/s.h),w=s.w*k,h=s.h*k;
+    api.draw(c,id,x,y,Object.assign({},o,{w,h,ax:.5,ay:1}));
+    return h;
+  };
+
   /* dibuja un sprite. o: w/h en unidades (si solo w, h por proporción), ax/ay ancla 0..1, rot, flip, a (alfa), add (suma de luz) */
   api.draw=function(c,id,x,y,o){
     const s=ids[id];if(!api.enabled||!s||!s.A.ok)return false;
