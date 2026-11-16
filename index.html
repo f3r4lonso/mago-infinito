@@ -302,6 +302,7 @@ body.solo #heroSec>.btitle{height:auto;min-height:40px;overflow:visible;margin-b
 .solo-simple button{height:44px;min-width:40px;border:1px solid #5f4b75;background:#2a203a;color:#fff;border-radius:9px;font:inherit;cursor:pointer}.solo-level button{margin-top:5px}.solo-simple button:disabled{opacity:.35}
 .solo-simple .solo-play{grid-column:3;background:#8063e8;border-color:#a48af5;font-weight:700;padding:8px 16px}
 .solo-simple:has(.solo-level[hidden]){grid-template-columns:minmax(0,1fr) 140px}.solo-simple:has(.solo-level[hidden]) .solo-play{grid-column:2}
+.solo-grid{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 4px}.solo-pw{position:relative;width:46px;height:46px;border:1px solid #5f4b75;background:#2a203a;border-radius:9px;padding:3px;cursor:pointer;color:#fff;font:inherit;display:flex;align-items:center;justify-content:center}.solo-pw.sel{border-color:#ffd24a;box-shadow:0 0 0 1px #ffd24a}.solo-pw.run{background:#43306b}.solo-pw .pl{position:absolute;right:2px;bottom:0;font-size:10px;font-weight:700;color:#ffd24a;text-shadow:0 0 3px #000,0 0 3px #000}.solo-pw .si{font-size:20px}.solo-prep{font-size:11px;color:#9fd0ff;line-height:1.4;margin:2px 0 8px}
 .solo-caption{font-size:12px;color:#a99bbd;line-height:1.45;margin:10px 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 #soloTestOptions{margin:0}#soloTestOptions>summary{font-size:12px;color:#ab9fba;padding:8px 0;cursor:pointer;min-height:34px}
 .solo-settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0}.solo-settings .solo-support{grid-column:1/-1;display:flex;align-items:center;gap:8px;min-height:36px}.solo-support input{width:18px;height:18px}
@@ -5942,28 +5943,66 @@ function soloAnimationPose(){
   const u=mode==='attack'&&phase<.45?phase/.45:-1;
   return{time,aim,state:{run:mode==='walk'?1:0,atk:u>=0?Math.sin(u*Math.PI):0,u,n:Math.floor(time/.8),since:u>=0?u*.34:9,face:Math.cos(aim)<0?-1:1,vx:mode==='walk'?(Math.cos(aim)<0?-200:200):0,hurt:mode==='hurt'?.65+.3*Math.sin(time*7):0}};
 }
-/* Qué necesita cada habilidad para poder verse en la prueba aislada (se prepara sola, sin añadir controles):
-   n: objetivos · boss: uno de ellos es jefe · move: los objetivos caminan hacia el héroe (trampas y minas) · hp: vida inicial (fracción)
-   deps: otras habilidades que se activan a nivel mínimo mientras dura la prueba · stat: estática · rage: furia · lethal: golpe letal a 1 s */
+/* Qué necesita cada habilidad para poder verse en la prueba aislada: el test genera esas circunstancias solo (H03/H04/H11).
+   n: objetivos · boss: uno es jefe · move: los objetivos caminan hacia el héroe (trampas, minas) · far: objetivos lejanos (cargas, saltos, rocas)
+   lowHp: fracción de vida de los objetivos (ejecuciones) · inv: objetivos invulnerables · kill: nº de bajas provocadas (pasivas al matar)
+   hp: vida inicial del héroe · lethal: golpe mortal (resurrección) · stat/rage: estática y furia · allies: aliados previos · dragon: dragón muerto
+   deps: otras habilidades que se activan a nivel mínimo mientras dura la prueba · basic: necesita ataques básicos (se activan solos) */
 const SOLO_NEEDS={
-  z_meta:{n:5},p_nova:{n:7},a_focus:{n:6},b_berserk:{n:6},k_nirvana:{n:6},w_moon:{n:5},u_bear:{n:5},x_dance:{n:5},d_snipe:{n:4},pl_bastion:{n:4},n_souls:{n:6},c_monsoon:{n:5},al_transmute:{n:4,deps:['al_flask','al_oil','al_fumes']},
-  i_laguna:{n:5,boss:true},
+  /* ultimates y formas: necesitan varios enemigos cerca */
+  z_meta:{n:5},p_nova:{n:7},a_focus:{n:6},b_berserk:{n:6},k_nirvana:{n:6},w_moon:{n:5},u_bear:{n:5},x_dance:{n:5},d_snipe:{n:4},pl_bastion:{n:4},n_souls:{n:6,lowHp:.4},c_monsoon:{n:5},pl_wrath:{n:5},t_loa:{n:5},pb_pulverize:{n:3},
+  i_laguna:{n:5,boss:true},z_hunt:{n:5,boss:true,basic:true},
+  /* trampas y minas: los enemigos caminan hacia ellas */
   x_trap:{n:5,move:true},d_mines:{n:5,move:true},
-  n_abom:{n:4,allies:{skel:4}},n_raise:{n:4,kill:true},n_skeldragon:{n:3,dragon:true},u_swarm:{n:4,deps:['u_storm']},b_aspd:{n:3,deps:['b_fire']},
-  c_overload:{n:5,deps:['c_rain']},c_bolt:{n:3,deps:['c_rain'],stat:30},c_thunder:{n:4,stat:30},c_orb:{n:5,deps:['c_rain']},c_arc:{n:5,deps:['c_rain']},
-  al_oil:{n:4,deps:['al_flask']},al_spark:{n:4,deps:['al_oil']},al_catalyst:{n:4,deps:['al_flask','al_fumes']},al_mix:{n:4,deps:['al_flask','al_oil']},al_antidote:{n:4,deps:['al_flask']},al_coat:{n:4,deps:['al_flask']},al_distill:{n:3,deps:['al_flask']},al_plague:{n:5,deps:['al_flask']},
-  pb_impact:{n:5,deps:['pb_onslaught']},pb_shockwave:{n:5,deps:['pb_uproar'],rage:5},pb_aftershock:{n:5,deps:['pb_rock']},pb_hide:{n:4,deps:['pb_trample']},pb_uproar:{n:4,rage:5},
-  p_heal:{hp:.5},pl_aura:{hp:.5},k_serene:{hp:.5},t_trap:{hp:.5},t_regen:{hp:.45},w_blood:{hp:.5,n:4},w_hide:{hp:.5},pb_regen:{hp:.5},u_bark:{hp:.6},p_barrier:{hp:.7},
-  pl_hands:{hp:.3},k_bell:{hp:.3},u_rejuv:{hp:.3},p_res:{lethal:true},b_rage:{n:4,rage:6}
+  /* ejecuciones: objetivos casi muertos */
+  b_exec:{n:5,lowHp:.2},x_exec:{n:5,lowHp:.1,basic:true},
+  /* saltos, cargas y rocas: objetivos lejanos */
+  pl_charge:{n:4,far:true},w_leap:{n:5,far:true},u_cyclone:{n:5,far:true},pb_rock:{n:3,far:true},pb_onslaught:{n:3,far:true},z_step:{n:4,far:true},
+  /* pasivas al matar */
+  n_raise:{n:4,kill:2},n_corpse:{n:5,kill:3},z_frag:{n:4,kill:3},w_alpha:{n:3},
+  /* invocaciones que consumen o necesitan algo */
+  n_abom:{n:4,allies:{skel:4}},n_skeldragon:{n:3,dragon:true},b_aspd:{n:3,deps:['b_fire']},u_swarm:{n:4,deps:['u_storm']},
+  p_purge:{n:5,inv:true},
+  /* chamán */
+  c_overload:{n:5,deps:['c_rain']},c_bolt:{n:3,deps:['c_rain'],stat:30},c_thunder:{n:4,stat:30},c_orb:{n:5,deps:['c_rain']},c_arc:{n:5,deps:['c_rain'],basic:true},c_skin:{n:4},c_vortex:{n:5},
+  /* alquimista */
+  al_oil:{n:4,deps:['al_flask']},al_spark:{n:4,deps:['al_oil']},al_catalyst:{n:4,deps:['al_flask','al_fumes']},al_mix:{n:4,deps:['al_flask','al_oil']},al_antidote:{n:4,deps:['al_flask'],hp:.5},al_coat:{n:4,deps:['al_flask']},al_distill:{n:3,deps:['al_flask']},al_plague:{n:5,deps:['al_flask'],kill:1},al_transmute:{n:4,deps:['al_flask','al_oil','al_fumes']},
+  /* bestia abisal */
+  pb_impact:{n:5,deps:['pb_onslaught'],far:true},pb_shockwave:{n:5,deps:['pb_uproar'],rage:5},pb_aftershock:{n:5,deps:['pb_rock'],far:true},pb_hide:{n:4,deps:['pb_trample']},pb_uproar:{n:4,rage:5},
+  /* curación y defensa: el héroe empieza herido */
+  p_heal:{hp:.5},pl_aura:{hp:.5},k_serene:{hp:.5},t_trap:{hp:.5},t_regen:{hp:.45},w_blood:{hp:.5,n:4,basic:true},w_hide:{hp:.5},pb_regen:{hp:.5},u_bark:{hp:.6},p_barrier:{hp:.7},d_armor:{hp:.6},k_wind:{hp:.7},d_blast:{hp:.8},
+  pl_hands:{hp:.3},k_bell:{hp:.3},u_rejuv:{hp:.3},p_res:{lethal:true},b_rage:{n:4,rage:6,basic:true}
 };
+/* texto con las circunstancias que se generan para un poder (se muestra en el panel) */
+function soloNeedNote(id){
+  const n=SOLO_NEEDS[id]||{},t=[];
+  t.push((n.n||6)+' objetivos'+(n.boss?' (uno es jefe)':'')+(n.far?' lejanos':'')+(n.move?' que caminan hacia ti':'')+(n.lowHp?' casi muertos':'')+(n.inv?' invulnerables':''));
+  if(n.deps)t.push('activa '+n.deps.map(d=>{const a=(CLS[G.hero].find(x=>x.id===d)||{});return a.n||d}).join(' + ')+' mientras dura');
+  if(n.allies)t.push('esqueletos aliados');
+  if(n.kill)t.push('provoca '+n.kill+(n.kill>1?' bajas':' baja'));
+  if(n.dragon)t.push('crea un dragón y lo mata (vuelve como dragón de hueso)');
+  if(n.hp)t.push('héroe con '+Math.round(n.hp*100)+'% de vida');
+  if(n.lethal)t.push('golpe mortal al héroe a 1 s');
+  if(n.stat)t.push('estática al máximo');
+  if(n.rage)t.push('furia acumulada');
+  if(soloNeedsBasic(id))t.push('ataque básico activado');
+  return t.join(' · ');
+}
+function soloNeedsBasic(id){
+  const n=SOLO_NEEDS[id]||{};if(n.basic)return true;
+  const a=CLS[G.hero].find(x=>x.id===id);return !!(a&&/(tus (golpes|disparos|flechas|hachas|lanzas|zarpazos|espadazos|guadañas|rayos|puñetazos|tiros|ataques)|ataque básico|cada (pocos )?(golpes?|puñetazos|ataques?|disparo|hacha|lanza)|al golpear|algunos (disparos|golpes)|algunas (flechas|lanzas|hachas)|disparas|lanzas (varias|varios|más)|golpeas más|puñetazos)/i.test(a.desc||''));
+}
 function soloEnsureTargets(need){
   const n=need.n||6;let alive=G.enemies.filter(e=>!e.dead);
   for(let i=alive.length;i<n;i++){
-    const a=-.9+1.8*i/Math.max(1,n-1),r=70+(i%2)*38;
+    const a=-.9+1.8*i/Math.max(1,n-1),r=need.far?260+(i%3)*30:70+(i%2)*38;
     spawnEnemy(false,EN[0],{x:cx()+Math.cos(a)*r,y:cy()+Math.sin(a)*r,hpAbs:5000,dmg:0,sp:need.move?32:0,r:12,xp:0,gold:0});
     const t=G.enemies.at(-1);t.res={};t.n='Objetivo de prueba';
   }
-  if(need.boss){const t=G.enemies.find(e=>!e.dead);if(t){t.boss=true;t.n='Jefe de prueba'}}
+  alive=G.enemies.filter(e=>!e.dead);
+  if(need.boss){const t=alive[0];if(t){t.boss=true;t.n='Jefe de prueba'}}
+  if(need.lowHp)for(const e of alive){e.max=5000;e.hp=Math.max(1,5000*need.lowHp)}
+  if(need.inv)for(const e of alive){e.inv={every:6,dur:2};e.invCd=6;e.invT=8}
 }
 function previewSoloSkill(id,supportBasic=false){
   if(!G.solo||(id!=='basic'&&!CLS[G.hero].some(s=>s.id===id)))return;
@@ -5981,7 +6020,7 @@ function previewSoloSkill(id,supportBasic=false){
   if(need.deps)G.tv=(G.tv||0)+1,recalc();
   soloEnsureTargets(need);
   if(need.allies)for(const k in need.allies)for(let i=0;i<need.allies[k];i++){const v=addAlly(k,cx()-30+i*14,cy()+30,allyHp(150),hdmg(10)*.5,1e9,'Soldados esqueleto');v.perm=true}
-  if(need.kill)G.delayed.push({t:.4,fn:()=>{const e=G.enemies.find(q=>!q.dead);if(e){e.hp=1;dealDamage(e,1e6,'phys')}}});
+  if(need.kill)for(let k=0;k<need.kill;k++)G.delayed.push({t:.4+k*.25,fn:()=>{const e=G.enemies.find(q=>!q.dead);if(e){e.hp=1;dealDamage(e,1e6,'phys')}}});
   if(need.dragon&&!G.dragon){try{buyEgg();hatch();if(G.dragon)G.dragon.hp=0}catch(err){}}
   if(need.stat)G.ht.static=need.stat;
   if(need.rage){G.rage=need.rage;G.rageT=12;if(G.hero==='devourer')G.ht.pbRage=need.rage}
@@ -5999,11 +6038,15 @@ function soloRestoreDeps(){
 function buildSoloTestPanel(box){
   box.innerHTML='<div class="solo-simple"><label class="solo-choice">Qué probar<select id="soloTestChoice"><option value="basic">Ataque básico</option><optgroup label="Habilidades">'+CLS[G.hero].map(s=>'<option value="'+s.id+'">'+esc(s.n)+'</option>').join('')+'</optgroup><optgroup label="Animaciones"><option value="anim:idle">Reposo</option><option value="anim:walk">Caminar</option><option value="anim:attack">Animación de ataque</option><option value="anim:hurt">Recibir daño</option></optgroup></select></label>'+
     '<div class="solo-level" id="soloLevelControl"><span>Nivel · gratis</span><div><button id="soloLevelDown" aria-label="Bajar nivel">−</button><input id="soloSkillLevel" type="number" min="0" max="50" aria-label="Nivel de la habilidad"><button id="soloLevelUp" aria-label="Subir nivel">+</button></div></div><button id="soloTestPlay" class="solo-play">▶ Probar</button></div>'+
-    '<p class="solo-caption" id="soloTestCaption" aria-live="polite"></p><details id="soloTestOptions"><summary>Ajustes</summary><div class="solo-settings">'+
+    '<p class="solo-caption" id="soloTestCaption" aria-live="polite"></p><div class="solo-grid" id="soloGrid" role="group" aria-label="Probar un poder con un toque"></div><p class="solo-prep" id="soloPrep"></p><details id="soloTestOptions"><summary>Ajustes</summary><div class="solo-settings">'+
     '<label>Enemigos<select id="soloEnemyMode"><option value="none">Solo objetivos de prueba</option><option value="weak">Pocos y débiles</option><option value="progressive">Continuos y progresivos</option></select></label>'+
     '<label>Dirección<select id="soloAnimDirection"><option value="0">Derecha</option><option value="3.141592653589793">Izquierda</option></select></label>'+
     '<label>Velocidad (pose, combate y efectos)<select id="soloAnimSpeed"><option value="0.5">Lenta · ×0,5</option><option value="1" selected>Normal · ×1</option><option value="2">Rápida · ×2</option></select></label>'+
     '<label class="solo-support"><input id="soloSupportBasic" type="checkbox"> Usar ataque básico de apoyo</label></div><p class="test-note">El ataque de apoyo permite probar habilidades que se activan al golpear. Las habilidades con requisitos necesitan cumplirlos.</p></details>';
+  {const grid=$('#soloGrid');   /* un toque = elegir el poder, generar sus circunstancias y lanzarlo */
+   for(const a of CLS[G.hero]){const b=document.createElement('button');b.type='button';b.className='solo-pw';b.dataset.id=a.id;b.title=a.n;b.setAttribute('aria-label','Probar '+a.n);
+     b.innerHTML=SPR.iconHtml(a.id,34,a.icon)+'<span class="pl"></span>';b.onclick=()=>soloQuick(a.id);grid.appendChild(b)}
+   const bb=document.createElement('button');bb.type='button';bb.className='solo-pw solo-pw-basic';bb.dataset.id='basic';bb.title='Ataque básico';bb.setAttribute('aria-label','Probar el ataque básico');bb.innerHTML='<span class="si">⚔️</span>';bb.onclick=()=>soloQuick('basic');grid.insertBefore(bb,grid.firstChild)}
   $('#soloTestChoice').onchange=e=>selectSoloTest(e.target.value);
   $('#soloTestPlay').onclick=()=>G.soloTestRunning?stopSoloTest():runSoloTest();
   $('#soloSkillLevel').onchange=e=>{setSoloSkillLevel(G.soloTestChoice,e.target.value);if(G.soloTestRunning)runSoloTest()};
@@ -6021,6 +6064,13 @@ function buildSoloTestPanel(box){
 function selectSoloTest(id){
   if(!G.solo||!(id==='basic'||['anim:idle','anim:walk','anim:attack','anim:hurt'].includes(id)||CLS[G.hero].some(s=>s.id===id)))return;
   stopSoloTest();G.soloTestChoice=id;refreshSoloTestPanel();
+}
+function soloQuick(id){   /* poder con un toque: nivel 20 si estaba a cero, circunstancias automáticas y lanzamiento */
+  if(!G.solo)return;
+  selectSoloTest(id);
+  if(soloNeedsBasic(id))G.soloSupportBasic=true;   /* las pasivas que actúan al golpear necesitan el básico: el toque lo activa (la casilla de Ajustes se respeta en Probar) */
+  if(id!=='basic'&&!learnedClv(id))setSoloSkillLevel(id,20);
+  runSoloTest();
 }
 function stopSoloTest(){
   if(!G.solo)return;
@@ -6042,8 +6092,11 @@ function refreshSoloTestPanel(){
   $('#soloLevelDown').disabled=level<=0;$('#soloLevelUp').disabled=level>=CLSMAX;
   $('#soloTestPlay').textContent=G.soloTestRunning?'■ Detener':(skill&&level<1?'▶ Probar (Nv 1)':'▶ Probar');
   $('#soloTestPlay').setAttribute('aria-pressed',String(!!G.soloTestRunning));
-  {const waiting=skill&&G.soloTestRunning&&level>0&&!(G.ht[id]>0)&&!G.dead;
-   $('#soloTestCaption').textContent=(skill?skill.desc:id==='basic'?'Prueba el golpe básico sin otras habilidades.':'Observa la animación sin combate.')+(skill&&level<1?' · Nivel 0: Probar la sube a nivel 1.':'')+(waiting?' · ⏳ Esperando a que se cumpla su condición (objetivos, estado o golpes).':'')}
+  {const activa=skill&&level>0&&/cada [\d.,]+ ?s/.test(skill.eff(level)),waiting=skill&&G.soloTestRunning&&activa&&!(G.ht[id]>0)&&!G.dead,pasiva=skill&&G.soloTestRunning&&level>0&&!activa;
+   $('#soloTestCaption').textContent=(skill?skill.desc:id==='basic'?'Prueba el golpe básico sin otras habilidades.':'Observa la animación sin combate.')+(skill&&level<1?' · Nivel 0: Probar la sube a nivel 1.':'')+(waiting?' · ⏳ Esperando a que se cumpla su condición (objetivos, estado o golpes).':'')+(pasiva?' · ℹ️ Pasiva: actúa sola cuando se da su condición.':'')}
+  {const prep=$('#soloPrep');if(prep)prep.textContent=skill?'🧪 Circunstancias que prepara el test: '+soloNeedNote(id):'';
+   for(const b of ($('#soloGrid')?.children||[])){const bid=b.dataset.id;b.classList.toggle('sel',bid===id);b.classList.toggle('run',bid===id&&!!G.soloTestRunning);
+     const pl=b.querySelector('.pl');if(pl)pl.textContent=learnedClv(bid)||''}}
   $('#soloEnemyMode').value=G.noSpawn?'none':G.soloWeak?'weak':'progressive';
   $('#soloSupportBasic').checked=!!G.soloSupportBasic;
 }

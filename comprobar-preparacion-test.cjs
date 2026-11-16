@@ -23,6 +23,16 @@ probar('priest','p_res');esperar(60);assert.ok(G.ht.p_res>0||G.hp>0,'resurreccio
 // H05: al morir se conserva el experimento.
 probar('monk','k_combo');G.hp=0;heroDie();assert.equal(G.soloReset,true);update(.05);
 assert.equal(G.soloTestChoice,'k_combo');assert.equal(G.cls.k_combo,20);assert.equal(G.soloTestRunning,true);
+// Toque rápido (soloQuick): poderes que necesitan circunstancias particulares se prueban solos.
+const rapido=(hero,id)=>{startSolo(hero);G.pending=0;soloQuick(id)};
+rapido('necro','n_skeldragon');esperar(80);assert.ok(G.sdrags.length>0,'dragón de hueso a partir de un dragón muerto');
+rapido('necro','n_abom');esperar(80);assert.ok(G.allies.some(a=>a.kind==='abom'),'abominación con esqueletos');
+rapido('necro','n_raise');esperar(60);assert.ok(G.allies.some(a=>a.kind==='skel'||a.kind==='skelA'),'esqueleto levantado tras una baja');
+rapido('priest','p_purge');esperar(60);assert.ok(G.enemies.some(e=>e.hp<5000),'purificación quita la invulnerabilidad y daña');
+rapido('barbarian','b_exec');esperar(40);assert.ok(G.enemies.filter(e=>!e.dead).length<5,'decapitador ejecuta objetivos casi muertos');
+rapido('assassin','x_trap');esperar(200);assert.ok(G.enemies.some(e=>e.hp<5000),'trampa venenosa pisada por enemigos que caminan');
+rapido('paladin','pl_charge');esperar(60);assert.ok(G.enemies.some(e=>e.hp<5000),'carga contra objetivos lejanos');
+assert.equal(typeof soloNeedNote('n_skeldragon'),'string');assert.ok(/dragón/.test(soloNeedNote('n_skeldragon')));
 // H16: nivel 0 -> Probar usa nivel 1 (y el panel lo avisa).
 probar('mage','i_sun',0);assert.equal(learnedClv('i_sun'),1);
 `,ctx,{timeout:60000});

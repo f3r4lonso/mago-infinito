@@ -83,7 +83,9 @@ async function main(){
     togglePanel.click();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
     check(G.soloTestChoice===testChoice&&learnedClv(testChoice)===testLevel,'Conservar prueba al mostrar panel');
     check(Math.abs(document.querySelector('#game').getBoundingClientRect().height-testHeight)<2,'Restaurar tamaño de campo');
-    const visibleButtons=Array.from(document.querySelectorAll('#bottomp button')).filter(b=>!b.closest('details:not([open])')&&b.getClientRects().length&&b.offsetHeight>0);check(visibleButtons.length<=4,'Demasiados botones visibles: '+visibleButtons.map(b=>b.textContent).join(', '));
+    const visibleButtons=Array.from(document.querySelectorAll('#bottomp button')).filter(b=>!b.classList.contains('solo-pw')&&!b.closest('details:not([open])')&&b.getClientRects().length&&b.offsetHeight>0);   // la rejilla de poderes (.solo-pw) es la función de prueba rápida y no cuenta
+    check(document.querySelectorAll('#soloGrid .solo-pw').length===CLS[G.hero].length+1,'Rejilla con un botón por poder y el básico');
+    check(visibleButtons.length<=4,'Demasiados botones visibles: '+visibleButtons.map(b=>b.textContent).join(', '));
     check(document.querySelector('#soloTestPlay').getBoundingClientRect().bottom<=innerHeight,'Botón principal fuera de pantalla');
     G.soloAnimTime=.12;
     return{modeSwitch:true,maps:true,variants:true,launches:true,noOverflow:true,testControls:true};
