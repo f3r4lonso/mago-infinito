@@ -172,6 +172,10 @@ var SPR=(function(){
   api.spriteHero=function(c,idle,atk,t,fx,st,H,ay,ax,atkax,meta){
     ay=ay==null?1:ay;ax=ax==null?.5:ax;
     const m=meta||{},u=st.u==null?-1:st.u;let id=(u>=0&&api.has(atk))?atk:idle;
+    /* formas (paladín en dragón): el cuerpo se sustituye por su animación mientras dura la transformación */
+    if(st.form&&m.forms&&m.forms[st.form]){const F=m.forms[st.form];let did;
+      if((st.hurt||0)>.5&&F.hurt)did=F.hurt;else if(u>=0)did=F.atk[Math.min(F.atk.length-1,Math.floor(u*F.atk.length))];else did=F.fly[Math.floor(t*F.fps)%F.fly.length];
+      if(api.has(did)){c.save();c.scale(fx,1);c.translate(0,F.y+Math.sin(t*3)*2.5);api.draw(c,did,0,0,{w:F.W,ax:.5,ay:.5});c.restore();return true}}
     /* ataques cuerpo a cuerpo alternados (tajo, estocada, tajo ascendente): uno por cada golpe, avanzando por sus fotogramas */
     if(u>=0&&m.atks){const q=m.atks[(st.n||0)%m.atks.length],cand=q[Math.min(q.length-1,Math.floor(u*q.length))];if(api.has(cand))id=cand}
     /* caminar y recibir daño con sprites propios (si el héroe los trae): la animación por código se atenúa */

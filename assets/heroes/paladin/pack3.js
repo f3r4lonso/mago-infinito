@@ -1,0 +1,3 @@
+/* Generado por tools/empaquetar_paladin_dragon.py. Añade la forma de dragón al paladín. No editar a mano. */
+SPR.addPack("paladin_dragon",{"game":{"img":"assets/heroes/paladin/paladin-dragon.png","w":1024,"h":561,"s":{"pd_fly_1":[0,0,208,184],"pd_fly_2":[211,0,208,184],"pd_fly_3":[422,0,208,184],"pd_fly_4":[633,0,208,184],"pd_atk_1":[0,187,208,184],"pd_atk_2":[211,187,208,184],"pd_atk_3":[422,187,208,184],"pd_atk_4":[633,187,208,184],"pd_hurt":[0,374,208,184]}}});
+SPR.addMeta("paladin",Object.assign({},SPR.heroMeta("paladin"),{forms:{dragon:{"fly":["pd_fly_1","pd_fly_2","pd_fly_3","pd_fly_4"],"atk":["pd_atk_1","pd_atk_2","pd_atk_3","pd_atk_4"],"hurt":"pd_hurt","fps":9,"W":118,"y":6}}}));
