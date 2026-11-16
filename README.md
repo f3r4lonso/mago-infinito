@@ -168,3 +168,5 @@ El **mago invocador**, el **alquimista**, los otros **14 héroes** (cuerpo en re
 - Prompts de arte de las unidades invocadas: carpeta prompts-invocadas/ (3 hojas, un archivo por hoja; empieza por LEEME.md).
 
 - Héroes en PNG: `python tools/empaquetar_heroes.py` (hojas `assets/archer1.jpg`, `acesino1.jpg`, `demonhunter1.jpg`…) y `node tools/generar-glifos.cjs` para los símbolos de las mejoras. Solo el arquero, el asesino y el hombre lobo tienen iconos de habilidad propios; el resto de héroes mantiene los emojis hasta que haya hoja de iconos.
+
+- Unidades invocadas y dragón en PNG: `python tools/empaquetar_invocadas.py` (hojas `assets/invocados1.jpg`, `invocados2.jpg` y `dragon1.jpg`). Cubre criaturas (golem, momia, vampiro, ángel, lobos, raptor, ent, abominación, panda, jabalí, larva, oso espiritual, clon), halcón, torreta, mina, tótems, el huevo, el dragón en sus 5 colores, el dragón esqueleto y su aliento. El dragón tiene un solo dibujo por nivel: el aleteo se anima por código.

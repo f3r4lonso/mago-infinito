@@ -341,12 +341,15 @@ body.one #heroSec2,body.one #heroSec3,body.one #heroSec4{display:none!important}
 <script src="assets/heroes/shaman/pack.js"></script>
 <script src="assets/heroes/dwarf/pack.js"></script>
 <script src="assets/tier-glyphs.js"></script>
+<script src="assets/summons/pack.js"></script>
 <script>
 "use strict";
 /* Si no se cargó assets/sprites.js (pruebas automáticas), SPR se comporta como "sin sprites" y se usa el dibujo vectorial. */
 if(typeof SPR==='undefined')var SPR={on:false,has:()=>false,draw:()=>false,iconHtml:(i,s,f)=>f,tierIconHtml:()=>'',drawFx:()=>true,mageHero:()=>false,towerBody:()=>false,drawFit:()=>0,spriteHero:()=>false,heroMeta:()=>null,basicOf:()=>null,meleeOf:()=>null};
 /* efecto con sprite PNG para el resto del juego (torre, poderes) */
 function sprFx(o){if(SPR.on&&G.fx.length<300){o.k='spr';o.t=o.d;G.fx.push(o)}}
+/* unidad invocada (tipo en ALLYK) -> sprite del atlas de invocadas */
+const ALLY_SPR={golem:'a_golem',mummy:'a_mummy',vamp:'a_vamp',angel:'a_angel',wolf:'a_wolf',raptor:'a_raptor',treant:'a_treant',abom:'a_abom',cub:'a_cub',boar:'a_boar',wboar:'a_boar',alpha:'a_alpha',larva:'a_larva',sbear:'a_sbear',bear:'a_sbear',sclone:'a_sclone'};
 /* ============ DATOS ============ */
 const TYPES={
   phys:{n:'Físico',c:'#d5d9e2',i:'⚔️'},
@@ -1282,6 +1285,7 @@ function drawDragon(x0,y0){
     ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(ex,ey+9,12,4,0,0,6.3);ctx.fill();
     if(fr>.8){const gk=(fr-.8)/.2*(.6+.4*Math.sin(t*12));const g=ctx.createRadialGradient(ex,ey-6,2,ex,ey-6,34);g.addColorStop(0,P[3]+'aa');g.addColorStop(1,P[3]+'00');ctx.globalAlpha=gk;ctx.fillStyle=g;ctx.beginPath();ctx.arc(ex,ey-6,34,0,6.3);ctx.fill();ctx.globalAlpha=1}
     ctx.save();ctx.translate(ex,ey+8);ctx.rotate(sh);
+    if(SPR.on&&SPR.draw(ctx,fr>.6?'dr_egg_2':'dr_egg_1',0,0,{w:fr>.6?36:25,ax:.5,ay:.97})){ctx.beginPath();ctx.rect(0,0,0,0);ctx.clip()}   /* el huevo vectorial que sigue queda oculto */
     const g=ctx.createLinearGradient(-12,-30,12,0);g.addColorStop(0,'#fffaf0');g.addColorStop(1,shadeC(P[1],-.2));
     ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,-13,11,14,0,0,6.3);ctx.fill();
     ctx.fillStyle=P[0];ctx.globalAlpha=.75;
@@ -1300,6 +1304,7 @@ function drawDragon(x0,y0){
 function drawBreath(f){
   const k=f.t/f.tot,grow=Math.min(1,(1-k)*5),L=f.len*grow,o=f.dg?drMouth(f.dg,f.a):f;
   const C=f.ice?['#ffffff','#bfefff','#4ab8ff']:['#fff6c0','#ffb03a','#ff4a1a'];
+  if(SPR.on&&!f.ice&&L>8&&SPR.draw(ctx,'dr_fx_breath',o.x,o.y,{w:L*1.05,h:Math.max(20,L*.5),ax:.02,ay:.5,rot:f.a,a:Math.min(1,k*2),add:true}))return;
   ctx.save();ctx.globalAlpha=Math.min(1,k*1.8)*.45;
   ctx.beginPath();ctx.moveTo(o.x,o.y);ctx.arc(o.x,o.y,L,f.a-f.half,f.a+f.half);ctx.closePath();
   const g=ctx.createRadialGradient(o.x,o.y,4,o.x,o.y,Math.max(5,L));g.addColorStop(0,C[0]);g.addColorStop(.5,C[1]);g.addColorStop(1,C[2]+'00');
@@ -1329,6 +1334,16 @@ function drawDragonUnit(dg,skel){
   if(dg.dash){const p=Math.min(1,dg.dash.t/dg.dash.dur);ctx.rotate(face*p*Math.PI*2);
     ctx.strokeStyle='#d8ecff';ctx.lineWidth=2;for(let i=0;i<3;i++){ctx.globalAlpha=.6-i*.15;ctx.beginPath();ctx.arc(0,0,(30+i*9)*sc,t*14+i*2,t*14+i*2+2.2);ctx.stroke()}ctx.globalAlpha=1}
   ctx.scale(sc*face,sc);ctx.lineCap='round';ctx.lineJoin='round';
+  {const did=skel?'dr_skel':'dr_t'+(tier+1);
+   if(SPR.on&&SPR.has(did+'_1')){
+     if(bite>=0)SPR.draw(ctx,'dr_fx_bite',26,-6,{w:34,a:1-bite,rot:.2});
+     if(tail>=0)SPR.draw(ctx,'dr_fx_tail',-28,6,{w:34,a:1-tail,flip:true});
+     ctx.save();ctx.rotate(flap*.06);ctx.scale(1+flap*.02,1-flap*.03);
+     SPR.drawFit(ctx,did+'_'+(flap>0?1:2),0,24,84,72,{a:skel?.92:1});
+     if(hurt>=0)SPR.drawFit(ctx,did+'_1',0,24,84,72,{add:true,a:.6*(1-hurt)});
+     ctx.restore();
+     ctx.beginPath();ctx.rect(0,0,0,0);ctx.clip();   /* el dragón vectorial que sigue queda oculto */
+   }}
   const wing=back=>{
     ctx.save();ctx.translate(back?5:-1,back?-12:-7);if(back)ctx.scale(.78,.9);
     const u=back?Math.sin(dg.flap-.35):flap,ex=-5,ey=-17-u*12;
@@ -3295,6 +3310,7 @@ function drawAllies(){
     if(!a.fly&&e<1){ctx.beginPath();ctx.rect(-30,-30,60,30+14*e+4);ctx.clip()}
     if((k==='skel'||k==='skelA')&&SPR.has('u_skelw_1'))SPR.draw(ctx,(k==='skel'?'u_skelw_':'u_skela_')+(1+Math.floor(G.t*5+(a.ph||0)*5)%2),0,13,{h:32,ax:.5,ay:1});
     else if(k==='spirit'&&SPR.has('spirit1'))SPR.draw(ctx,'spirit'+(1+Math.floor(G.t*10+(a.ph||0)*7)%4),0,0,{w:34,ax:.5,ay:.55});
+    else if(ALLY_SPR[k]&&SPR.has(ALLY_SPR[k]+'_1'))SPR.drawFit(ctx,ALLY_SPR[k]+'_'+(1+Math.floor(G.t*5+(a.ph||0)*5)%2),0,13,54,38);
     else f(ctx,a,{t:G.t,ph:a.ph,sp:a.sp,u,dx:dxT/dl*a.face,dy:dyT/dl,fxn:a.fxn});
     ctx.restore();ctx.globalAlpha=1;
     if(a.max<1e8&&a.hp<a.max){ctx.fillStyle='#000a';ctx.fillRect(a.x-12,yy-a.r*s-12,24,3);ctx.fillStyle='#7be07b';ctx.fillRect(a.x-12,yy-a.r*s-12,24*Math.max(0,a.hp/a.max),3)}
@@ -3312,6 +3328,7 @@ function drawTurret(t){
   if(t.cd>(t._cd||0)+.01)t.shotAt=G.t;t._cd=t.cd;
   const rec=Math.max(0,1-(G.t-(t.shotAt==null?-9:t.shotAt))/.14),low=t.life<4;
   ctx.save();ctx.translate(t.x,t.y);ctx.scale(sc,sc);
+  if(SPR.on&&SPR.drawFit(ctx,'a_turret_'+(rec>.3?2:1),0,9,34,30,{flip:Math.cos(t.aim||0)<0})){ctx.restore();return}
   ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(0,7,13,4,0,0,6.3);ctx.fill();
   for(const sd of[-1,0,1]){hLimb(ctx,[0,-2,sd*9,7],2.4,'#5a5f68')}
   hEll(ctx,0,-2,8,6,'#6a707a');hPoly(ctx,[-8,-2,8,-2,6,3,-6,3],'#4a4f58');
@@ -3322,6 +3339,7 @@ function drawTurret(t){
 function drawMine(m){
   const p=.5+.5*Math.sin(G.t*6+m.x),w=G.t-(m.born==null?(m.born=G.t):m.born),e=Math.min(1,w/.4);
   ctx.save();ctx.translate(m.x,m.y);ctx.scale(e,e);
+  if(SPR.on&&SPR.drawFit(ctx,'a_mine_'+(p>.5?2:1),0,6,24,18)){ctx.restore();return}
   ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(0,4,8,2.6,0,0,6.3);ctx.fill();
   for(let i=0;i<8;i++){const a=i*.785;hPoly(ctx,[Math.cos(a-.2)*5,Math.sin(a-.2)*5-1,Math.cos(a)*9,Math.sin(a)*9-1,Math.cos(a+.2)*5,Math.sin(a+.2)*5-1],'#6a707a',1)}
   hEll(ctx,0,-1,6,6,'#555a64');hEll(ctx,-2,-3,2,1.4,'#8a919b',-.5,.01);hGlow(ctx,0,-1,3+p*3,p>.5?'#ff4040':'#661010',.9);hEll(ctx,0,-1,1.8,1.8,p>.5?'#ff8080':'#661010',0,.6);
@@ -4072,7 +4090,7 @@ function drawNewHeroesFx(x,y){
     if(z.kind==='cloud')for(let i=0;i<3;i++)gEll(ctx,z.x-15+i*15,z.y-28,18,10,'#7cabb6',0,.7);
     if(z.kind==='vortex'){ctx.beginPath();ctx.arc(z.x,z.y,z.r*.6,G.t*3,G.t*3+4.5);ctx.stroke()}
   }
-  for(const t of T.stormTotems||[]){gLimb(ctx,[t.x,t.y,t.x,t.y-24],10,'#78573a');gEll(ctx,t.x,t.y-24,8,5,t.kind==='c_tide'?'#60bdba':'#b4a15b');gLimb(ctx,[t.x-12,t.y-17,t.x+12,t.y-17],4,'#ba9050');hGlow(ctx,t.x,t.y-25,4,t.kind==='c_tide'?'#88ead7':'#cbf1fa',.7);ctx.fillStyle='#22362b';ctx.fillRect(t.x-11,t.y+5,22,3);ctx.fillStyle='#93d68b';ctx.fillRect(t.x-11,t.y+5,22*t.hp/t.max,3)}
+  for(const t of T.stormTotems||[]){{const tid=t.kind==='c_tide'?'a_totem_tide':'a_totem_thunder';if(SPR.on&&SPR.drawFit(ctx,tid+'_'+(1+Math.floor(G.t*3)%2),t.x,t.y+4,26,40))continue}gLimb(ctx,[t.x,t.y,t.x,t.y-24],10,'#78573a');gEll(ctx,t.x,t.y-24,8,5,t.kind==='c_tide'?'#60bdba':'#b4a15b');gLimb(ctx,[t.x-12,t.y-17,t.x+12,t.y-17],4,'#ba9050');hGlow(ctx,t.x,t.y-25,4,t.kind==='c_tide'?'#88ead7':'#cbf1fa',.7);ctx.fillStyle='#22362b';ctx.fillRect(t.x-11,t.y+5,22,3);ctx.fillStyle='#93d68b';ctx.fillRect(t.x-11,t.y+5,22*t.hp/t.max,3)}
   if(T.stormShield>0){ctx.strokeStyle='#a9eff6';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y-5,28,36,0,0,6.3);ctx.stroke()}
  }
  if(h==='alchemist')for(const z of T.chemicals||[]){{const k={acid:'al_acid',oil:'al_oil_zone',flame:'al_boom1',fumes:'al_fumes_zone'}[z.kind];if(SPR.on&&k&&SPR.draw(ctx,k,z.x,z.y,{w:z.r*2.3,a:z.kind==='flame'?.75+.2*Math.sin(G.t*14):.92}))continue}const colors={acid:'#9bd564',oil:'#a77c44',flame:'#f5a94d',fumes:'#b4c679'};ctx.fillStyle=colors[z.kind]+'44';ctx.strokeStyle=colors[z.kind]+'aa';ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(z.x,z.y,z.r,z.r*.7,0,0,6.3);ctx.fill();ctx.stroke();
@@ -4467,6 +4485,7 @@ function drawFx4(x0,y0){
   if(G.totems)for(const o of G.totems){
     const e=Math.min(1,(t-o.born)/.4),sc=1-Math.pow(1-e,3),fade=o.life<2?.4+.6*Math.abs(Math.sin(t*12)):1;
     ctx.save();ctx.translate(o.x,o.y);ctx.scale(sc,sc);ctx.globalAlpha=fade;
+    if(SPR.on&&SPR.drawFit(ctx,'a_totem_troll_'+(1+Math.floor(t*3)%2),0,10,28,46)){ctx.restore();continue}
     ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(0,8,13,4,0,0,6.3);ctx.fill();
     hPoly(ctx,[-7,8,-6,-20,6,-20,7,8],'#7a5230');hPoly(ctx,[-8,-20,-8,-28,8,-28,8,-20],'#9a6a3a');hPoly(ctx,[-4,-28,0,-40,4,-28],'#e8602a');
     hPoly(ctx,[-5,-14,5,-14,5,-4,-5,-4],'#3f9aa6',1);ctx.fillStyle='#f4f0e4';ctx.fillRect(-4,-12,2.6,2);ctx.fillRect(1.6,-12,2.6,2);ctx.fillRect(-2,-7,4,1.6);
@@ -6382,6 +6401,7 @@ function drawTW(c,o){
 }
 function drawHawk(c,hk){
   const d=hk.dir||1,fl=Math.sin(hk.wing)*(hk.st===1?.25:1);c.save();c.translate(hk.x,hk.y);c.scale(d,1);
+  if(SPR.on&&SPR.drawFit(c,'a_hawk_'+(fl>0?1:2),0,10,36,28)){c.restore();return}
   hPoly(c,[-2,-1,-14,-8-fl*8,-8,2],'#7a5230');hPoly(c,[6,-6,2,-1,12,-9-fl*8,8,2],'#9a6a3a');
   hPoly(c,[-7,1,-17,3,-7,4.4],'#6a4020');hEll(c,0,1,8,4.2,'#8a5a30');hEll(c,2,3,5,2.4,'#e8dcc0',0,0);
   hEll(c,8,-1.4,3.6,3.2,'#f4f0e4');hPoly(c,[10.5,-1.4,15.5,.4,10.5,1.4],'#e8b020');hEll(c,9,-2.2,.9,.9,'#140e22',0,0);c.restore();

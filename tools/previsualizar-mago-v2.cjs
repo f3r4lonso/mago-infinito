@@ -13,6 +13,7 @@ for(const a of CLS[HERO])G.cls[a.id]=Math.min(40,CLSMAX);
 G.tower.lvl=40;for(const k of SK)G.skills[k.id]=12;for(const sp of SPS)G.spLv[sp.id]=15;
 G.tv=(G.tv||0)+1;recalc();G.hp=S.maxHp;G.heroInv=1e6;
 for(const sp of SPS)G.spFire[sp.id]=true;
+try{buyEgg()}catch(e){}
 refreshAll();refreshBar();
 const steps=parseInt((location.hash||'#120').slice(1).split(',')[0])||120;
 let waited=0;
