@@ -16,10 +16,10 @@ const PLAN={
  assassin:['basic','x_blink','x_smoke','x_stealth','x_mark','x_daggers','x_clone','x_trap','x_dance'],
  archer:['basic','a_pierce','a_frost','a_shackle','a_snipe','a_windrun','a_gust','a_aura','a_hawk','a_focus'],
  barbarian:['basic','b_whirl','b_exec','b_berserk','b_shout','b_chain','b_fire','b_aspd','b_rage'],
- necro:['basic','n_raise','n_vamp','n_mummy','n_abom','n_skeldragon'],
- druid:['basic','u_treants','u_storm'],werewolf:['basic','w_pack','w_alpha'],monk:['basic','k_cubs'],troll:['basic','t_raptor','t_totem'],
+ necro:['basic','n_raise','n_vamp','n_mummy','n_abom','n_skeldragon','n_curse','n_drain','n_spear','n_corpse','n_souls'],
+ druid:['basic','u_treants','u_storm','u_rejuv','u_bark','u_moon','u_thorns','u_star','u_bear','u_cyclone','u_eclipse'],werewolf:['basic','w_pack','w_alpha','w_leap','w_howl','w_rend','w_prey','w_moon'],monk:['basic','k_cubs','k_bell','k_wave','k_dragon','k_hundred','k_kick','k_nirvana','k_gong'],troll:['basic','t_raptor','t_totem','t_trap','t_hex','t_loa','t_spear'],
  dwarf:['basic','d_grenade','d_mines','d_turret','d_rockets','d_shrapnel','d_blast','d_snipe'],shaman:['basic','c_thunder','c_tide'],priest:['basic','p_angel'],
- paladin:['basic'],demon:['basic','z_dagger','z_coup','z_meta','z_immo','z_eyes','z_shadow','z_step','z_void','z_frag'],devourer:['basic']
+ paladin:['basic','pl_hands','pl_wrath','pl_charge','pl_hammer','pl_beam','pl_bastion','pl_throw'],demon:['basic','z_dagger','z_coup','z_meta','z_immo','z_eyes','z_shadow','z_step','z_void','z_frag'],devourer:['basic','pb_onslaught','pb_trample','pb_uproar','pb_pulverize','pb_rock']
 };
 const heroes=process.argv.slice(2).length?process.argv.slice(2):Object.keys(PLAN);
 const source=fs.readFileSync('index.html','utf8');
