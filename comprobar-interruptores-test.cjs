@@ -55,6 +55,18 @@ for(const hero of Object.keys(HEROES)){
  setSoloAnimation('auto');assert.equal(G.paused,false);
  G.paused=true;setSoloAnimation('walk');setSoloAnimation('auto');assert.equal(G.paused,true);
 }
+// Paladín: la forma de dragón se puede probar aislada (volar, moverse, mordisco, soplo de fuego y recibir daño); los demás héroes no la ofrecen.
+setup('paladin');
+for(const mode of ['dragon-fly','dragon-move','dragon-bite','dragon-fire','dragon-hurt']){
+ setSoloAnimation(mode);assert.equal(G.soloAnimation,mode);assert.equal(G.paused,true);G.soloAnimTime=.15;
+ const pose=soloAnimationPose();assert.equal(pose.state.form,'dragon');
+ assert.equal(pose.state.run,mode==='dragon-move'?1:0);
+ if(mode==='dragon-bite'||mode==='dragon-fire')assert.ok(pose.state.u>=0);
+ assert.equal(pose.fire>=0,mode==='dragon-fire');if(mode==='dragon-hurt')assert.ok(pose.state.hurt>0);
+ drawHero(cx(),cy());
+}
+setSoloAnimation('auto');
+setup('mage');setSoloAnimation('walk');assert.equal(soloAnimationPose().state.form,0);setSoloAnimation('auto');
 newGame('mage');G.soloDisabled={basic:true,i_cold:true};G.cls.i_cold=10;assert.equal(clv('i_cold'),10);assert.equal(soloPowerEnabled('basic'),true);
 G.pending=0;assert.equal(heroUp(CLS.mage[0].id,'pt'),false);assert.equal(setSoloSkillLevel(CLS.mage[0].id,50),false);
 }`,ctx);

@@ -76,12 +76,24 @@ function poses(hero){   /* cuerpo del héroe: reposo, caminar, ataque, recibir d
   }
   return out;
 }
+/* emulador de pruebas: el paladín puede probar su forma de dragón (volar, moverse, mordisco, soplo de fuego y recibir daño) */
+function emulador(hero,mode){
+  const R={id:'emulador '+mode,errors:[],ids:[],missing:[],dmg:0,cast:true,finite:true,frames:[]};
+  try{
+    startSolo(hero);G.pending=0;recalc();selectSoloTest('anim:'+mode);runSoloTest();
+    if(G.soloAnimation!==mode)R.errors.push('el emulador no activó '+mode);
+    G.soloAnimAim=0;
+    for(const t of [0,.12,.25,.38,.52,.7]){G.soloAnimTime=t;draw();R.frames.push(crop())}
+  }catch(e){R.errors.push(e.message)}
+  return R;
+}
 let waited=0;
 const wait=setInterval(()=>{
   waited+=100;if(!SPR.on&&waited<8000)return;clearInterval(wait);
   const res={hero:HERO,sprOn:SPR.on,rows:[]},list=PLAN[HERO]||['basic'];
   let body;try{body=poses(HERO)}catch(e){res.poseError=e.message;body=[]}
   for(const id of list)res.rows.push(probar(HERO,id));
+  if(HERO==='paladin'&&!window.__soloSinEmulador)for(const m of ['dragon-fly','dragon-move','dragon-bite','dragon-fire','dragon-hurt'])res.rows.push(emulador(HERO,m));
   const total=document.createElement('canvas'),nr=res.rows.length+1;total.width=LW+CW*6;total.height=nr*CH;
   const t=total.getContext('2d');t.fillStyle='#1d1830';t.fillRect(0,0,total.width,total.height);t.font='13px sans-serif';t.textBaseline='top';
   t.fillStyle='#ffd24a';t.fillText(HERO+' · cuerpo',6,6);t.fillStyle='#aaa';t.fillText('reposo / caminar / ataque / daño',6,24);
@@ -103,7 +115,7 @@ const html=source.slice(0,start)+preview+source.slice(end);
 fs.writeFileSync('preview-arte-tmp.html',html);
 const results={};
 for(const h of heroes){
-  const rows=(PLAN[h]||['basic']).length+1;
+  const rows=(PLAN[h]||['basic']).length+1+(h==='paladin'?5:0);   /* +5: filas del emulador del dragón */
   const png=path.resolve(OUT,h+'.png');
   const url='file:///'+path.resolve('preview-arte-tmp.html').replace(/\\/g,'/')+'#'+h;
   const r=cp.spawnSync(CHROME,['--headless=new','--disable-gpu','--hide-scrollbars','--window-size='+(130+1200)+','+Math.max(rows*172,700),'--force-device-scale-factor=1','--virtual-time-budget=60000','--enable-logging=stderr','--v=0','--screenshot='+png,url],{encoding:'utf8',maxBuffer:1<<26,timeout:240000});

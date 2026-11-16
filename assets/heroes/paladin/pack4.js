@@ -1,0 +1,2 @@
+/* Generado por tools/empaquetar_paladin_fuego.py. No editar a mano. */
+SPR.addPack("paladin_fire",{"game":{"img":"assets/heroes/paladin/paladin-fuego.png","w":1024,"h":212,"s":{"pf_mouth_1":[228,0,96,91],"pf_mouth_2":[327,0,96,91],"pf_blast_1":[0,0,111,136],"pf_blast_2":[114,0,111,136],"pf_stream_1":[0,139,113,70],"pf_stream_2":[116,139,113,70],"pf_stream_3":[232,139,113,70],"pf_stream_4":[348,139,113,70],"pf_small_1":[426,0,98,78],"pf_small_2":[527,0,98,78],"pf_small_3":[628,0,98,78],"pf_small_4":[729,0,98,78],"pf_small_5":[830,0,98,78]}}});

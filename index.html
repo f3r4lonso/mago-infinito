@@ -393,6 +393,7 @@ body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
 <script src="assets/heroes/paladin/pack.js"></script>
 <script src="assets/heroes/paladin/pack2.js"></script>
 <script src="assets/heroes/paladin/pack3.js"></script>
+<script src="assets/heroes/paladin/pack4.js"></script>
 <script src="assets/heroes/druid/pack.js"></script>
 <script src="assets/heroes/barbarian/pack.js"></script>
 <script src="assets/heroes/werewolf/pack.js"></script>
@@ -679,7 +680,7 @@ const CLS={
   {id:'pl_hammer',n:'Martillo divino',icon:'🔨',desc:'Lanzas un martillo divino al enemigo más fuerte: enorme daño divino y lo aturde.',eff:l=>Math.min(3,1+Math.floor(l/8))+' martillo(s) · aturde '+f1(1.5+.05*l)+' s · cada '+f1(Math.max(4,9-.25*l))+' s'},
   {id:'pl_aura',n:'Aura de curación y daño',icon:'🔆',desc:'Un aura sagrada quema a los enemigos cercanos y cura a tus héroes y aliados.',eff:l=>'Radio '+Math.round(90+3*l)+' · cura '+f1(.4+.03*l)+'% vida/pulso · +'+f1(.25*l)+' vida/s'},
   {id:'pl_hands',n:'Imposición de manos',icon:'🙌',desc:'Cuando tu vida baja del 35% te curas de golpe.',eff:l=>'Cura '+Math.round(35+1.5*l)+'% · cada '+Math.round(Math.max(20,60-2*l))+' s'},
-  {id:'pl_wrath',n:'Forma de dragón',icon:'🐉',desc:'Te transformas en dragón: alas, golpes más rápidos y fuertes, aliento de fuego a tu alrededor y una curación al transformarte.',eff:l=>'+30% daño, +50% velocidad y fuego · '+f1(6+.2*l)+' s · cada '+Math.round(Math.max(20,40-l))+' s'}
+  {id:'pl_wrath',n:'Forma de dragón',icon:'🐉',desc:'Te transformas en dragón durante unos segundos: ganas vida máxima y daño en todo (ataque básico y habilidades), golpeas más rápido y escupes fuego a tu alrededor. Sigues pudiendo usar todas tus habilidades; al terminar vuelves a tu forma y estadísticas normales.',eff:l=>'+40% vida máx., +30% daño, +50% velocidad y fuego · '+f1(6+.2*l)+' s · cada '+Math.round(Math.max(20,40-l))+' s'}
  ],
  monk:[
   {id:'k_combo',n:'Combo de palma',icon:'👐',desc:'Cada pocos puñetazos das un golpe de palma: mucho más daño, explosión en área y aturdimiento breve.',eff:l=>'Cada '+(l>=10?3:4)+' golpes · daño x'+f1(2+.12*l)+' · radio '+Math.round(50+2*l)},
@@ -749,7 +750,7 @@ function newGame(...args){
 }
 function recalc(){
   const it=G.items;TFC.g=null;   /* las mejoras de objetos cambian alcance: invalida la caché de habilidades */
-  S.dmg=(1+.12*it.staff)*(1+.1*G.bonus)*rampMult(G.lvl)*(1+teamAura());
+  S.dmg=(1+.12*it.staff)*(1+.1*G.bonus)*rampMult(G.lvl)*(1+teamAura())*(dragonForm()?1.3*tf('pl_wrath').dm:1);   /* Forma de dragón: +30% de daño a todo */
   S.atk=(1+.05*it.ring);
   S.rk=1+.05*it.crystal;S.range=300*S.rk;
   /* cada héroe tiene su propia vida máxima */
@@ -767,8 +768,10 @@ function recalc(){
   if(clv('pl_shield'))S.dodge=Math.min(.6,S.dodge+tf('pl_shield').dodge);
   S.dodge=Math.min(.6,S.dodge+Math.min(.25,.005*it.talisman));
 }
+const dragonForm=()=>!!(G&&G.ht&&G.hero==='paladin'&&G.ht.wrathOn>0);   /* el paladín está transformado en dragón */
 function hpMax(h){
   let v=Math.round((HEROES[h].hp+25+8*(G.lvl-1)+25*G.items.robe)*(h==='dwarf'?1+.04*clv('d_armor'):1));
+  if(h==='paladin'&&dragonForm())v=Math.round(v*1.4);   /* Forma de dragón: +40% de vida máxima mientras dure */
   if(h==='devourer')v=Math.round(v*(1+.012*clv('pb_colossal'))*tf('pb_colossal').hpm);
   if(h==='dwarf'&&clv('d_armor'))v=Math.round(v*tf('d_armor').hpm);
   return v;
@@ -1894,7 +1897,7 @@ function shot(t,dmg,b,h){
   }
   if(h==='archer'){const fl=clv('a_frost');if(fl){const ff=tf('a_frost');p.slow=Math.max(p.slow||0,Math.min(.65,.2+.008*fl+(ff.slow?ff.slow[0]:0)));p.stunC=Math.max(p.stunC||0,Math.min(.35,.04+.004*fl+ff.pc));p.stunT=Math.max(p.stunT||0,1+.02*fl);p.col='#9fe3ff';p.frost=true}}
   if(h==='paladin'){
-    if(G.ht.wrathOn>0){const wm=1.3*tf('pl_wrath').dm;p.dmg*=wm;p.exp*=wm}
+    /* Forma de dragón: el bonus de daño va en S.dmg (básico y habilidades) */
     const cl=clv('pl_cleave'),fcl=tf('pl_cleave');if(cl){p.splash=(40+2*cl)*fcl.rad;if(fcl.dm!==1){p.dmg*=fcl.dm;p.exp*=fcl.dm}if(fcl.slow)p.slow=fcl.slow[0]}
     const hl=clv('pl_holy');
     if(hl){const hd=p.dmg*(.25+.03*hl),tt=t,hhm=tf('pl_holy').hm;G.delayed.push({t:.06,fn:()=>{if(tt.dead)return;SRC='Espada consagrada';if(hxSpr('pl_slash_1'))fxSeq('pl_slash',6,{x:tt.x,y:tt.y-tt.r*.3,w:72,d:.35,fi:0,fo:.3,add:true});dealDamage(tt,hd,'divine');G.hp=Math.min(S.maxHp,G.hp+S.maxHp*(.002+.0003*hl)*hhm)}})}
@@ -2386,7 +2389,7 @@ function updateHeroEffects(dt,rdy,done,retry){
       }
     }});}
   }else if(h==='paladin'){
-    if(T.wrathOn>0)T.wrathOn-=dt;
+    if(T.wrathOn>0){T.wrathOn-=dt;if(T.wrathOn<=0){T.wrathOn=0;recalc();G.hp=Math.min(G.hp,S.maxHp)}}   /* fin de la forma de dragón: vuelve a su vida máxima y daño normales */
     queueHeroCast(rdy,'pl_hands',()=>{l=clv('pl_hands');if(l&&rdy('pl_hands')&&G.hp<S.maxHp*.35){
       const fhn=tf('pl_hands');G.hp=Math.min(S.maxHp,G.hp+S.maxHp*(.35+.015*l)*fhn.hm);done('pl_hands',Math.max(20,60-2*l));
       if(hxSpr('pl_heal_1'))fxSeq('pl_heal',6,{x:x0,y:y0+8,w:120,ay:.8,d:.9,fi:0,fo:.4});else G.fx.push({k:'ring',x:x0,y:y0,r:60,t:.4,c:'#7be07b'});txt(x0,y0-70,'🙌 ¡Imposición de manos!','#7be07b',16);
@@ -2406,11 +2409,11 @@ function updateHeroEffects(dt,rdy,done,retry){
       T.wrathTk=(T.wrathTk||0)-dt;
       if(T.wrathTk<=0){T.wrathTk=.7;SRC='Forma de dragón';const fw=tf('pl_wrath'),R=130*fw.rad,d=hdmg(clv('pl_wrath'))*.9*fw.dm;
         for(const e of G.enemies){if(e.dead)continue;if(Math.hypot(e.x-x0,e.y-y0)<=R+e.r)dealDamage(e,d,'fire')}
-        G.fx.push({k:'ring',x:x0,y:y0,r:R,t:.35,c:'#ff7a2a'})}
+        {const tg=G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-x0,e.y-y0)<=R+60).sort((p,q)=>Math.hypot(p.x-x0,p.y-y0)-Math.hypot(q.x-x0,q.y-y0))[0];if(hxSpr('pf_small_1')&&tg){const an2=Math.atan2(tg.y-y0,tg.x-x0),mx=x0+Math.cos(an2)*34,my=y0-6+Math.sin(an2)*34;fxSeq('pf_small',5,{x:mx,y:my,to:[tg.x,tg.y-4],h:78,d:.5,fi:0,fo:.25})}else G.fx.push({k:'ring',x:x0,y:y0,r:R,t:.35,c:'#ff7a2a'})}}
     }
     {queueHeroCast(rdy,'pl_wrath',()=>{l=clv('pl_wrath');if((l=clv('pl_wrath'))&&rdy('pl_wrath')){
       if(countNear(x0,y0,250)<2)retry('pl_wrath');
-      else{T.wrathOn=(6+.2*l)*tf('pl_wrath').dur;T.wrathTk=0;G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.15);done('pl_wrath',Math.max(20,40-l));if(hxSpr('pl_star_1'))fxSeq('pl_star',6,{x:x0,y:y0-8,w:170,d:.7,fi:0,fo:.4,add:true});else G.fx.push({k:'ring',x:x0,y:y0,r:90,t:.4,c:'#ff7a2a'});txt(x0,y0-70,'🐉 ¡Forma de dragón!','#ff9a3d',18)}
+      else{const mh0=S.maxHp;T.wrathOn=(6+.2*l)*tf('pl_wrath').dur;T.wrathTk=0;recalc();G.hp=Math.min(S.maxHp,G.hp+(S.maxHp-mh0)+S.maxHp*.15);done('pl_wrath',Math.max(20,40-l));if(hxSpr('pl_star_1'))fxSeq('pl_star',6,{x:x0,y:y0-8,w:170,d:.7,fi:0,fo:.4,add:true});else G.fx.push({k:'ring',x:x0,y:y0,r:90,t:.4,c:'#ff7a2a'});txt(x0,y0-70,'🐉 ¡Forma de dragón!','#ff9a3d',18)}
     }});}
     {queueHeroCast(rdy,'pl_charge',()=>{l=clv('pl_charge');if((l=clv('pl_charge'))&&rdy('pl_charge')&&!G.dash){
       const far=G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-x0,e.y-y0)>90&&Math.hypot(e.x-x0,e.y-y0)<=rg('pl_charge'));
@@ -3290,7 +3293,7 @@ function drawHeroOn(c,x,y,h,t,aim,sc,st){
 /* héroe real de la partida: giro suave al apuntar, inercia, envolvente del ataque */
 function drawHero(px,py){
   if(G.solo&&G.soloAnimation&&G.soloAnimation!=='auto'){
-    const pose=soloAnimationPose();drawHeroOn(ctx,px,py,G.hero,pose.time,pose.aim,1.25,pose.state);return;
+    const pose=soloAnimationPose();drawHeroOn(ctx,px,py,G.hero,pose.time,pose.aim,1.25,pose.state);if(pose.fire>=0)soloDragonFirePreview(px,py,pose);return;
   }
   const dt=Math.min(.05,Math.max(0,G.t-(G.hlast==null?G.t:G.hlast)));G.hlast=G.t;
   const aim=G.aim,tf=Math.cos(aim)<0?-1:1;
@@ -5970,7 +5973,7 @@ function setSoloSkillLevel(id,value){
   clearSoloHeroEffects();refreshAll();return true;
 }
 function setSoloAnimation(mode){
-  if(!G.solo||!['auto','idle','walk','attack','hurt'].includes(mode))return;
+  if(!G.solo||!['auto','idle','walk','attack','hurt','dragon-fly','dragon-move','dragon-bite','dragon-fire','dragon-hurt'].includes(mode))return;
   const wasPreview=G.soloAnimation&&G.soloAnimation!=='auto';
   if(mode!=='auto'&&!wasPreview)G.soloAnimWasPaused=G.paused;
   if(mode==='auto'&&wasPreview)G.paused=!!G.soloAnimWasPaused;
@@ -5980,8 +5983,17 @@ function setSoloAnimation(mode){
 }
 function soloAnimationPose(){
   const time=G.soloAnimTime||0,mode=G.soloAnimation,aim=G.soloAnimAim||0,phase=(time% .8)/.8;
-  const u=mode==='attack'&&phase<.45?phase/.45:-1;
-  return{time,aim,state:{run:mode==='walk'?1:0,atk:u>=0?Math.sin(u*Math.PI):0,u,n:Math.floor(time/.8),since:u>=0?u*.34:9,face:Math.cos(aim)<0?-1:1,vx:mode==='walk'?(Math.cos(aim)<0?-200:200):0,hurt:mode==='hurt'?.65+.3*Math.sin(time*7):0}};
+  const dragon=typeof mode==='string'&&mode.indexOf('dragon-')===0,dm=dragon?mode.slice(7):'';   /* forma de dragón del paladín */
+  const mordisco=mode==='attack'||dm==='bite'||dm==='fire',u=mordisco&&phase<(dm==='fire'?.7:.45)?phase/(dm==='fire'?.7:.45):-1;
+  const mov=mode==='walk'||dm==='move';
+  return{time,aim,fire:dm==='fire'?phase:-1,state:{run:mov?1:0,atk:u>=0?Math.sin(u*Math.PI):0,u,n:Math.floor(time/.8),since:u>=0?u*.34:9,face:Math.cos(aim)<0?-1:1,vx:mov?(Math.cos(aim)<0?-200:200):0,hurt:(mode==='hurt'||dm==='hurt')?.65+.3*Math.sin(time*7):0,form:dragon?'dragon':0}};
+}
+/* vista previa del soplo de fuego del dragón (en el juego salen de G.fx; la prueba aislada solo dibuja la pose) */
+function soloDragonFirePreview(px,py,pose){
+  const p=pose.fire;if(p<0||!hxSpr('pf_stream_1'))return;
+  const a=Math.cos(pose.aim)<0?Math.PI:0,dir=Math.cos(a),mx=px+dir*52,my=py-4;
+  if(p<.3)SPR.draw(ctx,'pf_mouth_'+(1+Math.floor(p/.15)%2),mx,my,{w:90,rot:a,ax:.5,ay:.5,add:true});
+  if(p>=.1)SPR.draw(ctx,'pf_stream_'+(1+Math.min(3,Math.floor((p-.1)/.9*4))),mx,my,{w:300,h:200,rot:a,ax:0,ay:.5,a:Math.min(1,(1-p)*3)});
 }
 /* Qué necesita cada habilidad para poder verse en la prueba aislada: el test genera esas circunstancias solo (H03/H04/H11).
    n: objetivos · boss: uno es jefe · move: los objetivos caminan hacia el héroe (trampas, minas) · far: objetivos lejanos (cargas, saltos, rocas)
@@ -6076,7 +6088,7 @@ function soloRestoreDeps(){
   G.soloDeps={};
 }
 function buildSoloTestPanel(box){
-  box.innerHTML='<div class="solo-simple"><label class="solo-choice">Qué probar<select id="soloTestChoice"><option value="basic">Ataque básico</option><optgroup label="Habilidades">'+CLS[G.hero].map(s=>'<option value="'+s.id+'">'+esc(s.n)+'</option>').join('')+'</optgroup><optgroup label="Animaciones"><option value="anim:idle">Reposo</option><option value="anim:walk">Caminar</option><option value="anim:attack">Animación de ataque</option><option value="anim:hurt">Recibir daño</option></optgroup></select></label>'+
+  box.innerHTML='<div class="solo-simple"><label class="solo-choice">Qué probar<select id="soloTestChoice"><option value="basic">Ataque básico</option><optgroup label="Habilidades">'+CLS[G.hero].map(s=>'<option value="'+s.id+'">'+esc(s.n)+'</option>').join('')+'</optgroup><optgroup label="Animaciones"><option value="anim:idle">Reposo</option><option value="anim:walk">Caminar</option><option value="anim:attack">Animación de ataque</option><option value="anim:hurt">Recibir daño</option>'+(G.hero==='paladin'?'<option value="anim:dragon-fly">Dragón · volar</option><option value="anim:dragon-move">Dragón · moverse</option><option value="anim:dragon-bite">Dragón · mordisco</option><option value="anim:dragon-fire">Dragón · soplo de fuego</option><option value="anim:dragon-hurt">Dragón · recibir daño</option>':'')+'</optgroup></select></label>'+
     '<div class="solo-level" id="soloLevelControl"><span>Nivel · gratis</span><div><button id="soloLevelDown" aria-label="Bajar nivel">−</button><input id="soloSkillLevel" type="number" min="0" max="50" aria-label="Nivel de la habilidad"><button id="soloLevelUp" aria-label="Subir nivel">+</button></div></div><button id="soloTestPlay" class="solo-play">▶ Probar</button></div>'+
     '<p class="solo-caption" id="soloTestCaption" aria-live="polite"></p><div class="solo-grid" id="soloGrid" role="group" aria-label="Probar un poder con un toque"></div><p class="solo-prep" id="soloPrep"></p><details id="soloTestOptions"><summary>Ajustes</summary><div class="solo-settings">'+
     '<label>Enemigos<select id="soloEnemyMode"><option value="none">Solo objetivos de prueba</option><option value="weak">Pocos y débiles</option><option value="progressive">Continuos y progresivos</option></select></label>'+
@@ -6102,7 +6114,7 @@ function buildSoloTestPanel(box){
   refreshSoloTestPanel();
 }
 function selectSoloTest(id){
-  if(!G.solo||!(id==='basic'||['anim:idle','anim:walk','anim:attack','anim:hurt'].includes(id)||CLS[G.hero].some(s=>s.id===id)))return;
+  if(!G.solo||!(id==='basic'||['anim:idle','anim:walk','anim:attack','anim:hurt','anim:dragon-fly','anim:dragon-move','anim:dragon-bite','anim:dragon-fire','anim:dragon-hurt'].includes(id)||CLS[G.hero].some(s=>s.id===id)))return;
   stopSoloTest();G.soloTestChoice=id;refreshSoloTestPanel();
 }
 function soloQuick(id){   /* poder con un toque: nivel 20 si estaba a cero, circunstancias automáticas y lanzamiento */
@@ -7166,9 +7178,10 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
       f=tf('pl_runes');const t=nearest5(x0,y0,rg('pl_runes'));
       if(!t)retry('pl_runes');
       else{SRC='Llamarada';const an=Math.atan2(t.y-y0,t.x-x0),R=rg('pl_runes')*f.rad,d=hdmg(l)*2.6*f.dm;
+        if(hxSpr('pf_stream_1')){const mx=x0+Math.cos(an)*24,my=y0-12+Math.sin(an)*24;fxSeq('pf_mouth',2,{x:mx,y:my,w:74,d:.22,fi:0,fo:.2,add:true});fxSeq('pf_stream',4,{x:mx,y:my,to:[x0+Math.cos(an)*R,y0-12+Math.sin(an)*R],h:R*.62,d:.65,fi:0,fo:.25})}
         for(const o of G.enemies){if(o.dead)continue;const dx=o.x-x0,dy=o.y-y0,dd=Math.hypot(dx,dy);if(dd>R+o.r)continue;
           let da=Math.atan2(dy,dx)-an;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)>.55)continue;
-          dealDamage(o,d,'fire');if(!o.dead)addDot(o,'fire',d*.3,3,false)}
+          dealDamage(o,d,'fire');if(hxSpr('pf_blast_1'))fxSeq('pf_blast',2,{x:o.x,y:o.y-o.r*.3,w:66,d:.3,fi:0,fo:.3});if(!o.dead)addDot(o,'fire',d*.3,3,false)}
         for(let i=0;i<22;i++){const a2=an+(Math.random()-.5)*1.1,sp=260+Math.random()*260;par5(x0,y0,Math.cos(a2)*sp,Math.sin(a2)*sp,.5,['#ff7a2a','#ffb040','#ffe27a'][i%3])}
         txt(x0,y0-80,'🔥 ¡Llamarada!','#ff9a3d',18);done('pl_runes',Math.max(6,12-.3*l)*f.cd)}
     }});}
