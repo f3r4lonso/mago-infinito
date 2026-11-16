@@ -29,7 +29,7 @@ var SPR=(function(){
   api.heroMeta=h=>metas[h]||null;
   api.basicOf=src=>basicBySrc[src]||null;
   api.meleeOf=h=>meleeBy[h]||null;
-  metas.alchemist={idle:'alchemist_idle',atk:'alchemist_atk',ax:.5,ay:1,H:82};
+  metas.alchemist={idle:'alchemist_idle',atk:'alchemist_atk',walk:['alchemist_walk_1','alchemist_walk_2','alchemist_walk_3','alchemist_walk_4'],hurt:'alchemist_hurt',ax:.422,ay:1,H:64};   /* rework: pack2.js (caminar y golpeado con sprites) */
   api.has=id=>{const s=ids[id];return !!(api.enabled&&s&&s.A.ok)};
 
   /* encaja el sprite en una caja bw x bh sin deformarlo, apoyado por abajo en (x,y). Devuelve la altura dibujada (0 si no hay sprite). */
@@ -169,11 +169,17 @@ var SPR=(function(){
   };
 
   /* ---------- héroe con sprite de reposo y de ataque (misma celda: alineados) ---------- */
-  api.spriteHero=function(c,idle,atk,t,fx,st,H,ay,ax,atkax){
+  api.spriteHero=function(c,idle,atk,t,fx,st,H,ay,ax,atkax,meta){
     ay=ay==null?1:ay;ax=ax==null?.5:ax;
-    const u=st.u==null?-1:st.u,id=(u>=0&&api.has(atk))?atk:idle;
+    const m=meta||{},u=st.u==null?-1:st.u;let id=(u>=0&&api.has(atk))?atk:idle;
+    /* ataques cuerpo a cuerpo alternados (tajo, estocada, tajo ascendente): uno por cada golpe, avanzando por sus fotogramas */
+    if(u>=0&&m.atks){const q=m.atks[(st.n||0)%m.atks.length],cand=q[Math.min(q.length-1,Math.floor(u*q.length))];if(api.has(cand))id=cand}
+    /* caminar y recibir daño con sprites propios (si el héroe los trae): la animación por código se atenúa */
+    if(u<0&&(st.run||0)>.2&&m.walk&&api.has(m.walk[0]))id=m.walk[Math.floor(t*9)%m.walk.length];
+    if((st.hurt||0)>.35&&m.hurt&&api.has(m.hurt))id=m.hurt;
+    const wk=(m.walk&&m.walk.indexOf(id)>=0)?.4:1;
     if(!api.has(id))return false;
-    const run=st.run||0,k=st.atk||0,sp=ids[id],W=H*sp.w/sp.h;
+    const run=(st.run||0)*wk,k=st.atk||0,sp=ids[id],W=H*sp.w/sp.h;
     c.save();c.scale(fx,1);
     const sn=Math.sin(t*11),bob=Math.sin(t*2.3)*.6-Math.abs(sn)*3*run;
     const lean=(.09*Math.sign(st.vx||1)*run)*(fx<0?-1:1)+Math.sin(t*1.7)*.012;
