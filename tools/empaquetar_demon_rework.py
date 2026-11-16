@@ -39,6 +39,13 @@ def partir(fg,box,n):
         sub=fg[y0:y1,x0+cuts[i]:x0+cuts[i+1]];ys,xs=np.where(sub)
         out.append((x0+cuts[i]+int(xs.min()),y0+int(ys.min()),x0+cuts[i]+int(xs.max())+1,y0+int(ys.max())+1))
     return out
+def cortar(fg,y0,y1,xs):
+    # fotogramas que se tocan en la hoja (alas y tajos): se cortan en las zonas libres elegidas a mano; cada uno solo conserva sus píxeles
+    out=[]
+    for i in range(len(xs)-1):
+        sub=fg[y0:y1,xs[i]:xs[i+1]];ys,xx=np.where(sub)
+        out.append((xs[i]+int(xx.min()),y0+int(ys.min()),xs[i]+int(xx.max())+1,y0+int(ys.max())+1))
+    return out
 def pies(a,box):
     x0,y0,x1,y1=box;fg=a[y0:y1,x0:x1,3]>0;cnt=fg.sum(axis=1);filas=np.where(cnt>=6)[0];base=int(filas.max())
     ys,xs=np.where(fg[max(0,base-12):base+1]);return base,float(np.median(xs))
@@ -57,10 +64,9 @@ borrar2=[(420,26,590,52),(420,262,555,292),(400,494,645,520),(345,726,845,752),(
 a2,fg2=cargar('demonhunter2.png',(1,0,1),6,borrar2)
 c2=comps(fg2,5)
 d_idle=en(c2,415,50,1140,250);d_walk=en(c2,415,260,1215,470)
-d_at=en(c2,395,525,1210,700)
-if len(d_at)==4:d_at=[d_at[0],d_at[1]]+partir(fg2,d_at[2],2)+[d_at[3]]
-d_esp_=en(c2,333,730,1215,960);d_esp=partir(fg2,d_esp_[0],3)+[d_esp_[1]] if len(d_esp_)==2 else d_esp_
-d_hurt_=en(c2,15,1020,330,1170);d_hurt=partir(fg2,d_hurt_[0],2)+[d_hurt_[1]] if len(d_hurt_)==2 else d_hurt_
+d_at=cortar(fg2,520,700,[395,559,693,889,1049,1212])   # 5 fotogramas del golpe físico
+d_esp_=en(c2,333,730,1215,960);d_esp=cortar(fg2,730,960,[335,497,658,895])+([d_esp_[-1]] if len(d_esp_)>=2 else [])   # 3 fotogramas pegados + el grande
+d_hurt=cortar(fg2,1020,1170,[15,123,218,335])
 print('demonio: idle',len(d_idle),'caminar',len(d_walk),'ataque',len(d_at),'especial',len(d_esp),'herido',len(d_hurt))
 def lienzo(items,a):
     # items: [(id, recuadro)] -> lienzo común alineado por los pies

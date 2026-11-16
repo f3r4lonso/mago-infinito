@@ -368,13 +368,17 @@ body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
 </div>
 <script src="assets/sprites.js"></script>
 <script src="assets/heroes/mage/pack.js"></script>
+<script src="assets/heroes/mage/pack-nuevo.js"></script>
 <script src="assets/tower/pack.js"></script>
 <script src="assets/enemies/pack.js"></script>
 <script src="assets/heroes/alchemist/pack.js"></script>
 <script src="assets/heroes/alchemist/pack2.js"></script>
 <script src="assets/heroes/alchemist/pack3.js"></script>
+<script src="assets/heroes/alchemist/pack-nuevo.js"></script>
 <script src="assets/heroes/archer/pack.js"></script>
+<script src="assets/heroes/archer/pack-nuevo.js"></script>
 <script src="assets/heroes/assassin/pack.js"></script>
+<script src="assets/heroes/assassin/pack-nuevo.js"></script>
 <script src="assets/heroes/assassin/fx.js"></script>
 <script src="assets/heroes/archer/fx.js"></script>
 <script src="assets/heroes/barbarian/fx.js"></script>
@@ -395,16 +399,27 @@ body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
 <script src="assets/heroes/paladin/pack2.js"></script>
 <script src="assets/heroes/paladin/pack3.js"></script>
 <script src="assets/heroes/paladin/pack4.js"></script>
+<script src="assets/heroes/paladin/pack-nuevo.js"></script>
 <script src="assets/heroes/druid/pack.js"></script>
+<script src="assets/heroes/druid/pack-nuevo.js"></script>
 <script src="assets/heroes/barbarian/pack.js"></script>
+<script src="assets/heroes/barbarian/pack-nuevo.js"></script>
 <script src="assets/heroes/werewolf/pack.js"></script>
+<script src="assets/heroes/werewolf/pack-nuevo.js"></script>
 <script src="assets/heroes/troll/pack.js"></script>
+<script src="assets/heroes/troll/pack-nuevo.js"></script>
 <script src="assets/heroes/monk/pack.js"></script>
+<script src="assets/heroes/monk/pack-nuevo.js"></script>
 <script src="assets/heroes/necro/pack.js"></script>
+<script src="assets/heroes/necro/pack-nuevo.js"></script>
 <script src="assets/heroes/priest/pack.js"></script>
+<script src="assets/heroes/priest/pack-nuevo.js"></script>
 <script src="assets/heroes/devourer/pack.js"></script>
+<script src="assets/heroes/devourer/pack-nuevo.js"></script>
 <script src="assets/heroes/shaman/pack.js"></script>
+<script src="assets/heroes/shaman/pack-nuevo.js"></script>
 <script src="assets/heroes/dwarf/pack.js"></script>
+<script src="assets/heroes/dwarf/pack-nuevo.js"></script>
 <script src="assets/tier-glyphs.js"></script>
 <script src="assets/summons/pack.js"></script>
 <script>
@@ -654,7 +669,7 @@ const CLS={
   {id:'b_shout',n:'Llamada de batalla',icon:'📢',desc:'Atraes y aturdes a los enemigos cercanos y, mientras dura, recibes un 40% menos de daño y pegas más fuerte.',eff:l=>'Radio '+(200+4*l)+' · '+f1(6+.15*l)+' s · aturde '+f1(.8+.03*l)+' s · cada '+f1(Math.max(10,20-.4*l))+' s'}
  ],
  demon:[
-  {id:'z_meta',n:'Metamorfosis',icon:'😈',desc:'Te transformas en un demonio alado: lanzas 3 guadañas, atacas más rápido, pegas más fuerte y te regeneras.',eff:l=>f1(8+.3*l)+' s · +'+Math.round(30+2*l)+'% daño · +40% velocidad · cada '+f1(Math.max(16,30-.6*l))+' s'},
+  {id:'z_meta',n:'Metamorfosis',icon:'😈',desc:'Te transformas en un demonio alado: lanzas 3 guadañas, atacas más rápido y pegas más fuerte en todo (ataque básico y habilidades) y te regeneras. Sigues pudiendo usar todas tus habilidades; al terminar vuelves a tu forma normal.',eff:l=>f1(8+.3*l)+' s · +'+Math.round(30+2*l)+'% daño · +40% velocidad · cada '+f1(Math.max(16,30-.6*l))+' s'},
   {id:'z_immo',n:'Aura de inmolación',icon:'🔥',desc:'Un aura de fuego vil te rodea y quema a los enemigos que se acercan.',eff:l=>'Radio '+Math.round(110+4*l)+' · golpea cada 0,5 s'},
   {id:'z_eyes',n:'Rayos oculares',icon:'👁️',desc:'Tus ojos disparan rayos de energía que atraviesan a todos los enemigos en línea.',eff:l=>Math.min(5,1+Math.floor(l/5))+' rayo(s) · cada '+f1(Math.max(5,10-.25*l))+' s'},
   {id:'z_evade',n:'Evasión',icon:'💨',desc:'Posibilidad de esquivar el daño que recibes.',eff:l=>Math.round(100*Math.min(.3,.05+.013*l))+'% de esquiva'},
@@ -751,7 +766,7 @@ function newGame(...args){
 }
 function recalc(){
   const it=G.items;TFC.g=null;   /* las mejoras de objetos cambian alcance: invalida la caché de habilidades */
-  S.dmg=(1+.12*it.staff)*(1+.1*G.bonus)*rampMult(G.lvl)*(1+teamAura())*(dragonForm()?1.3*tf('pl_wrath').dm:1);   /* Forma de dragón: +30% de daño a todo */
+  S.dmg=(1+.12*it.staff)*(1+.1*G.bonus)*rampMult(G.lvl)*(1+teamAura())*(dragonForm()?1.3*tf('pl_wrath').dm:1)*(demonForm()?(1.3+.02*clv('z_meta'))*tf('z_meta').dm:1);   /* Forma de dragón (+30%) y de demonio: más daño a todo (básico y habilidades) */
   S.atk=(1+.05*it.ring);
   S.rk=1+.05*it.crystal;S.range=300*S.rk;
   /* cada héroe tiene su propia vida máxima */
@@ -770,6 +785,7 @@ function recalc(){
   S.dodge=Math.min(.6,S.dodge+Math.min(.25,.005*it.talisman));
 }
 const dragonForm=()=>!!(G&&G.ht&&G.hero==='paladin'&&G.ht.wrathOn>0);   /* el paladín está transformado en dragón */
+const demonForm=()=>!!(G&&G.ht&&G.hero==='demon'&&G.ht.metaOn>0);   /* el cazador está transformado en demonio */
 function hpMax(h){
   let v=Math.round((HEROES[h].hp+25+8*(G.lvl-1)+25*G.items.robe)*(h==='dwarf'?1+.04*clv('d_armor'):1));
   if(h==='paladin'&&dragonForm())v=Math.round(v*1.4);   /* Forma de dragón: +40% de vida máxima mientras dure */
@@ -1824,7 +1840,7 @@ function wallHit(e,dist,dt){
 /* ============ ATAQUE BÁSICO Y HABILIDADES DE HÉROE ============ */
 function shotGlaive(t,dmg,b){
   const meta=G.ht&&G.ht.metaOn>0,l=clv('z_meta');
-  const d=dmg*(meta?(1.3+.02*l)*tf('z_meta').dm:1),n=meta?3:2,a0=Math.atan2(t.y-cy(),t.x-cx());
+  const d=dmg,n=meta?3:2,a0=Math.atan2(t.y-cy(),t.x-cx());
   for(let k=0;k<n;k++){
     const a=a0+(k-(n-1)/2)*.07;
     const p={kind:'orb',glaive:true,x:cx(),y:cy()-6,vx:Math.cos(a)*b.spd,vy:Math.sin(a)*b.spd,size:9,life:.95,type:b.type,dmg:d,tgt:t,exp:k===0?d*mult(t,b.type):0,hit:new Set(),src:b.n,col:b.col};
@@ -2284,10 +2300,10 @@ function updateHeroEffects(dt,rdy,done,retry){
     }});}
   } else if(h==='demon'){
     if((l=clv('z_meta'))){
-      if(T.metaOn>0){T.metaOn-=dt;G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.012*dt*tf('z_meta').hm)}
+      if(T.metaOn>0){T.metaOn-=dt;G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.012*dt*tf('z_meta').hm);if(T.metaOn<=0){T.metaOn=0;recalc()}}   /* fin de la Metamorfosis: vuelve al daño normal */
       else {queueHeroCast(rdy,'z_meta',()=>{l=clv('z_meta');if(rdy('z_meta')){
         if(countNear(x0,y0,rg('z_meta'))<3)retry('z_meta');
-        else{T.metaOn=(8+.3*l)*tf('z_meta').dur;done('z_meta',Math.max(16,30-.6*l));if(zSpr()){fxSeq('zn_burst',4,{x:x0,y:y0-10,w:200,d:.6,fi:0,fo:.4,add:true});sprFx({anim:asSeq('zn_wings',5),fps:7,pos:()=>[cx(),cy()-14],w:120,d:T.metaOn,fi:.15,fo:.1,a:.9})}else G.fx.push({k:'ring',x:x0,y:y0,r:110,t:.4,c:'#7dff6a'});txt(x0,y0-70,'😈 ¡METAMORFOSIS!','#7dff6a',18)}
+        else{T.metaOn=(8+.3*l)*tf('z_meta').dur;recalc();done('z_meta',Math.max(16,30-.6*l));if(zSpr()){fxSeq('zn_burst',4,{x:x0,y:y0-10,w:200,d:.6,fi:0,fo:.4,add:true});sprFx({anim:asSeq('zn_wings',5),fps:7,pos:()=>[cx(),cy()-14],w:120,d:T.metaOn,fi:.15,fo:.1,a:.9})}else G.fx.push({k:'ring',x:x0,y:y0,r:110,t:.4,c:'#7dff6a'});txt(x0,y0-70,'😈 ¡METAMORFOSIS!','#7dff6a',18)}
       }});}
     }
     const meta=T.metaOn>0;
@@ -2295,12 +2311,12 @@ function updateHeroEffects(dt,rdy,done,retry){
       T.immoTk=(T.immoTk??0)-dt;
       if(T.immoTk<=0){
         const fim=tf('z_immo');T.immoTk=.5*fim.cd;SRC='Aura de inmolación';
-        const R=(110+4*l)*fim.rad,d=hdmg(l)*.55*(meta?1.5:1);
+        const R=(110+4*l)*fim.rad,d=hdmg(l)*.55;
         for(const e of G.enemies){if(e.dead)continue;if(Math.hypot(e.x-x0,e.y-y0)<=R+e.r&&mult(e,'fire')>0)dealDamage(e,d,'fire')}
       }
     }
     {queueHeroCast(rdy,'z_eyes',()=>{l=clv('z_eyes');if((l=clv('z_eyes'))&&rdy('z_eyes')){
-      const fey=tf('z_eyes'),n=Math.min(5+fey.cnt,1+Math.floor(l/5)+fey.cnt),d=hdmg(l)*2.2*(meta?1.5:1),tg=pick(n,'magic',d,rg('z_eyes'));
+      const fey=tf('z_eyes'),n=Math.min(5+fey.cnt,1+Math.floor(l/5)+fey.cnt),d=hdmg(l)*2.2,tg=pick(n,'magic',d,rg('z_eyes'));
       if(!tg.length)retry('z_eyes');
       else{
         SRC='Rayos oculares';
@@ -2320,7 +2336,7 @@ function updateHeroEffects(dt,rdy,done,retry){
       const cs=G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-x0,e.y-y0)<=rg('z_shadow')).sort((a,b)=>b.hp-a.hp).slice(0,2+Math.floor(l/4)+tf('z_shadow').cnt);
       if(!cs.length)retry('z_shadow');
       else{
-        SRC='Golpe de sombras';const d=hdmg(l)*3*(meta?1.5:1);
+        SRC='Golpe de sombras';const d=hdmg(l)*3;
         for(const e of cs){dealDamage(e,d,'magic');if(!e.dead)e.slow={a:.4,t:3};if(zSpr())fxSeq('z_shadow',4,{x:e.x,y:e.y-e.r*.3,w:110,d:.45,fi:0,fo:.3});else{G.fx.push({k:'bolt',pts:[[x0,y0-8],[e.x,e.y]],t:.25,c:'#a050d0'});G.fx.push({k:'ring',x:e.x,y:e.y,r:40,t:.3,c:'#a050d0'})}}
         done('z_shadow',Math.max(6,11-.3*l));
       }
@@ -3267,8 +3283,9 @@ function drawHeroOn(c,x,y,h,t,aim,sc,st){
     if(FS!==1){c.translate(0,24);c.scale(FS,FS);c.translate(0,-24)}
     if(fc){const pu=.85+.15*Math.sin(t*6);hGlow(c,0,-6,38*pu,fc,.5);hGlow(c,0,-18,24,fc,.35)}
     if(h==='assassin'&&G&&G.hero==='assassin'&&G.ht&&G.ht.hideOn>0&&!(G.solo&&G.soloAnimation&&G.soloAnimation!=='auto'))c.globalAlpha=.34+.1*Math.sin(t*5)}   /* Invisibilidad: el cuerpo se vuelve casi transparente */
-  if(h==='mage'&&SPR.on&&SPR.mageHero(c,t,aim,fx,st)){c.restore();return}
-  {const hm=SPR.on&&h!=='mage'?SPR.heroMeta(h):null;if(hm&&SPR.spriteHero(c,hm.idle,hm.atk,t,fx,st,hm.H,hm.ay,hm.ax,hm.atkax,hm)){c.restore();return}}
+  const hmN=SPR.on?SPR.heroMeta(h):null;   /* con el arte nuevo (hojas de 'nuevos heroes') el mago se dibuja con sus propios fotogramas */
+  if(h==='mage'&&SPR.on&&!(hmN&&hmN.idleSeq)&&SPR.mageHero(c,t,aim,fx,st)){c.restore();return}
+  {const hm=hmN;if(hm&&SPR.spriteHero(c,hm.idle,hm.atk,t,fx,st,hm.H,hm.ay,hm.ax,hm.atkax,hm)){c.restore();return}}
   c.scale(fx,1);
   if(B.size){c.translate(0,24);c.scale(B.size,B.size);c.translate(0,-24)}
   const A=fx<0?Math.PI-aim:aim,P=heroPose(h,t,A,st);
@@ -7842,7 +7859,7 @@ function demonTick(dt,T,x0,y0,rdy,done,retry){
     f=tf('z_dagger');const cs=asFoes(x0,y0,rg('z_dagger')).sort((a,b)=>(b.boss?1e9:0)+b.max-((a.boss?1e9:0)+a.max)).slice(0,2+Math.floor(l/6)+f.cnt);
     if(!cs.length)retry('z_dagger');
     else{
-      SRC='Daga asfixiante';const d=hdmg(l)*2.2*(T.metaOn>0?1.5:1)*f.dm;
+      SRC='Daga asfixiante';const d=hdmg(l)*2.2*f.dm;
       for(const e of cs){if(zSpr()){sprFx({anim:asSeq('zn_dagger',4),fps:16,path:[x0,y0-10,e.x,e.y],w:40,d:.16,fi:0,fo:0});sprFx({anim:asSeq('zn_dagger',4),fps:6,x:e.x,y:e.y-e.r*.4,w:30,wait:.16,d:1.06,fi:.1,fo:.5,a:.9})}else G.fx.push({k:'bolt',pts:[[x0,y0-10],[e.x,e.y]],t:.15,c:'#9dff8a'});dealDamage(e,d,'phys');if(!e.dead){e.slow={a:Math.min(.7,.4+.01*l),t:3+.1*l};e.vt=Math.max(e.vt||0,G.t+4);e.vm=Math.max(e.vm||1,1.15+f.vmx)}}
       txt(x0,y0-60,'🗡️ ¡Dagas asfixiantes!','#9dff8a',17);done('z_dagger',Math.max(6,11-.25*l));
     }
