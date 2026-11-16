@@ -1,5 +1,5 @@
 /* Genera preview-mago-v2.html: partida real con el mago, sprites PNG activos y varias habilidades lanzándose.
-   Uso: node tools/previsualizar-mago-v2.cjs  y abrir preview-mago-v2.html#<pasos>  (pasos de .05 s a simular) */
+   Uso: node tools/previsualizar-mago-v2.cjs  y abrir preview-mago-v2.html#<pasos>[,<héroe>]  (por ejemplo #120,alchemist)  (pasos de .05 s a simular) */
 const fs=require('node:fs');
 const source=fs.readFileSync('index.html','utf8');
 const start=source.indexOf('{const r0=loadRank();'),end=source.indexOf('</script>',start);
@@ -7,13 +7,14 @@ if(start<0||end<0)throw Error('No se encuentra el arranque del juego');
 const preview=`
 window.addEventListener('error',e=>{document.body.dataset.previewError=e.message});
 resize();buildShop();buildSkillsMenu();buildAutoUpgradeHeaders();buildBar();buildRankBtn();buildTabs();setupDrawers();setupTip();
-ONE_NEXT=true;newGame('mage');G.lvl=40;G.gold=99999;
-for(const a of CLS.mage)G.cls[a.id]=Math.min(40,CLSMAX);
+const HERO=((location.hash||'#120').slice(1).split(',')[1])||'mage';
+ONE_NEXT=true;newGame(HERO);G.lvl=40;G.gold=99999;
+for(const a of CLS[HERO])G.cls[a.id]=Math.min(40,CLSMAX);
 G.tower.lvl=40;for(const k of SK)G.skills[k.id]=12;for(const sp of SPS)G.spLv[sp.id]=15;
 G.tv=(G.tv||0)+1;recalc();G.hp=S.maxHp;G.heroInv=1e6;
 for(const sp of SPS)G.spFire[sp.id]=true;
 refreshAll();refreshBar();
-const steps=parseInt((location.hash||'#120').slice(1))||120;
+const steps=parseInt((location.hash||'#120').slice(1).split(',')[0])||120;
 let waited=0;
 const wait=setInterval(()=>{
   waited+=100;

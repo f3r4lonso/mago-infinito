@@ -152,13 +152,17 @@ En la pantalla de inicio, el botón **Jugar con 1 héroe** empieza la partida co
 
 ## Arte en PNG (versión 2, en curso)
 
-El **mago invocador**, la **torre** y los **42 enemigos** ya se dibujan con sprites PNG: personaje, disparo arcano, torre por pisos, cíclope, esqueletos, iconos de habilidad y de poder, iconos de mejora y la mayoría de los efectos. El resto de héroes y el dragón siguen en vectorial. Los enemigos usan 2 fotogramas de caminar (`assets/enemigos1.png`, `enemigos2.jpg` y `enemigos3.jpg`; `python tools/empaquetar_enemigos.py`) y conservan por código la corona de jefe, el aro de élite y los efectos de estado.
+El **mago invocador**, el **alquimista**, la **torre** y los **42 enemigos** ya se dibujan con sprites PNG: personaje, disparo arcano, torre por pisos, cíclope, esqueletos, iconos de habilidad y de poder, iconos de mejora y la mayoría de los efectos. El resto de héroes y el dragón siguen en vectorial. Los enemigos usan 2 fotogramas de caminar (`assets/enemigos1.png`, `enemigos2.jpg` y `enemigos3.jpg`; `python tools/empaquetar_enemigos.py`) y conservan por código la corona de jefe, el aro de élite y los efectos de estado.
 
 - Los sprites viven en `assets/heroes/mage/` y `assets/tower/` (dos atlas y `pack.js` cada uno) y se cargan con `assets/sprites.js` (script normal: sigue funcionando con doble clic).
 - Si un sprite falta o el PNG no carga, se usa el dibujo vectorial de siempre. Con `index.html?sprites=off` se fuerza el dibujo vectorial para comparar.
-- Las hojas originales están en `assets/mago_hoja1.png` y `assets/mago_hoja2.png`. Hojas de la torre: `assets/torre_hoja1.png` y `assets/torre_hoja2.png`. Para regenerar los atlas: `python tools/empaquetar_mago.py` y `python tools/empaquetar_torre.py` (requiere `pillow` y `numpy`).
+- Las hojas originales están en `assets/mago_hoja1.png` y `assets/mago_hoja2.png`. Hojas de la torre: `assets/torre_hoja1.png` y `assets/torre_hoja2.png`. Para regenerar los atlas: `python tools/empaquetar_mago.py`, `python tools/empaquetar_torre.py` y `python tools/empaquetar_alquimista.py` (hojas `assets/alche1.jpg` y `alche2.jpg`) (requiere `pillow` y `numpy`).
 - Los iconos de mejora no se recortan de la hoja: el código compone el icono de la habilidad, el marco de color del nivel y el símbolo del efecto.
 - Vista previa con una partida real del mago: `node tools/previsualizar-mago-v2.cjs` y abrir `preview-mago-v2.html#120`.
 - Prompts de arte y plantillas guía: `PROMPTS-ARTE-MAGO.md` y `guias-arte/`. Plan completo: `PLAN-V2.md`.
 
 - **8 enemigos extra** con arte pixel art (Fragmento de cristal, Hada de cristal, Gema rodante, Cristalino, Escorpión, Dragoncillo, Pulpo y Cangrejo dorados), salidos de `assets/enemigos (2).jpg`. Tienen un solo fotograma y se animan con rebote por código; sus estadísticas son parecidas a las de enemigos existentes del mismo nivel. Las demás hojas `enemigos (N).jpg` no encajan con el juego y no se usan.
+
+- Prompts de arte de los 15 héroes restantes: carpeta `prompts-heroes/` (2 archivos por héroe, uno por hoja; empieza por `LEEME.md`). Se regenera con `node tools/generar-prompts-heroes.cjs`.
+
+- Prompts de arte de las unidades invocadas: carpeta prompts-invocadas/ (3 hojas, un archivo por hoja; empieza por LEEME.md).

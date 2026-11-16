@@ -325,10 +325,11 @@ body.one #heroSec2,body.one #heroSec3,body.one #heroSec4{display:none!important}
 <script src="assets/heroes/mage/pack.js"></script>
 <script src="assets/tower/pack.js"></script>
 <script src="assets/enemies/pack.js"></script>
+<script src="assets/heroes/alchemist/pack.js"></script>
 <script>
 "use strict";
 /* Si no se cargó assets/sprites.js (pruebas automáticas), SPR se comporta como "sin sprites" y se usa el dibujo vectorial. */
-if(typeof SPR==='undefined')var SPR={on:false,has:()=>false,draw:()=>false,iconHtml:(i,s,f)=>f,tierIconHtml:()=>'',drawFx:()=>true,mageHero:()=>false,towerBody:()=>false,drawFit:()=>0};
+if(typeof SPR==='undefined')var SPR={on:false,has:()=>false,draw:()=>false,iconHtml:(i,s,f)=>f,tierIconHtml:()=>'',drawFx:()=>true,mageHero:()=>false,towerBody:()=>false,drawFit:()=>0,spriteHero:()=>false};
 /* efecto con sprite PNG para el resto del juego (torre, poderes) */
 function sprFx(o){if(SPR.on&&G.fx.length<300){o.k='spr';o.t=o.d;G.fx.push(o)}}
 /* ============ DATOS ============ */
@@ -819,6 +820,7 @@ function addDot(e,type,dps,dur,stack){
 }
 function hitEnemy(p,e){
   SRC=p.src||p.type;
+  if(p.flask&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'al_splash',x:e.x,y:e.y+4,w:40,d:.4,t:.4,fi:0,fo:.6,g0:.5,g1:1.1});
   if(p.src==='Rayo arcano de la torre'&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'t_impact',x:e.x,y:e.y,w:30,d:.25,t:.25,fi:0,fo:.7,g0:.5,g1:1.2,add:true});
   if(p.src==='Disparo arcano'&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'impact',x:e.x,y:e.y,w:p.crit?52:36,d:.3,t:.3,fi:0,fo:.7,g0:.5,g1:1.2,add:true});
   dealDamage(e,p.dmg,p.type);
@@ -3070,6 +3072,7 @@ function drawHeroOn(c,x,y,h,t,aim,sc,st){
   const bob=Math.sin(t*2.3)*.7;c.fillStyle='rgba(0,0,0,.3)';c.beginPath();c.ellipse(0,25,15-bob,4.6,0,0,6.3);c.fill();
   const hc=HEROES[h]?HEROES[h].col:'#ffffff';c.strokeStyle=hc+'55';c.lineWidth=1.6;c.beginPath();c.ellipse(0,25,19+Math.sin(t*2.6)*1.5,6,0,0,6.3);c.stroke();
   if(h==='mage'&&SPR.on&&SPR.mageHero(c,t,aim,fx,st)){c.restore();return}
+  if(h==='alchemist'&&SPR.on&&SPR.spriteHero(c,'alchemist_idle','alchemist_atk',t,fx,st,82)){c.restore();return}
   c.scale(fx,1);
   {const FS=heroForm(h);if(FS!==1){c.translate(0,24);c.scale(FS,FS);c.translate(0,-24)}}
   if(B.size){c.translate(0,24);c.scale(B.size,B.size);c.translate(0,-24)}
@@ -3691,7 +3694,8 @@ const BARD_SONGS=['j_march','j_refuge','j_ballad'];
 function nhTargets(x,y,r){return G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=r+e.r)}
 function nhRing(x,y,r,c){if(G.fx.length<380)G.fx.push({k:'ring',x,y,r,t:.4,c})}
 function nhDamage(id,e,d,type){const ps=SRC;SRC=TIERNAME[id]||id;dealDamage(e,d,type);SRC=ps}
-function nhArea(id,x,y,r,d,type,cap=24){for(const e of nhTargets(x,y,r).slice(0,cap))nhDamage(id,e,d,type);nhRing(x,y,r,TYPES[type].c)}
+function nhArea(id,x,y,r,d,type,cap=24){for(const e of nhTargets(x,y,r).slice(0,cap))nhDamage(id,e,d,type);nhRing(x,y,r,TYPES[type].c);
+  const sf={al_spark:'al_boom1',al_mix:'al_boom2',al_transmute:'al_boom2'}[id];if(sf)sprFx({id:sf,x,y,w:r*2.3,d:.5,g0:.4,g1:1.05,fo:.6,add:true})}
 function nhHeal(x,y,r,pct){if(Math.hypot(cx()-x,cy()-y)<=r)G.hp=Math.min(S.maxHp,G.hp+S.maxHp*pct);for(const a of G.allies)if(a.hp>0&&Math.hypot(a.x-x,a.y-y)<=r) a.hp=Math.min(a.max,a.hp+a.max*pct)}
 function shamanStatic(n){G.ht.static=Math.max(0,Math.min(30,(G.ht.static||0)+n))}
 function bardSong(){
@@ -3806,12 +3810,12 @@ function alchemistTick(dt,rdy,done,retry){
   const T=G.ht,x=cx(),y=cy();let l,f;
   T.chemicals=(T.chemicals||[]).filter(z=>z.until>G.t);const zones=T.chemicals;
   for(const id of ['al_oil','al_fumes'])if((l=clv(id))&&rdy(id)){const e=nhTargets(x,y,rg(id))[0];if(!e){retry(id);continue}f=tf(id);nhChem(id==='al_oil'?'oil':'fumes',e.x,e.y,(id==='al_oil'?75+2*l:85+2*l)*f.rad,(id==='al_oil'?7+.15*l:5+.15*l)*f.dur,l,id);done(id,id==='al_oil'?Math.max(6,12-.25*l):Math.max(8,15-.3*l))}
-  if((l=clv('al_spark'))&&rdy('al_spark')){const e=nhTargets(x,y,rg('al_spark'))[0];if(!e)retry('al_spark');else{const ex=e.x,ey=e.y,R=(70+2*l)*tf('al_spark').rad;nhIgnite(ex,ey,R);nhArea('al_spark',ex,ey,R,hdmg(l)*1.8,'fire');done('al_spark',Math.max(5,10-.2*l))}}
+  if((l=clv('al_spark'))&&rdy('al_spark')){const e=nhTargets(x,y,rg('al_spark'))[0];if(!e)retry('al_spark');else{const ex=e.x,ey=e.y,R=(70+2*l)*tf('al_spark').rad;sprFx({id:'al_spark_proj',x:x,y:y-10,path:[x,y-10,ex,ey],w:64,ax:.88,rot:Math.atan2(ey-y+10,ex-x),d:.25,fi:0,fo:.2,add:true});nhIgnite(ex,ey,R);nhArea('al_spark',ex,ey,R,hdmg(l)*1.8,'fire');done('al_spark',Math.max(5,10-.2*l))}}
   if((l=clv('al_catalyst'))&&rdy('al_catalyst')){let count=0;for(const e of nhTargets(x,y,340*tf('al_catalyst').rad)){if(count>=3+Math.floor(l/5)+tf('al_catalyst').cnt)break;let used=false;for(const type of ['poison','fire']){const d=e.dots[type];if(!d||!d.src||!d.src.startsWith('Frasco corrosivo')&&!['Gas volátil','Aceite inflamable'].includes(d.src))continue;const part=Math.min(1,d.t);d.t-=part;const ps=SRC;SRC=d.src;dealDamage(e,d.dps*part,type);SRC=ps;if(d.t<=0)delete e.dots[type];used=true;if(e.dead)break}if(used)count++}if(count)done('al_catalyst',Math.max(4,9-.2*l));else retry('al_catalyst')}
   if((l=clv('al_mix'))&&rdy('al_mix')){let pair=null;for(let i=0;i<zones.length&&!pair;i++)for(let j=i+1;j<zones.length;j++){const a=zones[i],b=zones[j];if(a.until<=G.t||b.until<=G.t||a.kind===b.kind||Math.hypot(a.x-b.x,a.y-b.y)>a.r+b.r||Math.hypot(a.x-x,a.y-y)>rg('al_mix'))continue;pair=[a,b];break}
     if(!pair)retry('al_mix');else{for(const z of pair)z.until=G.t;nhArea('al_mix',(pair[0].x+pair[1].x)/2,(pair[0].y+pair[1].y)/2,(100+2*l)*tf('al_mix').rad,hdmg(l)*3,'magic');done('al_mix',Math.max(6,12-.25*l))}}
   if((l=clv('al_antidote'))&&rdy('al_antidote')&&G.hp<S.maxHp){let amount=0,n=0;for(const e of nhTargets(x,y,320)){const d=e.dots.poison;if(!d||!['Frasco corrosivo','Gas volátil'].includes(d.src)||d.t<=0)continue;const part=Math.min(1,d.t);d.t-=part;amount+=Math.max(0,d.dps*part);if(d.t<=0)delete e.dots.poison;if(++n>=3)break}
-    if(amount>0&&G.hp<S.maxHp){G.hp=Math.min(S.maxHp,G.hp+Math.min(amount*.15,S.maxHp*(.02+.0012*l)*tf('al_antidote').hm));done('al_antidote',Math.max(7,14-.3*l))}else retry('al_antidote')}
+    if(amount>0&&G.hp<S.maxHp){G.hp=Math.min(S.maxHp,G.hp+Math.min(amount*.15,S.maxHp*(.02+.0012*l)*tf('al_antidote').hm));sprFx({id:'al_heal',x:x,y:y-4,w:80,d:.9,g0:.6,g1:1.1,fo:.5,add:true});done('al_antidote',Math.max(7,14-.3*l))}else retry('al_antidote')}
   if((l=clv('al_transmute'))&&rdy('al_transmute')){const chosen=zones.filter(z=>z.until>G.t&&Math.hypot(z.x-x,z.y-y)<460).slice(0,8);if(!chosen.length||!nhTargets(x,y,500).length)retry('al_transmute');else{for(const z of chosen)z.until=G.t;for(const z of chosen)nhArea('al_transmute',z.x,z.y,(110+2*l)*tf('al_transmute').rad,hdmg(l)*2.8,'magic',12);T.transmuteUntil=G.t+2;done('al_transmute',Math.max(35,65-1.3*l));txt(x,y-65,'⚗️ ¡TRANSMUTACIÓN!','#e9ca6b',19)}}
   for(const z of zones){if(z.until<=G.t)continue;const targets=nhTargets(z.x,z.y,z.r);
     if(z.kind==='oil')for(const e of targets)e.slow={a:.3,t:.4};z.tk-=dt;if(z.tk>0)continue;z.tk=.75;
@@ -4054,7 +4058,7 @@ function drawNewHeroesFx(x,y){
   for(const t of T.stormTotems||[]){gLimb(ctx,[t.x,t.y,t.x,t.y-24],10,'#78573a');gEll(ctx,t.x,t.y-24,8,5,t.kind==='c_tide'?'#60bdba':'#b4a15b');gLimb(ctx,[t.x-12,t.y-17,t.x+12,t.y-17],4,'#ba9050');hGlow(ctx,t.x,t.y-25,4,t.kind==='c_tide'?'#88ead7':'#cbf1fa',.7);ctx.fillStyle='#22362b';ctx.fillRect(t.x-11,t.y+5,22,3);ctx.fillStyle='#93d68b';ctx.fillRect(t.x-11,t.y+5,22*t.hp/t.max,3)}
   if(T.stormShield>0){ctx.strokeStyle='#a9eff6';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y-5,28,36,0,0,6.3);ctx.stroke()}
  }
- if(h==='alchemist')for(const z of T.chemicals||[]){const colors={acid:'#9bd564',oil:'#a77c44',flame:'#f5a94d',fumes:'#b4c679'};ctx.fillStyle=colors[z.kind]+'44';ctx.strokeStyle=colors[z.kind]+'aa';ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(z.x,z.y,z.r,z.r*.7,0,0,6.3);ctx.fill();ctx.stroke();
+ if(h==='alchemist')for(const z of T.chemicals||[]){{const k={acid:'al_acid',oil:'al_oil_zone',flame:'al_boom1',fumes:'al_fumes_zone'}[z.kind];if(SPR.on&&k&&SPR.draw(ctx,k,z.x,z.y,{w:z.r*2.3,a:z.kind==='flame'?.75+.2*Math.sin(G.t*14):.92}))continue}const colors={acid:'#9bd564',oil:'#a77c44',flame:'#f5a94d',fumes:'#b4c679'};ctx.fillStyle=colors[z.kind]+'44';ctx.strokeStyle=colors[z.kind]+'aa';ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(z.x,z.y,z.r,z.r*.7,0,0,6.3);ctx.fill();ctx.stroke();
    for(let i=0;i<4;i++){const a=G.t*.8+i*1.6,rr=z.r*.5;ctx.beginPath();ctx.arc(z.x+Math.cos(a)*rr,z.y+Math.sin(a)*rr*.6,3+i%2,0,6.3);ctx.stroke()}}
  if(h==='bard'&&bardSong()){
    const song=bardSong();ctx.strokeStyle=song==='j_march'?'#f3cc75':song==='j_refuge'?'#9bdcf4':'#abe7a7';ctx.lineWidth=1.6;ctx.beginPath();
@@ -5272,7 +5276,7 @@ function draw(){
   // proyectiles
   for(const p of G.projs){
     if(p.primalWave){drawPrimalRock(ctx,p.x,p.y,8,G.t*3);continue}
-    if(p.flask){drawAlchemistFlask(ctx,p.x,p.y,p.size||6,G.t*7);continue}
+    if(p.flask){if(!(SPR.on&&SPR.draw(ctx,'al_proj',p.x,p.y,{w:24,rot:G.t*7})))drawAlchemistFlask(ctx,p.x,p.y,p.size||6,G.t*7);continue}
     if(p.arrow){drawArrow(p);continue}
     if(p.axe){drawAxe(p);continue}
     if(p.glaive){drawGlaive(p);continue}
@@ -6941,7 +6945,7 @@ heroKill3=function(e){
   const ps=SRC;SRC='Pandemia';
   for(const o of ts){addDot(o,'poison',hdmg(l)*(.2+.01*l)*f.dm,5,false);o.pgen=gen+1;if(f.slow)o.slow={a:f.slow[0],t:f.slow[1]};
     G.fx.push({k:'bolt',pts:[[e.x,e.y],[o.x,o.y]],t:.2,c:'#9bd564'});par6(o.x,o.y,R5(-50,50),R5(-60,-10),.5,'#9bd564cc')}
-  SRC=ps;ring6(e.x,e.y,R,'#9bd564',.4);txt(e.x,e.y-e.r-14,'☣️','#9bd564',18);
+  SRC=ps;ring6(e.x,e.y,R,'#9bd564',.4);sprFx({id:'al_plague_boom',x:e.x,y:e.y,w:R*1.5,d:.6,g0:.4,g1:1,fo:.5});txt(e.x,e.y-e.r-14,'☣️','#9bd564',18);
 };
 
 const _t3b=heroTick3;
@@ -7007,6 +7011,7 @@ function tick6(h,dt,T,x0,y0,rdy,done,retry){
       for(const e of cs){
         const ex=e.x,ey=e.y;
         nhDamage('al_gold',e,hdmg(l)*3*(1+bonus),'magic');
+        sprFx({id:'al_gold_proj',x:x0,y:y0-10,path:[x0,y0-10,ex,ey],w:120,ax:.92,rot:Math.atan2(ey-y0+10,ex-x0),d:.25,fi:0,fo:.2,add:true});sprFx({id:'al_gold_boom',x:ex,y:ey,w:90,d:.6,wait:.2,g0:.4,g1:1.05,fo:.5});
         const g=Math.ceil((6+1.2*l)*(1+G.t/120)*S.goldM*f.hm);G.gold+=g;
         txt(ex,ey-e.r-18,'+'+g+' 🪙','#ffd24a',16);
         G.fx.push({k:'bolt',pts:[[x0,y0-10],[ex,ey]],t:.3,c:'#ffd24a'});ring6(ex,ey,e.r+16,'#ffd24a',.4);
