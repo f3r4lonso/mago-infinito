@@ -1,6 +1,15 @@
 # Escenarios de Mago Infinito
 
-El escenario activo es [Campo de batalla arcano](campo-batalla-arcano.md), guardado en `campo-batalla-arcano.png`. Su documento incluye el prompt final y la herramienta utilizada.
+Los mapas se eligen en la pantalla de inicio:
+
+| Mapa | Horizontal / escritorio | Vertical / móvil |
+|---|---|---|
+| Ruinas del bosque | `mapa1.jpg` | `mapa1_movil.jpg` |
+| Ruinas sombrías | `mapa2.jpg` | `mapa2_movil.jpg` |
+
+Estas cuatro imágenes las ha aportado el usuario. Se cargan localmente y se conserva su proporción al dibujarlas. La elección del mapa se guarda en el navegador.
+
+Se conserva el escenario anterior [Campo de batalla arcano](campo-batalla-arcano.md), guardado en `campo-batalla-arcano.png` y `campo-batalla-arcano-movil.png`. Su documento incluye el prompt final y la herramienta utilizada.
 
 ## Ilustración anterior del bosque
 

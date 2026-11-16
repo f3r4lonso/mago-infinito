@@ -15,6 +15,18 @@ Juego de supervivencia infinito en el navegador. Elige cuatro de los 16 héroes 
 
 Estado: beta.
 
+**Inicio de partida:** elige primero **Equipo de 4**, **Un héroe** o **Prueba poderes**, después el mapa y los personajes. En los modos individuales solo aparece un puesto seleccionado; el equipo de cuatro se conserva al alternar modos. Un único botón inicia el modo elegido. La pantalla se adapta a móvil con tarjetas compactas, desplazamiento vertical y el botón de inicio siempre accesible.
+
+**Mapas:** Ruinas del bosque usa `assets/mapa1.jpg` y `assets/mapa1_movil.jpg`; Ruinas sombrías usa `assets/mapa2.jpg` y `assets/mapa2_movil.jpg`. El juego utiliza la variante móvil en formato vertical y la de escritorio en horizontal, sin deformarlas. La elección se recuerda en este navegador y se mantiene al reiniciar la partida, también en modo prueba. Verificar el inicio, los tres modos y los mapas en Chrome a cuatro tamaños: `node comprobar-inicio.cjs`.
+
+**Balance vigente — torre de apoyo:** respecto al ajuste anterior, el daño de las habilidades generales y los poderes ofensivos baja un 60%. El rayo básico hace la mitad de daño y tarda un 30% más entre disparos. Los poderes tienen un 50% más de recarga base; los niveles solo reducen la recarga hasta un 30%. Los ultimates automáticos también tardan más, y Lluvia arcana, Juicio de luz y Clavados al suelo alcanzan como máximo a 12 enemigos dentro de su rango, en vez de cubrir todo el mapa. Tormenta de rayos alcanza hasta 12 objetivos y Lluvia de meteoros hasta 8; ambas escalan con menos impactos. Los efectos temporales de los poderes duran un 35% menos y Ventisca ralentiza menos.
+
+Curaciones y escudos de torre se reducen a la mitad antes de aplicar límites: Juicio divino cura como máximo un 20% de la vida; Fuente de vida cura hasta un 25% a héroes y un 30% a invocados, con hasta un 12% de escudo; Barrera rúnica da hasta un 25% de escudo. La regeneración de las torres baja del 0,8% al 0,2% de vida máxima por segundo y recuperan menos vida al subir de nivel.
+
+Soldados esqueleto mantiene como máximo 8 unidades, mitad guerreros y mitad arqueros, y solo repone bajas. Su vida baja un 30% respecto al ajuste anterior y su daño recibe el mismo nerf que los poderes. Los arqueros llevan arco sin espada y disparan flechas verdes con contorno oscuro que dañan al impactar. La mejora Guardia eterna aumenta la vida. Verificación: `node comprobar-esqueletos.cjs`.
+
+**Progresión más lenta:** los héroes reciben un 40% menos de experiencia y las torres un 50% menos. El bono temporal de experiencia de ambos deja de crecer al llegar a x4 a los 5 minutos. Se mantienen el reparto por héroe, el bono por baja y los puntos de habilidad por nivel. El modo de prueba conserva los botones para añadir niveles manualmente. Verificar daño y progresión con escenarios controlados de 1 y 4 héroes: `node comprobar-balance.cjs`. La simulación comprueba el cambio de balance; no sustituye las partidas manuales de supervivencia.
+
 **Rondas:** la partida se divide en rondas de 3 a 4 minutos (duración de pruebas; empieza en 3:00 y suma 5 s por ronda hasta 4:00). Al terminar una ronda se eliminan los enemigos, los héroes y las torres se recuperan y el juego se detiene: solo en ese descanso se gastan puntos, experiencia y oro (habilidades, poderes, objetos y huevo del dragón). Las mejoras automáticas también se compran en el descanso. Se empieza la siguiente ronda con el botón o con `Enter`.
 
 **Torre (reglas actuales):** cada torre tiene 50 niveles; al llegar al 50 aparece otra torre nueva en nivel 1. Las 12 habilidades de la torre ya no se compran: salen en una barra sobre el mapa, suben solas con el nivel de la **torre principal** (de 1 a 50, sin coste) y se lanzan en automático o en manual (botón AUTO/MANUAL, clic o teclas `1`-`0`). Todas las torres usan esos niveles al lanzarlas. Las habilidades de la torre se compran con 1 punto de torre (uno por nivel de torre) o con oro; los puntos y el oro de la torre se gastan también en sus **poderes** (panel inferior, entre rondas). El nivel de cada torre solo afecta a su golpe base.
@@ -80,6 +92,7 @@ Las cabeceras del panel inferior muestran el nombre de la sección, los puntos d
 ## Torre central, órbitas y rangos
 
 - La primera torre está en el centro, algo más grande, con dos héroes a cada lado.
+- Los héroes rodean la base de las torres en pie en lugar de atravesarla. La colisión también se aplica a cargas y destinos de teletransporte; las ruinas permiten el paso. Comprobación: `node comprobar-colision-torres.cjs`.
 - Las bolas de fuego orbitales giran alrededor de cada torre.
 - Los héroes ya no tienen rango máximo: tienen rango de disparo y rango de visión; avanzan, se acercan o se apartan según estén a distancia o cuerpo a cuerpo.
 
@@ -121,6 +134,10 @@ Cuerpo a cuerpo, rápido y frágil, con 12 habilidades: *Puñal envenenado*, *Go
 ## Modo prueba de héroe
 En la pantalla de inicio, selecciona un héroe y pulsa **🧪 Probar héroe**: juegas solo con ese héroe, sin torre ni rondas, y los enemigos lo atacan a él. Una barra superior permite subir niveles, dar oro, curar, invocar enemigos o un jefe, limpiar el campo, subir la dificultad y pausar las apariciones.
 
+La opción **Pocos enemigos débiles** está activada al entrar: aparece un goblin de práctica cada 3 segundos, hasta un máximo de 4, con 30 de vida y 1 de daño, sin resistencias ni escalado con el tiempo. No hay jefes ni oleadas; el botón de enemigos añade hasta 3 débiles respetando el límite. Desmarca la opción para recuperar los enemigos normales y los controles de jefe y dificultad. Cambiar la opción limpia el campo.
+
+Junto al nombre del personaje, **↺ Reset habilidades** pone sus habilidades a cero y devuelve todos los puntos gastados. Conserva su nivel, experiencia, oro y objetos; cura al héroe, limpia enemigos, invocaciones y efectos, y desactiva la compra automática de sus habilidades para poder probar otra combinación. Verificación: `node comprobar-modo-prueba.cjs`.
+
 ## Arquero elfo (Windranger + Drow Ranger)
 12 habilidades: *Golpe crítico*, *Velocidad de golpe*, *Flechas múltiples*, *Flecha perforante*, *Flechas de escarcha* (ralentizan y congelan), *Grillete* (ata y aturde a dos enemigos), *Disparo potente* (línea), *Carrera del viento* (esquiva pasiva; activa: invulnerable y veloz), *Ráfaga* (empuja y silencia a los que disparan), *Aura de precisión* (+daño a todo el equipo), *Halcón compañero* y ★ *Fuego concentrado* (dispara a hasta 12 enemigos a la vez a velocidad x2,5).
 
@@ -132,3 +149,14 @@ Se sustituyen *Caos vil* y *Tormenta de guadañas* por *Daga asfixiante* (daña,
 
 ## Jugar con 1 héroe
 En la pantalla de inicio, el botón **Jugar con 1 héroe** empieza la partida completa (torres, rondas, asedios) con solo el héroe seleccionado. El panel inferior muestra únicamente la torre, ese héroe y los objetos, como en el modo prueba.
+
+## Arte en PNG (versión 2, en curso)
+
+El **mago invocador** ya se dibuja con sprites PNG: personaje, disparo arcano, 12 iconos de habilidad, iconos de mejora y la mayoría de los efectos de sus habilidades. El resto de héroes, enemigos, torre y dragón siguen en vectorial.
+
+- Los sprites viven en `assets/heroes/mage/` (dos atlas y `pack.js`) y se cargan con `assets/sprites.js` (script normal: sigue funcionando con doble clic).
+- Si un sprite falta o el PNG no carga, se usa el dibujo vectorial de siempre. Con `index.html?sprites=off` se fuerza el dibujo vectorial para comparar.
+- Las hojas originales están en `assets/mago_hoja1.png` y `assets/mago_hoja2.png`. Para regenerar los atlas: `python tools/empaquetar_mago.py` (requiere `pillow` y `numpy`).
+- Los iconos de mejora no se recortan de la hoja: el código compone el icono de la habilidad, el marco de color del nivel y el símbolo del efecto.
+- Vista previa con una partida real del mago: `node tools/previsualizar-mago-v2.cjs` y abrir `preview-mago-v2.html#120`.
+- Prompts de arte y plantillas guía: `PROMPTS-ARTE-MAGO.md` y `guias-arte/`. Plan completo: `PLAN-V2.md`.
