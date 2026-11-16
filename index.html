@@ -318,6 +318,10 @@ body.solo #soloItemsFold{margin:6px 0}
  .solo-simple select,.solo-simple input{font-size:14px}.solo-caption{-webkit-line-clamp:1}
  body.solo #heroSec>.btitle{min-height:26px;margin:0}body.solo #soloExitTest{min-height:26px;padding:2px 10px}
 }
+#panelToggle{position:fixed;right:10px;bottom:8px;z-index:12;min-height:44px;padding:9px 13px;border:1px solid #75618f;border-radius:10px;background:#21192fed;color:#e8def4;font:inherit;font-size:12px;cursor:pointer;box-shadow:0 2px 12px #0006}
+body.start-screen #panelToggle{display:none!important}
+body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
+@media(max-width:900px){body.panel-hidden #game{bottom:0!important}}
 </style>
 </head>
 <body>
@@ -355,6 +359,7 @@ body.solo #soloItemsFold{margin:6px 0}
   </div>
   <details id="soloItemsFold"><summary>🎒 Objetos y dragón · opcional</summary></details>
 </div>
+<button id="panelToggle" type="button" aria-controls="bottomp" aria-expanded="true">Ocultar panel</button>
 <div id="tip"></div>
 <div id="tbar">
   <button data-d="sk">⚔️<span>Habilidades</span><i class="bdg" id="bdgSk"></i></button>
@@ -686,7 +691,7 @@ function heroUp(id,mode){
 const $=s=>document.querySelector(s);
 const cv=$('#c'),ctx=cv.getContext('2d');
 let LOWQ=false,avgDt=.016,Z=1,SRC='?',W=0,H=0,dpr=1,G,S={},mouse={x:-1,y:-1},last=0;
-function resize(){const r=$('#game').getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px'}
+function resize(){const r=$('#game').getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';refreshPanelToggle()}
 window.addEventListener('resize',resize);
 let best=0;try{best=+localStorage.getItem('mago_best')||0}catch(e){}
 
@@ -694,6 +699,7 @@ const HERO_N=4,HOFFS=[-175,-100,100,175],HERO_DEFAULTS=['mage','archer','priest'
 let SOLO_NEXT=false,ONE_NEXT=false;
 function newGame(...args){
   document.body?.classList.remove('start-screen');
+  document.body?.classList.remove('panel-hidden');
   const solo=SOLO_NEXT||(!args.length&&!!G&&!!G.solo);SOLO_NEXT=false;
   const one=!solo&&(ONE_NEXT||(!args.length&&!!G&&!!G.one));ONE_NEXT=false;
   configureSoloPanelLayout(solo);
@@ -1728,10 +1734,11 @@ function addAlly(kind,x,y,hp,dmg,life,src){
   const a={tsAt:tsc(),born:G.t,kind,x,y,hp,max:hp,life,cd:0,r:kind==='golem'?16:kind==='treant'?17:11,ang:Math.random()*6.283,dmgAbs:dmg,fly:!!ALLYK[kind].fly,src};
   G.allies.push(a);return a;
 }
+const TEMP_ALLY=new Set(['cub','wolf']);   /* invocados cuya ficha dice que duran un tiempo (Crías de panda, Manada espectral): caducan; el resto es permanente hasta caer */
 function updateAllies(dt){
   const L=G.lvl;
   for(const a of G.allies){
-    a.life=999;
+    if(TEMP_ALLY.has(a.kind)&&a.life<900)a.life-=dt;else a.life=999;
     a.cd-=dt;if(a.roarT>0)a.roarT-=dt;
     const k=ALLYK[a.kind||'skel'];
     const ox=a.tower?towX():cx(),oy=a.tower?towY():cy();
@@ -1945,6 +1952,8 @@ function updateMelee(dt){
   const dx=tx-G.bx,dy=ty-G.by,dl=Math.hypot(dx,dy);
   if(dl>1){const k=Math.min(dl,sp*dt)/dl;G.bx+=dx*k;G.by+=dy*k}
   const ol=Math.hypot(G.bx,G.by);if(ol>lim){G.bx*=lim/ol;G.by*=lim/ol}
+  {const mg=26,x=W/2+(G.hoff||0)+G.bx,y=H/2+G.by;   /* el héroe nunca sale de la zona visible al perseguir (H07) */
+   if(x<mg)G.bx+=mg-x;else if(x>W-mg)G.bx-=x-(W-mg);if(y<mg+10)G.by+=mg+10-y;else if(y>H-mg)G.by-=y-(H-mg)}
   avoidHeroTowers(ox,oy);
   const mv=Math.hypot(G.bx-ox,G.by-oy);G.mv=mv/Math.max(dt,1e-3);
   if(mv>.5&&G.dash==null&&G.mv<sp*1.1&&Math.random()<dt*10)G.fx.push({k:'p',x:cx()+(Math.random()-.5)*14,y:cy()+20,t:.35,c:'#c8b48a'});
@@ -2015,7 +2024,7 @@ function heroOnKill(e){
 function updateHero(dt){
   const h=G.hero,T=G.ht,x0=cx(),y0=cy();
   const rdy=id=>{if(T[id]===undefined)T[id]=1.5;T[id]-=dt;return T[id]<=0};
-  const done=(id,cd)=>{const f=tf(id);T[id]=cd*f.cd/(1+(S.atk-1)*.5);tierCast(id,f,x0,y0)};   /* la velocidad de ataque acorta también el enfriamiento de las habilidades del héroe */
+  const done=(id,cd)=>{const f=tf(id);T[id]=cd*f.cd/(1+(S.atk-1)*.5);tierCast(id,f,x0,y0);G.castAt=G.t;if(SPR.on&&SPR.has('flare')&&G.fx.length<290)sprFx({id:'flare',x:x0,y:y0-26,w:44,d:.32,g0:.5,g1:1.5,fi:.05,fo:.6,add:true,a:.8})};   /* la habilidad anima el cuerpo y deja un destello breve (H02/H15) */   /* la velocidad de ataque acorta también el enfriamiento de las habilidades del héroe */
   const retry=id=>{T[id]=.4};
   let l;
   heroTick3(h,dt,T,x0,y0,rdy,done,retry);
@@ -2451,17 +2460,25 @@ function drawEShots(){
 }
 
 /* ============ ACTUALIZACIÓN ============ */
-function soloRestart(){startSolo(G.hero,G.soloWeak,{...G.soloDisabled})}
+function soloRestart(){   /* al morir se reinicia el campo, pero se conserva el experimento: niveles, qué probar, ajustes y si estaba en marcha */
+  const k={cls:{...G.cls},choice:G.soloTestChoice,support:G.soloSupportBasic,noSpawn:G.noSpawn,weak:G.soloWeak,spd:G.soloAnimSpeed,aim:G.soloAnimAim,run:G.soloTestRunning,dis:{...G.soloDisabled},deps:{...(G.soloDeps||{})}};
+  startSolo(G.hero,k.weak,k.dis);
+  Object.assign(G.cls,k.cls);G.soloTestChoice=k.choice;G.soloSupportBasic=k.support;G.noSpawn=k.noSpawn;G.soloAnimSpeed=k.spd;G.soloAnimAim=k.aim;G.soloDeps=k.deps;
+  G.tv=(G.tv||0)+1;recalc();G.hp=S.maxHp;refreshAll();
+  if(k.run)runSoloTest();else refreshSoloTestPanel()
+}
 function update(dt){
   if(G.solo&&G.soloReset)soloRestart();
+  if(G.solo&&G.t-(G.spT||0)>.5){G.spT=G.t;refreshSoloTestPanel()}
   if(G.rounds&&G.modal)return;
   G.t+=dt;
-  if(G.rounds){G.roundT+=dt;if(G.roundT>=G.roundLen){endRound();return}}
+  if(G.rounds){G.roundT+=dt;if(roundCleared()){endRound();return}}
   updateAutoUpgrades(dt);
   // regeneración
   eachHero(()=>{G.hp=Math.min(S.maxHp,G.hp+S.regen*dt)});
   for(const o of aliveTowers()){const mx=towerMax(uLvl(o.u));if(o.u.hp==null)o.u.hp=mx;o.u.hp=Math.min(mx,o.u.hp+mx*TOWER_BALANCE.regen*dt)}
   // spawns
+  if(!G.rounds||G.roundT<G.roundLen){
   if(G.solo&&G.soloWeak){
     G.soloSpawnTimer-=dt;
     if(!G.noSpawn&&G.soloSpawnTimer<=0){spawnSoloEnemies();G.soloSpawnTimer=3}
@@ -2474,6 +2491,7 @@ function update(dt){
   if(G.t>=G.nextSiege){G.nextSiege+=Math.max(45,75-eT(G.t)/60*1.5);spawnSiege()}
   if(G.t>=G.nextWave){G.nextWave+=Math.max(30,55-eT(G.t)/60*2);if(!G.noSpawn)spawnWave()}
   if(G.t>=G.nextBoss){G.nextBoss+=45;if(!G.noSpawn)spawnEnemy(true);txt(cx(),cy()-80,'¡Llega un jefe!','#ff5a5a',22)}
+  }
   }
   }
   for(const i of HIDX())heroCtx(i,()=>{if(G.dead){G.deadT-=dt;if(G.deadT<=0)heroRevive();return}updateMelee(dt);if(G.basicCd-dt<=0)fireBasic();else G.basicCd-=dt});
@@ -2591,6 +2609,7 @@ function update(dt){
   }
   if(G.hp<=0)heroDie();
   });
+  if(!G.over&&roundCleared())endRound();
 
 }
 
@@ -3153,10 +3172,13 @@ function drawHeroOn(c,x,y,h,t,aim,sc,st){
   const fx=Math.abs(st.face)<.2?(st.face<0?-.2:.2):st.face;
   const bob=Math.sin(t*2.3)*.7;c.fillStyle='rgba(0,0,0,.3)';c.beginPath();c.ellipse(0,25,15-bob,4.6,0,0,6.3);c.fill();
   const hc=HEROES[h]?HEROES[h].col:'#ffffff';c.strokeStyle=hc+'55';c.lineWidth=1.6;c.beginPath();c.ellipse(0,25,19+Math.sin(t*2.6)*1.5,6,0,0,6.3);c.stroke();
+  {const FS=heroForm(h),fc=formGlow(h);   /* transformaciones: el cuerpo (PNG o vectorial) crece desde los pies y se envuelve en el color de su forma */
+    if(FS!==1){c.translate(0,24);c.scale(FS,FS);c.translate(0,-24)}
+    if(fc){const pu=.85+.15*Math.sin(t*6);hGlow(c,0,-6,38*pu,fc,.5);hGlow(c,0,-18,24,fc,.35)}
+    if(h==='assassin'&&G.ht&&G.ht.hideOn>0&&!(G.solo&&G.soloAnimation&&G.soloAnimation!=='auto'))c.globalAlpha=.34+.1*Math.sin(t*5)}   /* Invisibilidad: el cuerpo se vuelve casi transparente */
   if(h==='mage'&&SPR.on&&SPR.mageHero(c,t,aim,fx,st)){c.restore();return}
   {const hm=SPR.on&&h!=='mage'?SPR.heroMeta(h):null;if(hm&&SPR.spriteHero(c,hm.idle,hm.atk,t,fx,st,hm.H,hm.ay,hm.ax,hm.atkax)){c.restore();return}}
   c.scale(fx,1);
-  {const FS=heroForm(h);if(FS!==1){c.translate(0,24);c.scale(FS,FS);c.translate(0,-24)}}
   if(B.size){c.translate(0,24);c.scale(B.size,B.size);c.translate(0,-24)}
   const A=fx<0?Math.PI-aim:aim,P=heroPose(h,t,A,st);
   c.translate(0,P.dy);
@@ -3188,7 +3210,7 @@ function drawHero(px,py){
   G.hface=(G.hface==null?1:G.hface);G.hface+=(tf-G.hface)*Math.min(1,dt*15);
   const bx=G.bx||0;const vxr=dt>0?(bx-(G.hbx==null?bx:G.hbx))/dt:0;G.hbx=bx;
   G.hvx=(G.hvx||0)+(vxr-(G.hvx||0))*Math.min(1,dt*12);
-  const since=G.t-Math.max(G.atkAt==null?-9:G.atkAt,G.punchAt==null?-9:G.punchAt),DUR=.34;
+  const since=G.t-Math.max(G.atkAt==null?-9:G.atkAt,G.punchAt==null?-9:G.punchAt,G.castAt==null?-9:G.castAt),DUR=.34;   /* castAt: lanzamiento de una habilidad activa (H02) */
   const atk=Math.max(0,1-since/.3),u=since<DUR?since/DUR:-1,hurt=Math.max(0,1-(G.t-(G.hurtAt==null?-9:G.hurtAt))/.25);
   const pa=G.t-G.punchAt,lu=HEROES[G.hero].melee&&pa<.16?Math.sin(pa/.16*Math.PI)*9:0,run=Math.min(1,(G.mv||0)/200);
   if(run>.3&&dt>0){const s=Math.floor(G.t*11/Math.PI);if(s!==G.hstep){G.hstep=s;if(G.fx.length<300)G.fx.push({k:'p',x:px+(Math.random()-.5)*12,y:py+27,vx:(Math.random()-.5)*30,vy:-10-Math.random()*20,t:.4,c:'#c8b48acc'})}}
@@ -4561,7 +4583,8 @@ function drawFx4(x0,y0){
 }
 
 /* ---- efectos de formas y espíritus ---- */
-function heroForm(h){const T=G&&G.ht;if(!T)return 1;return h==='devourer'&&G.hero===h?1+Math.min(.12,clv('pb_colossal')*.003)+(T.pbRoarOn>0?.05:0):h==='werewolf'&&T.wolfOn>0?1.32:h==='druid'&&T.bearOn>0?1.38:1}
+function formGlow(h){const T=G&&G.ht;if(!T||G.hero!==h)return null;return h==='druid'&&T.bearOn>0?'#b9894a':h==='werewolf'&&T.wolfOn>0?'#cfd8ff':h==='demon'&&T.metaOn>0?'#b070ff':h==='paladin'&&T.wrathOn>0?'#ffd060':h==='devourer'&&T.pbRoarOn>0?'#ff5a3a':null}
+function heroForm(h){const T=G&&G.ht;if(!T)return 1;if(G.hero===h&&h==='demon'&&T.metaOn>0)return 1.12;if(G.hero===h&&h==='paladin'&&T.wrathOn>0)return 1.15;return h==='devourer'&&G.hero===h?1+Math.min(.12,clv('pb_colossal')*.003)+(T.pbRoarOn>0?.05:0):h==='werewolf'&&T.wolfOn>0?1.32:h==='druid'&&T.bearOn>0?1.38:1}
 function drawFx3(x0,y0){
   drawNewHeroesFx(x0,y0);
   drawPrimalFx(x0,y0);
@@ -5438,7 +5461,7 @@ function drawHud(){
     {const pp=pendAll();if(pp>0){ctx.fillStyle='#ffd24a';ctx.fillText('★ '+pp+' punto'+(pp>1?'s':'')+' de héroe',14,yy);yy+=20}}
     }
   ctx.textAlign='right';
-  ctx.fillText((G.rounds?'Ronda '+G.round+' · '+(G.modal==='round'?'descanso':fmtT(Math.max(0,G.roundLen-G.roundT))):fmtT(G.t))+(G.speed>1?'  ⏩x'+G.speed:''),W-14,24);
+  ctx.fillText((G.rounds?'Ronda '+G.round+' · '+(G.modal==='round'?'descanso':G.roundT>=G.roundLen?'0:00 · '+G.enemies.filter(e=>!e.dead).length+' restantes':fmtT(Math.max(0,G.roundLen-G.roundT))):fmtT(G.t))+(G.speed>1?'  ⏩x'+G.speed:''),W-14,24);
   ctx.fillStyle='#8f7cff';ctx.font='12px Segoe UI,sans-serif';ctx.fillText('Mejor: '+fmtT(best),W-14,44);
   ctx.textAlign='center';
 }
@@ -5856,27 +5879,64 @@ function soloAnimationPose(){
   const u=mode==='attack'&&phase<.45?phase/.45:-1;
   return{time,aim,state:{run:mode==='walk'?1:0,atk:u>=0?Math.sin(u*Math.PI):0,u,n:Math.floor(time/.8),since:u>=0?u*.34:9,face:Math.cos(aim)<0?-1:1,vx:mode==='walk'?(Math.cos(aim)<0?-200:200):0,hurt:mode==='hurt'?.65+.3*Math.sin(time*7):0}};
 }
+/* Qué necesita cada habilidad para poder verse en la prueba aislada (se prepara sola, sin añadir controles):
+   n: objetivos · boss: uno de ellos es jefe · move: los objetivos caminan hacia el héroe (trampas y minas) · hp: vida inicial (fracción)
+   deps: otras habilidades que se activan a nivel mínimo mientras dura la prueba · stat: estática · rage: furia · lethal: golpe letal a 1 s */
+const SOLO_NEEDS={
+  z_meta:{n:5},p_nova:{n:7},a_focus:{n:6},b_berserk:{n:6},k_nirvana:{n:6},w_moon:{n:5},u_bear:{n:5},x_dance:{n:5},d_snipe:{n:4},pl_bastion:{n:4},n_souls:{n:6},c_monsoon:{n:5},al_transmute:{n:4,deps:['al_flask','al_oil','al_fumes']},
+  i_laguna:{n:5,boss:true},
+  x_trap:{n:5,move:true},d_mines:{n:5,move:true},
+  n_abom:{n:4,deps:['n_raise']},u_swarm:{n:4,deps:['u_storm']},b_aspd:{n:3,deps:['b_fire']},
+  c_overload:{n:5,deps:['c_rain']},c_bolt:{n:3,deps:['c_rain'],stat:30},c_thunder:{n:4,stat:30},c_orb:{n:5,deps:['c_rain']},c_arc:{n:5,deps:['c_rain']},
+  al_oil:{n:4,deps:['al_flask']},al_spark:{n:4,deps:['al_oil']},al_catalyst:{n:4,deps:['al_flask','al_fumes']},al_mix:{n:4,deps:['al_flask','al_oil']},al_antidote:{n:4,deps:['al_flask']},al_coat:{n:4,deps:['al_flask']},al_distill:{n:3,deps:['al_flask']},al_plague:{n:5,deps:['al_flask']},
+  pb_impact:{n:5,deps:['pb_onslaught']},pb_shockwave:{n:5,deps:['pb_uproar'],rage:5},pb_aftershock:{n:5,deps:['pb_rock']},pb_hide:{n:4,deps:['pb_trample']},pb_uproar:{n:4,rage:5},
+  p_heal:{hp:.5},pl_aura:{hp:.5},k_serene:{hp:.5},t_trap:{hp:.5},t_regen:{hp:.45},w_blood:{hp:.5,n:4},w_hide:{hp:.5},pb_regen:{hp:.5},u_bark:{hp:.6},p_barrier:{hp:.7},
+  pl_hands:{hp:.3},k_bell:{hp:.3},u_rejuv:{hp:.3},p_res:{lethal:true},b_rage:{n:4,rage:6}
+};
+function soloEnsureTargets(need){
+  const n=need.n||6;let alive=G.enemies.filter(e=>!e.dead);
+  for(let i=alive.length;i<n;i++){
+    const a=-.9+1.8*i/Math.max(1,n-1),r=70+(i%2)*38;
+    spawnEnemy(false,EN[0],{x:cx()+Math.cos(a)*r,y:cy()+Math.sin(a)*r,hpAbs:5000,dmg:0,sp:need.move?32:0,r:12,xp:0,gold:0});
+    const t=G.enemies.at(-1);t.res={};t.n='Objetivo de prueba';
+  }
+  if(need.boss){const t=G.enemies.find(e=>!e.dead);if(t){t.boss=true;t.n='Jefe de prueba'}}
+}
 function previewSoloSkill(id,supportBasic=false){
   if(!G.solo||(id!=='basic'&&!CLS[G.hero].some(s=>s.id===id)))return;
   setSoloAnimation('auto');setAllSoloPowers(false);
+  soloRestoreDeps();
+  const need=SOLO_NEEDS[id]||{};
   if(id!=='basic'&&!learnedClv(id))setSoloSkillLevel(id,1);
   setSoloPowerEnabled(id,true);
   if(id!=='basic'&&supportBasic)setSoloPowerEnabled('basic',true);
-  if(!G.enemies.some(e=>!e.dead))for(let i=0;i<3;i++){
-    spawnEnemy(false,EN[0],{x:cx()+45+i*22,y:cy()+(i-1)*15,hpAbs:5000,dmg:0,sp:0,r:12,xp:0,gold:0});
-    const target=G.enemies.at(-1);target.res={};target.n='Objetivo de prueba';
+  G.soloDeps={};   /* dependencias: se activan solo durante la prueba y se devuelven al detenerla (H04) */
+  for(const dep of (need.deps||[])){
+    if(!CLS[G.hero].some(s=>s.id===dep))continue;
+    G.soloDeps[dep]=learnedClv(dep);G.cls[dep]=Math.max(learnedClv(dep),Math.min(10,learnedClv(id)||1));setSoloPowerEnabled(dep,true);
   }
+  if(need.deps)G.tv=(G.tv||0)+1,recalc();
+  soloEnsureTargets(need);
+  if(need.stat)G.ht.static=need.stat;
+  if(need.rage){G.rage=need.rage;G.rageT=12;if(G.hero==='devourer')G.ht.pbRage=need.rage}
+  if(need.hp)G.hp=Math.max(1,S.maxHp*need.hp);
+  if(need.lethal)G.delayed.push({t:1,fn:()=>{if(!G.dead&&G.solo)hurt(S.maxHp*3)}});
   G.paused=false;
   if(id==='basic')fireBasic();else{G.ht[id]=0;updateHero(.01)}
   refreshSoloTestPanel();
+}
+function soloRestoreDeps(){
+  if(!G.solo||!G.soloDeps)return;
+  for(const dep in G.soloDeps)G.cls[dep]=G.soloDeps[dep];
+  G.soloDeps={};
 }
 function buildSoloTestPanel(box){
   box.innerHTML='<div class="solo-simple"><label class="solo-choice">Qué probar<select id="soloTestChoice"><option value="basic">Ataque básico</option><optgroup label="Habilidades">'+CLS[G.hero].map(s=>'<option value="'+s.id+'">'+esc(s.n)+'</option>').join('')+'</optgroup><optgroup label="Animaciones"><option value="anim:idle">Reposo</option><option value="anim:walk">Caminar</option><option value="anim:attack">Animación de ataque</option><option value="anim:hurt">Recibir daño</option></optgroup></select></label>'+
     '<div class="solo-level" id="soloLevelControl"><span>Nivel · gratis</span><div><button id="soloLevelDown" aria-label="Bajar nivel">−</button><input id="soloSkillLevel" type="number" min="0" max="50" aria-label="Nivel de la habilidad"><button id="soloLevelUp" aria-label="Subir nivel">+</button></div></div><button id="soloTestPlay" class="solo-play">▶ Probar</button></div>'+
     '<p class="solo-caption" id="soloTestCaption" aria-live="polite"></p><details id="soloTestOptions"><summary>Ajustes</summary><div class="solo-settings">'+
     '<label>Enemigos<select id="soloEnemyMode"><option value="none">Solo objetivos de prueba</option><option value="weak">Pocos y débiles</option><option value="progressive">Continuos y progresivos</option></select></label>'+
-    '<label>Dirección<select id="soloAnimDirection"><option value="0">Derecha</option><option value="3.141592653589793">Izquierda</option><option value="-1.5707963267948966">Arriba</option><option value="1.5707963267948966">Abajo</option></select></label>'+
-    '<label>Velocidad de animación<select id="soloAnimSpeed"><option value="0.5">Lenta · ×0,5</option><option value="1" selected>Normal · ×1</option><option value="2">Rápida · ×2</option></select></label>'+
+    '<label>Dirección<select id="soloAnimDirection"><option value="0">Derecha</option><option value="3.141592653589793">Izquierda</option></select></label>'+
+    '<label>Velocidad (pose, combate y efectos)<select id="soloAnimSpeed"><option value="0.5">Lenta · ×0,5</option><option value="1" selected>Normal · ×1</option><option value="2">Rápida · ×2</option></select></label>'+
     '<label class="solo-support"><input id="soloSupportBasic" type="checkbox"> Usar ataque básico de apoyo</label></div><p class="test-note">El ataque de apoyo permite probar habilidades que se activan al golpear. Las habilidades con requisitos necesitan cumplirlos.</p></details>';
   $('#soloTestChoice').onchange=e=>selectSoloTest(e.target.value);
   $('#soloTestPlay').onclick=()=>G.soloTestRunning?stopSoloTest():runSoloTest();
@@ -5898,7 +5958,7 @@ function selectSoloTest(id){
 }
 function stopSoloTest(){
   if(!G.solo)return;
-  G.soloTestRunning=false;setAllSoloPowers(false);setSoloAnimation('idle');refreshSoloTestPanel();
+  G.soloTestRunning=false;setAllSoloPowers(false);soloRestoreDeps();G.tv=(G.tv||0)+1;recalc();setSoloAnimation('idle');refreshSoloTestPanel();
 }
 function runSoloTest(){
   if(!G.solo)return;
@@ -5914,9 +5974,10 @@ function refreshSoloTestPanel(){
   choice.value=id;$('#soloLevelControl').hidden=!skill;
   const input=$('#soloSkillLevel');if(document.activeElement!==input)input.value=level;
   $('#soloLevelDown').disabled=level<=0;$('#soloLevelUp').disabled=level>=CLSMAX;
-  $('#soloTestPlay').textContent=G.soloTestRunning?'■ Detener':'▶ Probar';
+  $('#soloTestPlay').textContent=G.soloTestRunning?'■ Detener':(skill&&level<1?'▶ Probar (Nv 1)':'▶ Probar');
   $('#soloTestPlay').setAttribute('aria-pressed',String(!!G.soloTestRunning));
-  $('#soloTestCaption').textContent=skill?skill.desc:id==='basic'?'Prueba el golpe básico sin otras habilidades.':'Observa la animación sin combate.';
+  {const waiting=skill&&G.soloTestRunning&&level>0&&!(G.ht[id]>0)&&!G.dead;
+   $('#soloTestCaption').textContent=(skill?skill.desc:id==='basic'?'Prueba el golpe básico sin otras habilidades.':'Observa la animación sin combate.')+(skill&&level<1?' · Nivel 0: Probar la sube a nivel 1.':'')+(waiting?' · ⏳ Esperando a que se cumpla su condición (objetivos, estado o golpes).':'')}
   $('#soloEnemyMode').value=G.noSpawn?'none':G.soloWeak?'weak':'progressive';
   $('#soloSupportBasic').checked=!!G.soloSupportBasic;
 }
@@ -5963,7 +6024,7 @@ function buildTabs(){
   });
 }
 function toggleDrWin(v){const w=$('#drWin');w.classList.toggle('open',v===undefined?!w.classList.contains('open'):v)}
-function refreshAll(){if(AUTO_UPGRADE_BUSY)return;pruneAutoUpgrades();refreshShop();refreshSkills();refreshHero();refreshBadges();refreshTip();refreshAutoUpgradeUi()}
+function refreshAll(){if(AUTO_UPGRADE_BUSY)return;pruneAutoUpgrades();refreshShop();refreshSkills();refreshHero();refreshBadges();refreshTip();refreshAutoUpgradeUi();refreshPanelToggle()}
 
 const barEls={};
 function buildBar(){
@@ -6127,7 +6188,7 @@ function setAllSoloPowers(enabled){
   clearSoloHeroEffects();refreshSoloPowerUi();refreshAll();
 }
 function startSolo(h,weak=true,disabled={}){
-  SOLO_NEXT=true;newGame(h);G.nick="Prueba";G.soloWeak=weak;G.soloDisabled={...disabled};
+  SOLO_NEXT=true;newGame(h);G.nick="Prueba";G.soloWeak=weak;G.soloDisabled={...disabled};G.gold=Math.max(G.gold||0,99999);   /* oro de sobra para preparar objetos (dragón…) sin esperar */
   G.pending=3;G.noSpawn=true;G.soloTestChoice="basic";G.soloSupportBasic=true;
   stopSoloTest();recalc();refreshAll();requestAnimationFrame(resize);
 }
@@ -6168,7 +6229,28 @@ function refreshBadges(){
   if(a){const pp=pendAll();a.textContent=pp;a.style.display=pp>0?'flex':'none'}
   if(b)b.style.display='none'
 }
+function refreshPanelToggle(){
+  if(typeof getComputedStyle!=='function'||!G)return;
+  const panel=$('#bottomp'),button=$('#panelToggle');if(!panel||!button)return;
+  const visible=getComputedStyle(panel).display!=='none'&&panel.getBoundingClientRect().height>0;
+  button.textContent=visible?'⌄ Ocultar panel':'⌃ Mostrar panel';button.setAttribute('aria-expanded',String(visible));
+  button.style.bottom=(visible?Math.max(8,innerHeight-panel.getBoundingClientRect().top+8):8)+'px';
+}
+function setBottomPanelHidden(hidden){
+  if(!G)return;
+  document.body?.classList.toggle('panel-hidden',!!hidden);G.panelHidden=!!hidden;
+  const panel=$('#bottomp');
+  if(hidden){if(window.closeDrawers)window.closeDrawers();else panel?.classList.remove('open')}
+  else if(panel){panel.classList.add('open');if(!panel.dataset.mode)panel.dataset.mode='sk'}
+  refreshPanelToggle();requestAnimationFrame(resize);
+}
+function toggleBottomPanel(){
+  const panel=$('#bottomp');
+  const visible=typeof getComputedStyle==='function'?getComputedStyle(panel).display!=='none':!G.panelHidden;
+  setBottomPanelHidden(visible);
+}
 function setupDrawers(){
+  const toggle=$('#panelToggle');if(toggle)toggle.onclick=toggleBottomPanel;
   const bp=$('#bottomp'),btns=document.querySelectorAll('#tbar button');
   const unpause=()=>{if(G.drawerPause){G.paused=false;G.drawerPause=false}};
   const closeAll=()=>{bp.classList.remove('open');btns.forEach(b=>b.classList.remove('on'));showTip(null);unpause()};
@@ -6202,14 +6284,16 @@ function buildRankBtn(){
    en que se gastan puntos, experiencia y oro. */
 const ROUND_MIN=180,ROUND_MAX=240;
 const roundLen=n=>Math.min(ROUND_MAX,ROUND_MIN+5*(n-1));
+const roundCleared=()=>!!G.rounds&&G.roundT>=G.roundLen&&!G.enemies.some(e=>!e.dead);
 const shopOk=()=>!!G&&!G.over&&(G.rounds?G.modal==='round':!G.modal);
 function beginRounds(){G.rounds=true;G.round=1;G.roundT=0;G.roundLen=roundLen(1);openRest(0)}
 function endRound(){
+  if(G.over||!roundCleared())return false;
   const done=G.round;
-  for(const e of G.enemies)e.dead=true;
   G.enemies=[];G.eshots=[];G.projs=[];
   G.round++;
   openRest(done);
+  return true;
 }
 const setResting=v=>{if(typeof document!=='undefined'&&document.body&&document.body.classList)document.body.classList.toggle('resting',v)};
 function openRest(done){
@@ -6230,6 +6314,8 @@ function startRound(){
   if(window.closeDrawers)window.closeDrawers();
   setResting(false);
   G.modal=null;G.paused=false;G.roundT=0;G.roundLen=roundLen(G.round);
+  G.spawnAcc=0;
+  for(const [key,delay] of [['nextBoss',45],['nextWave',Math.max(30,55-eT(G.t)/60*2)],['nextSiege',Math.max(45,75-eT(G.t)/60*1.5)]])if(G[key]<=G.t)G[key]=G.t+delay;
   $('#roundbar').style.display='none';
 }
 
@@ -6450,7 +6536,7 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
     if(!countNear(x0,y0,rg('i_field')))retry('i_field');else{
       cast('i_field','','¡Campo de hielo!');
       T.field={t:(6+.1*l)*f.dur,k:0,R:rg('i_field')*f.rad,d:hdmg(l)*.8*f.dm,x:x0,y:y0};
-      spr({id:'frostpatch',x:x0,y:y0+10,w:rg('i_field')*f.rad*1.9,d:T.field.t,a:.4,fi:.1,fo:.1});
+      spr({id:'frostpatch',x:x0,y:y0+10,pos:()=>[cx(),cy()+10],w:rg('i_field')*f.rad*1.9,d:T.field.t,a:.4,fi:.1,fo:.1});
       ring(x0,y0,rg('i_field')*f.rad,'#bfeaff',.8);done('i_field',INV.i_field.cd(l))}
   }
   if((l=clv('i_laguna'))&&rdy('i_laguna')){
@@ -7892,7 +7978,7 @@ function frame(now){
   if(G.solo)G.soloAnimTime=(G.soloAnimTime||0)+Math.max(0,dt)*(G.soloAnimSpeed||1);
   if(raw>0&&raw<.5){avgDt=avgDt*.97+raw*.03;if(avgDt>.032)LOWQ=true;else if(avgDt<.021)LOWQ=false}
   if(!G.paused&&!G.modal&&!G.over&&!(G.solo&&G.soloAnimation&&G.soloAnimation!=='auto')){
-    for(let i=0;i<G.speed;i++)update(dt);
+    {const k=G.solo&&G.soloAnimSpeed?G.soloAnimSpeed:1,n=G.speed*(k>1?Math.round(k):1),d=dt*(k<1?k:1);for(let i=0;i<n;i++)update(d)}   /* modo test: la velocidad ralentiza o acelera el combate y los efectos, no solo la pose */
   }
   uiT+=dt;if(uiT>.25){uiT=0;refreshAll()}
   refreshBar();

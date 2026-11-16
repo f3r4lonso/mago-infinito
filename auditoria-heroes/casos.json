@@ -1,0 +1,332 @@
+[
+  {
+    "name": "invocaciones_temporales",
+    "spawned": 5,
+    "initialLife": [
+      32,
+      32,
+      32,
+      32,
+      32
+    ],
+    "seconds": 120,
+    "survivors": 5,
+    "lives": [
+      999,
+      999,
+      999,
+      999,
+      999
+    ]
+  },
+  {
+    "name": "panel_vs_preparado_a_focus",
+    "panelStates": [],
+    "panelSources": [
+      "Flecha"
+    ],
+    "preparedStates": [
+      "a_focus",
+      "focusOn"
+    ],
+    "preparedSources": [
+      "Flecha"
+    ]
+  },
+  {
+    "name": "panel_vs_preparado_b_berserk",
+    "panelStates": [],
+    "panelSources": [
+      "Hacha giratoria"
+    ],
+    "preparedStates": [
+      "b_berserk",
+      "bersOn"
+    ],
+    "preparedSources": [
+      "Hacha giratoria"
+    ]
+  },
+  {
+    "name": "panel_vs_preparado_p_nova",
+    "panelStates": [],
+    "panelSources": [
+      "Rayo sagrado"
+    ],
+    "preparedStates": [
+      "p_nova"
+    ],
+    "preparedSources": [
+      "Nova de luz",
+      "Rayo sagrado"
+    ]
+  },
+  {
+    "name": "panel_vs_preparado_i_laguna",
+    "panelStates": [],
+    "panelSources": [
+      "Disparo arcano"
+    ],
+    "preparedStates": [
+      "i_laguna",
+      "alacT"
+    ],
+    "preparedSources": [
+      "Rayo de luz",
+      "Disparo arcano"
+    ]
+  },
+  {
+    "name": "panel_vs_preparado_z_coup",
+    "panelStates": [
+      "coupOn"
+    ],
+    "panelSources": [
+      "Guadañas viles"
+    ],
+    "preparedStates": [
+      "z_coup",
+      "coupOn"
+    ],
+    "preparedSources": [
+      "Guadañas viles"
+    ]
+  },
+  {
+    "name": "panel_vs_preparado_pb_rock",
+    "panelStates": [
+      "pbLastPosition",
+      "pbRocks"
+    ],
+    "panelSources": [
+      "Zarpazo primigenio"
+    ],
+    "preparedStates": [
+      "pb_rock",
+      "pbLastPosition",
+      "pbRocks"
+    ],
+    "preparedSources": [
+      "Zarpazo primigenio",
+      "Lanzamiento de roca"
+    ]
+  },
+  {
+    "name": "panel_vs_preparado_u_cyclone",
+    "panelStates": [],
+    "panelSources": [
+      "Cólera"
+    ],
+    "preparedStates": [
+      "u_cyclone"
+    ],
+    "preparedSources": [
+      "Teletransporte",
+      "Cólera"
+    ]
+  },
+  {
+    "name": "resurreccion",
+    "hp": 256.62,
+    "resCd": 49,
+    "soloReset": false,
+    "dead": false
+  },
+  {
+    "name": "dragon_esqueleto",
+    "skeletalDragons": 1,
+    "mainDragon": false
+  },
+  {
+    "name": "abominacion",
+    "kinds": [
+      "skel",
+      "skel",
+      "skel",
+      "skel",
+      "abom"
+    ],
+    "damage": {}
+  },
+  {
+    "name": "regreso_naturaleza",
+    "before": 550,
+    "after": 770,
+    "hp": 189.005,
+    "damage": {
+      "Regreso a la naturaleza": 6732
+    }
+  },
+  {
+    "name": "furia_bestia",
+    "rageBefore": 5,
+    "roarOn": 8.75,
+    "roarStacks": 5
+  },
+  {
+    "name": "onda_tectonica_preparada",
+    "sources": {
+      "Zarpazo primigenio": 1672.7040000000002,
+      "Ondas tectónicas": 5385.599999999999
+    }
+  },
+  {
+    "name": "trampa_preparada",
+    "sources": {
+      "Trampa venenosa": 267.52,
+      "Daga": 165.52800000000002
+    },
+    "trapsRemaining": 0
+  },
+  {
+    "name": "chaman_preparado_c_thunder",
+    "static": 26,
+    "sources": {
+      "Tótem del trueno": 2541.7391999999995,
+      "Descarga estática": 665.6936
+    },
+    "totems": 3
+  },
+  {
+    "name": "chaman_preparado_c_overload",
+    "static": 30,
+    "sources": {
+      "Sobrecarga": 5083.478399999999,
+      "Descarga estática": 578.864
+    },
+    "totems": 0
+  },
+  {
+    "name": "chaman_preparado_c_bolt",
+    "static": 22,
+    "sources": {
+      "Golpe de relámpago": 10287.991999999997,
+      "Descarga estática": 665.6936
+    },
+    "totems": 0
+  },
+  {
+    "name": "alquimista_preparado_al_catalyst",
+    "sources": {
+      "Frasco corrosivo": 1643.9360000000001
+    },
+    "hpBefore": 99.6,
+    "hpAfter": 102.60000000000011,
+    "defense": 1,
+    "cd": 4,
+    "poisoned": 1
+  },
+  {
+    "name": "alquimista_preparado_al_mix",
+    "sources": {
+      "Mezcla inestable": 5950.559999999999,
+      "Frasco corrosivo": 778.864
+    },
+    "hpBefore": 99.6,
+    "hpAfter": 102.60000000000011,
+    "defense": 1,
+    "cd": 7,
+    "poisoned": 1
+  },
+  {
+    "name": "alquimista_preparado_al_antidote",
+    "sources": {
+      "Frasco corrosivo": 1543.9360000000001
+    },
+    "hpBefore": 99.6,
+    "hpAfter": 117.60000000000011,
+    "defense": 1,
+    "cd": 6.4,
+    "poisoned": 1
+  },
+  {
+    "name": "alquimista_preparado_al_transmute",
+    "sources": {
+      "Gran transmutación": 11476.08,
+      "Frasco corrosivo": 778.864
+    },
+    "hpBefore": 99.6,
+    "hpAfter": 102.60000000000011,
+    "defense": 1,
+    "cd": 39,
+    "poisoned": 1
+  },
+  {
+    "name": "alquimista_preparado_al_coat",
+    "sources": {
+      "Frasco corrosivo": 1543.9360000000001
+    },
+    "hpBefore": 99.6,
+    "hpAfter": 106.69999999999987,
+    "defense": 0.932,
+    "cd": 0,
+    "poisoned": 1
+  },
+  {
+    "name": "alquimista_preparado_al_plague",
+    "sources": {
+      "Frasco corrosivo": 1234.64,
+      "Pandemia": 1457.2799999999925
+    },
+    "hpBefore": 99.6,
+    "hpAfter": 102.60000000000011,
+    "defense": 1,
+    "cd": 0,
+    "poisoned": 6
+  },
+  {
+    "name": "casteo_sin_basico",
+    "atkAt": null,
+    "punchAt": -9,
+    "attackCount": 0,
+    "damage": {
+      "Rayo solar": 5420.799999999999
+    },
+    "fx": [
+      "ring",
+      "bolt"
+    ]
+  },
+  {
+    "name": "marcado_cadaver",
+    "sources": {
+      "Explosión de cadáveres": 3161.512865253945,
+      "Proyectil de hueso": 257.488
+    }
+  },
+  {
+    "name": "muerte_borra_configuracion",
+    "requested": true,
+    "skillLevel": 0,
+    "choice": "basic",
+    "spawnsPaused": true,
+    "running": false
+  },
+  {
+    "name": "nivel_cero",
+    "before": 0,
+    "after": 1
+  },
+  {
+    "name": "velocidad_no_afecta_hechizos",
+    "runs": [
+      {
+        "speed": 0.5,
+        "firstDamageTime": 0.7000000000000001,
+        "totalDamage": 6006.18
+      },
+      {
+        "speed": 2,
+        "firstDamageTime": 0.7000000000000001,
+        "totalDamage": 6006.18
+      }
+    ]
+  },
+  {
+    "name": "camara_movil",
+    "viewport": 390,
+    "worldX": 415,
+    "screenX": 415,
+    "offscreen": true
+  }
+]

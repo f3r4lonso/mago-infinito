@@ -136,6 +136,8 @@ var SPR=(function(){
     const fi=f.fi==null?.12:f.fi,fo=f.fo==null?.35:f.fo;
     let a=(f.a==null?1:f.a)*(fi>0&&p<fi?p/fi:1)*(fo>0&&p>1-fo?Math.max(0,(1-p)/fo):1);
     if(f.pulse)a*=.8+.2*Math.sin(now()*f.pulse);
+    if((f.w||0)>220||(f.h||0)>300)a*=.75;   /* efectos muy grandes: más transparentes para no tapar siluetas ni barras (H14) */
+    if(f.add)a*=.82;
     if(f.to){   /* rayo estirado entre dos puntos */
       const dx=f.to[0]-x,dy=f.to[1]-y,L=Math.hypot(dx,dy)||1;
       api.draw(c,id,x,y,{w:L,h:(f.h||40)*k,ax:0,ay:.5,rot:Math.atan2(dy,dx),a,add:f.add});
@@ -175,8 +177,9 @@ var SPR=(function(){
     c.save();c.scale(fx,1);
     const sn=Math.sin(t*11),bob=Math.sin(t*2.3)*.6-Math.abs(sn)*3*run;
     const lean=(.09*Math.sign(st.vx||1)*run)*(fx<0?-1:1)+Math.sin(t*1.7)*.012;
-    const sx=1+(u>=0?.04*k:0)+Math.sin(t*2.3)*.01,sy=1-(u>=0?.04*k:0)-Math.sin(t*2.3)*.01;
-    c.translate(0,31+bob);c.rotate(lean);c.scale(sx,sy);
+    const step=.045*run*sn;   /* caminar: aplastado alternado al apoyar cada pie · recibir daño: sacudida corta hacia atrás (H13) */
+    const sx=1+(u>=0?.04*k:0)+Math.sin(t*2.3)*.01-step,sy=1-(u>=0?.04*k:0)-Math.sin(t*2.3)*.01+step;
+    c.translate(0,31+bob);c.rotate(lean);c.translate((st.hurt>0?-4*st.hurt*Math.sin(t*38):0),0);c.scale(sx,sy);
     api.draw(c,id,0,0,{w:W,ax:(id===atk&&atkax!=null)?atkax:ax,ay:ay,a:st.hurt>0?1-.25*st.hurt:1});
     c.restore();
     if(st.hurt>0)hGlow(c,0,-20,34,'rgba(255,60,60,'+(.45*st.hurt)+')');

@@ -1,0 +1,2429 @@
+[
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_cold",
+    "name": "Golpe gélido",
+    "description": "Congela al enemigo más fuerte (jefes primero): aturde, ralentiza y lo hiela con daño en el tiempo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Golpe gélido; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_ghost",
+    "name": "Paso fantasma",
+    "description": "Te vuelves intangible: invulnerable unos segundos y los enemigos cercanos se ralentizan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H17"
+    ]
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_wall",
+    "name": "Cadena de hielo (Lich)",
+    "description": "Una cadena de explosiones de hielo salta de enemigo en enemigo: daña en área y ralentiza.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Cadena de hielo; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_emp",
+    "name": "Pulso electromagnético",
+    "description": "Tras un instante, un pulso estalla sobre el grupo más denso: daño en área y aturdimiento breve.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Pulso electromagnético; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H02",
+      "H14"
+    ]
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_tornado",
+    "name": "Tornado",
+    "description": "Un tornado barre una línea: daña, aturde en el aire y empuja a los enemigos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Tornado; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_alacrity",
+    "name": "Alacridad",
+    "description": "Te potencias: ataques mucho más rápidos durante unos segundos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_sun",
+    "name": "Rayo solar",
+    "description": "Un rayo del sol cae desde cualquier punto del mapa sobre el enemigo más fuerte (jefes primero).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Rayo solar; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H02",
+      "H14"
+    ]
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_forge",
+    "name": "Espíritu de fuego",
+    "description": "Invoca espíritus de fuego que vuelan y queman a los enemigos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Espíritu de fuego; Invocados: spirit; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H06"
+    ]
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_meteor",
+    "name": "Meteoro del caos",
+    "description": "Una hilera de meteoros cae hacia el grupo: daño en área y quemadura.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Meteoro del caos; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H02"
+    ]
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_blast",
+    "name": "Explosión ensordecedora",
+    "description": "Onda en cono que daña, empuja con fuerza y aturde.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Explosión ensordecedora; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_field",
+    "name": "Campo de hielo (Crystal Maiden)",
+    "description": "Ultimate de Crystal Maiden: una ventisca de hielo cae a tu alrededor, dañando y ralentizando a todos los cercanos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Campo de hielo; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H08"
+    ]
+  },
+  {
+    "hero": "mage",
+    "heroName": "Mago",
+    "id": "i_laguna",
+    "name": "Rayo de luz (Lina)",
+    "description": "Ultimate de Lina: un rayo de luz devastador solo contra jefes. Después ganas un bono de velocidad de ataque.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Rayo de luz; Recarga/activación registrada",
+    "context": "Jefe; no existe en los tres objetivos iniciales.",
+    "panelErrors": [],
+    "findings": [
+      "H03"
+    ]
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_crit",
+    "name": "Golpe crítico",
+    "description": "Tus flechas pueden hacer golpes críticos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_aspd",
+    "name": "Velocidad de golpe",
+    "description": "Disparas más rápido.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_multi",
+    "name": "Flechas múltiples",
+    "description": "Cada disparo lanza flechas a varios enemigos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_pierce",
+    "name": "Flecha perforante",
+    "description": "Algunas flechas atraviesan a todos los enemigos en línea.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Flecha perforante",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_frost",
+    "name": "Flechas de escarcha",
+    "description": "Tus flechas ralentizan al enemigo y pueden congelarlo en el sitio.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_shackle",
+    "name": "Grillete",
+    "description": "Una flecha ata al enemigo más fuerte con otro cercano: ambos quedan aturdidos y heridos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Grillete; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_snipe",
+    "name": "Disparo potente",
+    "description": "Una flecha cargada contra el enemigo más fuerte que atraviesa a todos los de su línea: los primeros reciben más daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Disparo potente; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H02"
+    ]
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_windrun",
+    "name": "Carrera del viento",
+    "description": "Pasiva: esquivas ataques. Activa: el viento te hace invulnerable, veloz y más rápido disparando.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Atributos modificados",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_gust",
+    "name": "Ráfaga",
+    "description": "Una ráfaga empuja a los enemigos y silencia a los que disparan desde lejos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Ráfaga; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_aura",
+    "name": "Aura de precisión",
+    "description": "Pasiva: todos los héroes del equipo infligen más daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_hawk",
+    "name": "Halcón compañero",
+    "description": "Un halcón te acompaña, se lanza en picado sobre el enemigo más fuerte y lo marca: los marcados reciben más daño y tus flechas contra ellos son críticas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Halcón compañero; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "archer",
+    "heroName": "Arquero elfo",
+    "id": "a_focus",
+    "name": "★ Fuego concentrado (ULTIMATE)",
+    "description": "Disparas a todos los enemigos a tu alcance a una velocidad enorme, con menos daño por flecha.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada",
+    "context": "Al menos 4 blancos.",
+    "panelErrors": [],
+    "findings": [
+      "H03"
+    ]
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_raise",
+    "name": "Levantar esqueletos",
+    "description": "Probabilidad de invocar un esqueleto cuando muere un enemigo. No caducan con el tiempo: solo mueren si los matan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Esqueletos del nigromante; Invocados: skelA, skel",
+    "context": "Bajas y probabilidad de invocación.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_vamp",
+    "name": "Vampiros",
+    "description": "Vampiros vuelan a tu alrededor y atacan a los enemigos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Vampiros; Invocados: vamp; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_mummy",
+    "name": "Momias",
+    "description": "Invoca momias resistentes que pelean contigo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Momias; Invocados: mummy; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H06"
+    ]
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_skeldragon",
+    "name": "Dragón esqueleto",
+    "description": "Cuando tu dragón muere, vuelve como dragón esqueleto y sigue peleando. Requiere comprar el huevo como todos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Conversión comprobada al morir el dragón.",
+    "context": "Dragón comprado/incubado que muera.",
+    "panelErrors": [],
+    "findings": [
+      "H04",
+      "H11"
+    ]
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_wall",
+    "name": "Aura de la parca",
+    "description": "Un aura de muerte te rodea: cada segundo hiere a los enemigos cercanos (más a los de mucha vida) y cura a tus héroes y aliados. Cura más cuantos más enemigos toca.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Aura de la parca; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H15"
+    ]
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_pest",
+    "name": "Pestilencia",
+    "description": "Una nube de pestilencia te rodea, daña y ralentiza a los enemigos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Pestilencia; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_curse",
+    "name": "Maldición",
+    "description": "Maldice a los enemigos: reciben más daño durante unos segundos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_drain",
+    "name": "Drenar vida",
+    "description": "Drenas la vida de los enemigos más fuertes durante unos segundos y la conviertes en tu propia vida.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Drenar vida; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_spear",
+    "name": "Lanza de huesos",
+    "description": "Lanzas una enorme lanza de hueso que atraviesa a todos los enemigos en línea.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Lanza de huesos; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_corpse",
+    "name": "Explosión de cadáveres",
+    "description": "Los enemigos muertos pueden explotar y dañar a los de alrededor.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Explosión de cadáveres",
+    "context": "Bajas y probabilidad de explosión.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_abom",
+    "name": "Abominación",
+    "description": "Fusionas esqueletos en una abominación de carne enorme y resistente que atrae a los enemigos y golpea con un hachazo brutal. Consume 2 esqueletos por abominación.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Abominación comprobada con esqueletos preparados.",
+    "context": "Dos esqueletos que consumir.",
+    "panelErrors": [],
+    "findings": [
+      "H04",
+      "H06"
+    ]
+  },
+  {
+    "hero": "necro",
+    "heroName": "Nigromante",
+    "id": "n_souls",
+    "name": "★ Sentencia de la parca (ULTIMATE)",
+    "description": "Condenas a todos los enemigos cercanos: los que tienen menos de la mitad de vida mueren al instante (jefes incluidos) y el resto sufre un gran daño. Tus aliados se curan por completo y quedan potenciados.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: ★ Sentencia de la parca; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_crit",
+    "name": "Golpe crítico",
+    "description": "Tus disparos pueden hacer golpes críticos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_aspd",
+    "name": "Velocidad de golpe",
+    "description": "Disparas más rápido.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_armor",
+    "name": "Armadura de hierro",
+    "description": "Más vida máxima y menos daño recibido.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_head",
+    "name": "Tiro en la cabeza",
+    "description": "Algunos disparos son tiros a la cabeza: daño extra, empujan y aturden al enemigo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_aim",
+    "name": "Disparo de precisión",
+    "description": "Pasiva: más alcance y más daño cuanto más lejos está el enemigo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_shrapnel",
+    "name": "Granada de metralla",
+    "description": "Lanzas una granada que deja una zona de metralla: daña y ralentiza a quien la pise.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Granada de metralla; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_grenade",
+    "name": "Lanzagranadas",
+    "description": "Lanza granadas que explotan tras un instante.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Granadas; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_mines",
+    "name": "Campo minado",
+    "description": "Siembra minas a tu alrededor que explotan al pisarlas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Campo minado",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_turret",
+    "name": "Torreta",
+    "description": "Despliega torretas automáticas que disparan a los enemigos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Torreta; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_rockets",
+    "name": "Cohetes teledirigidos",
+    "description": "Lanzas una salva de cohetes que persiguen a distintos enemigos y explotan en área.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Cohetes teledirigidos; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_blast",
+    "name": "Barril explosivo",
+    "description": "Detonas un barril de pólvora a tus pies a costa de parte de tu vida: gran explosión que empuja y aturda. Más daño cuanta menos vida tengas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Barril explosivo; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "dwarf",
+    "heroName": "Enano artillero",
+    "id": "d_snipe",
+    "name": "★ Asesino (ULTIMATE)",
+    "description": "Apuntas 2 s al enemigo más fuerte y disparas una bala devastadora que atraviesa todo lo que hay detrás.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Asesino; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_crit",
+    "name": "Golpe crítico",
+    "description": "Tus hachas pueden hacer golpes críticos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_multi",
+    "name": "Hachas múltiples",
+    "description": "Lanzas varias hachas a la vez, cada una a un enemigo distinto.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_aspd",
+    "name": "Rugido de la manada",
+    "description": "Un rugido constante que mejora el daño y la velocidad de ataque de tus invocaciones y aliados cercanos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "No concluyente en el escenario aislado; revisar condición/pasiva.",
+    "context": "Aliados invocados cerca.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_giant",
+    "name": "Hachas gigantes",
+    "description": "Tus hachas crecen de tamaño: golpean a muchos más enemigos a la vez y pegan más fuerte.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_bleed",
+    "name": "Sangrado",
+    "description": "Las hachas hacen sangrar a los enemigos (daño en el tiempo que se acumula).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_rage",
+    "name": "Furia",
+    "description": "Cada enemigo que matas te da furia: más daño y más velocidad durante unos segundos. Con poca vida, aún más.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_whirl",
+    "name": "Danza de la cuchilla",
+    "description": "Giras con tus hachas y desgarras a todos a tu alrededor, con mucha probabilidad de golpe crítico.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Danza de la cuchilla; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H14"
+    ]
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_exec",
+    "name": "Decapitador",
+    "description": "Golpeas a los enemigos más débiles: los que están por debajo del 30% de vida mueren al instante.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Decapitador; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_berserk",
+    "name": "★ Berserker (ULTIMATE)",
+    "description": "Entras en trance: atacas un 60% más rápido, pegas un 40% más fuerte, recibes un 40% menos de daño y te curas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Al menos 4 blancos.",
+    "panelErrors": [],
+    "findings": [
+      "H03"
+    ]
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_shout",
+    "name": "Llamada de batalla",
+    "description": "Atraes y aturdes a los enemigos cercanos y, mientras dura, recibes un 40% menos de daño y pegas más fuerte.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Llamada de batalla; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H14"
+    ]
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_chain",
+    "name": "Hambre de sangre",
+    "description": "Marcas a los enemigos más fuertes con un tajo brutal: sangran y, si mueren, te curas y ganas velocidad.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Hambre de sangre; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "barbarian",
+    "heroName": "Orco guerrero",
+    "id": "b_fire",
+    "name": "Jabalí embestidor",
+    "description": "Un jabalí de guerra te acompaña: provoca a los enemigos y embiste periódicamente aturdiendo a los que tiene cerca.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Jabalí embestidor; Invocados: wboar; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_meta",
+    "name": "Metamorfosis",
+    "description": "Te transformas en un demonio alado: lanzas 3 guadañas, atacas más rápido, pegas más fuerte y te regeneras.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H01"
+    ]
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_immo",
+    "name": "Aura de inmolación",
+    "description": "Un aura de fuego vil te rodea y quema a los enemigos que se acercan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Aura de inmolación",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_eyes",
+    "name": "Rayos oculares",
+    "description": "Tus ojos disparan rayos de energía que atraviesan a todos los enemigos en línea.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Rayos oculares; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H15"
+    ]
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_evade",
+    "name": "Evasión",
+    "description": "Posibilidad de esquivar el daño que recibes.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_burn",
+    "name": "Quemadura vil",
+    "description": "Tus guadañas queman a los enemigos con energía vil (daño en el tiempo que se acumula).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_shadow",
+    "name": "Golpe de sombras",
+    "description": "Golpea con sombras a los enemigos más duros del mapa y los ralentiza.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Golpe de sombras; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_hunt",
+    "name": "Cazador de demonios",
+    "description": "Más daño contra jefes y enemigos que disparan, y recuperas vida con cada baja.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "No concluyente en el escenario aislado; revisar condición/pasiva.",
+    "context": "Enemigo jefe o a distancia; también baja para curación.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_void",
+    "name": "Vacío vil",
+    "description": "Abres un agujero oscuro que atrae a los enemigos hacia su centro y los desgarra.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Vacío vil; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H14"
+    ]
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_coup",
+    "name": "★ Golpe de gracia (ULTIMATE)",
+    "description": "Durante unos segundos tus golpes son siempre críticos devastadores, atacas más rápido y esquivas más.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_dagger",
+    "name": "Daga asfixiante",
+    "description": "Lanzas dagas a los enemigos más fuertes: los dañan, los ralentizan y los marcan para recibir más daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Daga asfixiante; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_frag",
+    "name": "Fragmentos de alma",
+    "description": "Los enemigos caídos pueden soltar fragmentos de alma. Al recogerlos te curas y ganas daño acumulable durante unos segundos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recuperación de vida registrada",
+    "context": "Bajas y recogida de fragmentos.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "demon",
+    "heroName": "Cazador demonio",
+    "id": "z_step",
+    "name": "Paso de sombra",
+    "description": "Te desvaneces y reapareces junto a los enemigos más fuertes, hiriéndolos con un tajo de sombras y ralentizándolos. Eres intocable mientras dura.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Paso de sombra; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_heal",
+    "name": "Plegaria de sanación",
+    "description": "Cada cierto tiempo te curas una parte de tu vida y curas también a tus aliados.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Vida perdida.",
+    "panelErrors": [],
+    "findings": [
+      "H11",
+      "H15"
+    ]
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_halo",
+    "name": "Halo sagrado",
+    "description": "Un halo de luz te rodea y quema con daño divino a los enemigos que se acercan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Halo sagrado",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_judge",
+    "name": "Juicio",
+    "description": "Rayos de luz caen del cielo sobre los enemigos más fuertes a tu alcance.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Juicio; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H02"
+    ]
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_angel",
+    "name": "Ángeles guardianes",
+    "description": "Ángeles permanentes vuelan a tu alrededor y atacan con daño divino.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Ángeles guardianes; Invocados: angel",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_barrier",
+    "name": "Barrera divina",
+    "description": "Recibes menos daño y una barrera de luz absorbe golpes cada cierto tiempo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Atributos modificados; Escudo registrado",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_consec",
+    "name": "Consagración",
+    "description": "Consagra el suelo bajo el mayor grupo de enemigos: daño divino continuo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Consagración; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_purge",
+    "name": "Purificación",
+    "description": "Una onda sagrada daña a los enemigos a tu alcance, les quita la invulnerabilidad y les impide curarse, regenerarse y resucitar durante unos segundos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Purificación; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_nova",
+    "name": "★ Nova de luz (ULTIMATE)",
+    "description": "Una explosión de luz sagrada hiere a todos los enemigos a tu alcance y cura a tus aliados y a ti.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Nova de luz; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Al menos 5 blancos.",
+    "panelErrors": [],
+    "findings": [
+      "H03"
+    ]
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_chains",
+    "name": "Cadenas de luz",
+    "description": "Cadenas de luz atrapan a los enemigos más fuertes: inmóviles, heridos y más vulnerables.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Cadenas de luz; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_res",
+    "name": "Resurrección",
+    "description": "Si mueres, vuelves a la vida con parte de tu vida y unos segundos de invulnerabilidad.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Resurrección comprobada con daño letal.",
+    "context": "Daño letal.",
+    "panelErrors": [],
+    "findings": [
+      "H11"
+    ]
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_faith",
+    "name": "Fe ardiente",
+    "description": "Tus rayos sagrados prenden en los enemigos: daño divino extra y quemadura. Cada pocos ataques una oleada de fe cura a ti y a tus aliados.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Fe ardiente; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "priest",
+    "heroName": "Sacerdote",
+    "id": "p_sanct",
+    "name": "Santuario",
+    "description": "Levantas un domo sagrado: los enemigos dentro van más lentos y casi no pueden herirte, y tú y tus aliados os regeneráis.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_combo",
+    "name": "Combo de palma",
+    "description": "Cada pocos puñetazos das un golpe de palma: mucho más daño, explosión en área y aturdimiento breve.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Combo de palma; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H14"
+    ]
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_flurry",
+    "name": "Ráfaga de puños",
+    "description": "Golpeas más rápido y a más enemigos a la vez.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_wind",
+    "name": "Paso del viento",
+    "description": "Posibilidad de esquivar el daño que recibes.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_wave",
+    "name": "Ola de chi",
+    "description": "Liberas una ola de chi que daña y empuja a los enemigos cercanos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Ola de chi; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H15"
+    ]
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_dragon",
+    "name": "Palma del dragón",
+    "description": "Una palma de energía en forma de dragón atraviesa a todos los enemigos en línea.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Palma del dragón; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H15"
+    ]
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_bell",
+    "name": "Campana dorada",
+    "description": "Cuando tu vida baja del 40% te vuelves invulnerable unos segundos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Estado interno activo",
+    "context": "Vida por debajo del umbral.",
+    "panelErrors": [],
+    "findings": [
+      "H11"
+    ]
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_serene",
+    "name": "Serenidad",
+    "description": "Regeneras vida y recibes menos daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_kick",
+    "name": "Patada del huracán",
+    "description": "Giras con una serie de patadas que hieren, empujan y aturden a todos los que te rodean.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Patada del huracán; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_nirvana",
+    "name": "★ Nirvana (ULTIMATE)",
+    "description": "Alcanzas el nirvana: atacas un 50% más rápido, pegas un 30% más fuerte, recibes la mitad de daño, te curas y emites pulsos de chi.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Nirvana; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_hundred",
+    "name": "Cien puños",
+    "description": "Golpeas en un instante a muchos enemigos a tu alcance, tres veces cada uno.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Cien puños; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H15"
+    ]
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_gong",
+    "name": "Gong del trueno",
+    "description": "Golpeas un gong gigante: una onda de trueno hiere, empuja y aturde a todos los que te rodean.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Gong del trueno; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "monk",
+    "heroName": "Monje panda",
+    "id": "k_cubs",
+    "name": "Crías de panda",
+    "description": "Invocas crías de panda que ruedan y pelean a tu lado durante un rato.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Crías de panda; Invocados: cub; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H06"
+    ]
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_holy",
+    "name": "Espada consagrada",
+    "description": "Tus espadazos hacen daño divino extra y te curan un poco.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Espada consagrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_cleave",
+    "name": "Barrido",
+    "description": "Cada espadazo también golpea a los enemigos alrededor del objetivo (50% del daño).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_shield",
+    "name": "Aura de resistencia",
+    "description": "Un aura de resistencia mágica y física: todo el equipo recibe menos daño y tú puedes bloquear golpes.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_charge",
+    "name": "Carga sagrada",
+    "description": "Cargas contra un enemigo lejano: daño en área y aturdimiento al llegar.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Carga sagrada; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_hammer",
+    "name": "Martillo divino",
+    "description": "Lanzas un martillo divino al enemigo más fuerte: enorme daño divino y lo aturde.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Martillo divino; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_aura",
+    "name": "Aura de curación y daño",
+    "description": "Un aura sagrada quema a los enemigos cercanos y cura a tus héroes y aliados.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Aura de curación y daño; Atributos modificados; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_hands",
+    "name": "Imposición de manos",
+    "description": "Cuando tu vida baja del 35% te curas de golpe.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recuperación de vida registrada",
+    "context": "Vida perdida.",
+    "panelErrors": [],
+    "findings": [
+      "H11"
+    ]
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_beam",
+    "name": "Lanza de luz",
+    "description": "Una lanza de luz divina atraviesa al enemigo más fuerte y a todos los de su línea.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Lanza de luz; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H15"
+    ]
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_bastion",
+    "name": "★ Invulnerabilidad (ULTIMATE)",
+    "description": "Durante unos segundos tú y todos tus héroes sois invulnerables; pulsos sagrados curan al equipo y hieren a los enemigos cercanos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Invulnerabilidad; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_wrath",
+    "name": "Forma de dragón",
+    "description": "Te transformas en dragón: alas, golpes más rápidos y fuertes, aliento de fuego a tu alrededor y una curación al transformarte.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Forma de dragón; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H01"
+    ]
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_throw",
+    "name": "Golpe con escudo",
+    "description": "Golpeas con el escudo al enemigo cercano: gran daño, lo aturde y empuja y hiere a los que lo rodean.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Golpe con escudo; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "paladin",
+    "heroName": "Caballero dragón",
+    "id": "pl_runes",
+    "name": "Llamarada",
+    "description": "Escupes un cono de fuego: daño de quemadura en área frente a ti.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Llamarada; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_multi",
+    "name": "Lluvia de lanzas",
+    "description": "Lanzas varias lanzas a la vez y más deprisa. Nv5, 10 y 15: +1 lanza.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_venom",
+    "name": "Veneno de loa",
+    "description": "Algunas lanzas envenenan al enemigo con un veneno que se acumula.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_crit",
+    "name": "Cazador de cabezas",
+    "description": "Posibilidad de golpe crítico con las lanzas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_trap",
+    "name": "Pacto de sangre",
+    "description": "Sacrificas parte de tu vida para curar a tu equipo y a tus aliados, y una onda de sangre daña a los enemigos cercanos. Solo se activa si algún compañero está herido.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "No concluyente en el escenario aislado; revisar condición/pasiva.",
+    "context": "Otro héroe herido; la prueba solitaria no prepara ese aliado.",
+    "panelErrors": [],
+    "findings": [
+      "H11"
+    ]
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_raptor",
+    "name": "Raptor domesticado",
+    "description": "Raptores leales luchan a tu lado para siempre y se reponen solos si caen.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Raptor domesticado; Invocados: raptor",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_regen",
+    "name": "Regeneración troll",
+    "description": "Tu sangre troll cierra las heridas: más vida por segundo, el doble con menos de la mitad de vida.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_hex",
+    "name": "Maleficio de rana",
+    "description": "Convierte en rana a los enemigos más fuertes: quedan aturdidos y reciben más daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_totem",
+    "name": "Tótem ancestral",
+    "description": "Plantas un tótem que te cura y fulmina con rayos a los enemigos cercanos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Tótem ancestral; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_fury",
+    "name": "Postura de guerra",
+    "description": "Alternas cada pocos segundos entre postura de lanzas (más velocidad de ataque) y postura de hachas (más daño, sangrado, golpes en área y robo de vida).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H15"
+    ]
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_loa",
+    "name": "★ Espíritu del Loa (ULTIMATE)",
+    "description": "El espíritu del Loa te posee: atacas mucho más rápido y una lluvia de lanzas espectrales cae sobre los enemigos del mapa.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Espíritu del Loa; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_boar",
+    "name": "Lanzas ardientes",
+    "description": "Tus lanzas cuestan un poco de tu vida pero pegan mucho más fuerte, y cuanta menos vida te queda, más daño hacen.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "troll",
+    "heroName": "Cazador troll",
+    "id": "t_spear",
+    "name": "Lanza explosiva",
+    "description": "Clavas una lanza en el enemigo más fuerte: a los 2 segundos explota en área y quema.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Lanza explosiva; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_bleed",
+    "name": "Garras sangrientas",
+    "description": "Tus zarpazos hacen sangrar: daño en el tiempo que se acumula.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Garras sangrientas; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_cleave",
+    "name": "Zarpazo doble",
+    "description": "Golpeas más rápido y a más enemigos a la vez.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_leap",
+    "name": "Salto de presa",
+    "description": "Saltas sobre el grupo más lejano: daño en área y aturdimiento al caer.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Salto de presa; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_blood",
+    "name": "Sed de sangre",
+    "description": "Cada golpe te cura una parte de tu vida.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_hide",
+    "name": "Pelaje grueso",
+    "description": "Tu pelaje te protege: recibes menos daño y te regeneras.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_howl",
+    "name": "Aullido a la luna",
+    "description": "Un aullido aterrador daña a los enemigos cercanos, los hace huir y te da velocidad de ataque.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Aullido a la luna; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_pack",
+    "name": "Llamada de la manada",
+    "description": "Invocas lobos espectrales que cazan a tu lado durante unos segundos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Manada espectral; Invocados: wolf; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H06"
+    ]
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_rend",
+    "name": "Tajo salvaje",
+    "description": "Un zarpazo enorme en abanico frente a ti: mucho daño y sangrado a todo el que alcance.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Tajo salvaje; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_prey",
+    "name": "Marca de la presa",
+    "description": "Marcas al enemigo más fuerte: recibe más daño y, al morir, no escapa de la caza.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_moon",
+    "name": "★ Luna llena (ULTIMATE)",
+    "description": "Te transformas en un lobo gigante: más daño, golpeas un 50% más rápido, robas 3 veces más vida y recibes un 35% menos de daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H01"
+    ]
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_alpha",
+    "name": "Lobo alfa",
+    "description": "Un lobo alfa gigante lucha a tu lado, atrae a los enemigos y, con su aullido, acelera tus ataques.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Lobo alfa; Invocados: alpha",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "werewolf",
+    "heroName": "Hombre lobo",
+    "id": "w_silver",
+    "name": "Zarpas de plata",
+    "description": "Tus zarpazos de plata hacen daño extra a jefes y enemigos blindados, rompen su invulnerabilidad e impiden que se curen o resuciten.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Zarpas de plata; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_wrath",
+    "name": "Cólera de la naturaleza",
+    "description": "Lanzas varios rayos de cólera a la vez y más deprisa. Nv7 y 14: +1 rayo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_moon",
+    "name": "Fuego lunar",
+    "description": "Quema a los enemigos más fuertes con fuego lunar: golpe inicial y daño en el tiempo que se acumula.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Fuego lunar; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_thorns",
+    "name": "Enredar",
+    "description": "Raíces brotan bajo el mayor grupo de enemigos: daño y los dejan inmóviles.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Enredar; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_rejuv",
+    "name": "Rejuvenecimiento",
+    "description": "Regeneras vida sin parar y, con menos del 40% de vida, te curas de golpe.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados; Recuperación de vida registrada",
+    "context": "Vida perdida.",
+    "panelErrors": [],
+    "findings": [
+      "H11"
+    ]
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_treants",
+    "name": "Fuerza de la naturaleza",
+    "description": "Conviertes árboles en ents que luchan por ti hasta que los derroten. Son muy resistentes.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Fuerza de la naturaleza; Invocados: treant; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_star",
+    "name": "Lluvia de estrellas",
+    "description": "Estrellas caen del cielo sobre los enemigos durante unos segundos, con daño en área.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Lluvia de estrellas; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_bark",
+    "name": "Piel de corteza",
+    "description": "Tu piel se endurece: recibes menos daño y un escudo cada cierto tiempo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados; Escudo registrado",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_cyclone",
+    "name": "Teletransporte",
+    "description": "Saltas hasta un grupo lejano de enemigos y sueltas una explosión de naturaleza que daña y aturde.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Teletransporte; Recarga/activación registrada; Estados en enemigos",
+    "context": "Objetivo lejano.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_swarm",
+    "name": "Regreso a la naturaleza",
+    "description": "Intercambias tu sitio con el oso espiritual: te cura y una onda de espinas daña a los enemigos en ambos puntos. Se usa al estar lejos del oso o cuando te rodean con poca vida.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Intercambio y daño comprobados con oso.",
+    "context": "Oso espiritual y distancia/peligro.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_bear",
+    "name": "★ Forma de oso (ULTIMATE)",
+    "description": "Te transformas en un oso colosal: recibes un 60% menos de daño, te regeneras y aplastas a todo el que te rodea.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Forma de oso; Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H01"
+    ]
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_storm",
+    "name": "Compañero oso espiritual",
+    "description": "Un oso espiritual te acompaña siempre: provoca a los enemigos, los aplasta y aturde y los deja marcados para recibir más daño. Si cae, regresa solo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Oso espiritual; Invocados: sbear; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "druid",
+    "heroName": "Tauren druida",
+    "id": "u_eclipse",
+    "name": "Eclipse",
+    "description": "Alternas entre fase solar (tus ataques pegan más fuerte) y fase lunar (te regeneras y atacas más rápido).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_onslaught",
+    "name": "Embestida (Onslaught)",
+    "description": "Se prepara durante 0,7 s y carga en línea hacia una presa. Golpea una vez a cada enemigo atravesado, lo empuja y aturde. Los jefes no se desplazan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Embestida; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_trample",
+    "name": "Pisotear (Trample)",
+    "description": "Durante unos segundos, cada 45 px recorridos causa daño de área. No hace ataques básicos mientras pisotea. Quedarse quieto no causa daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Pisotear; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_uproar",
+    "name": "Rugido (Uproar)",
+    "description": "Acumula hasta 5 cargas de furia con el daño que llega a su vida. Ruge automáticamente con 5 cargas, o estando herido: consume las cargas, ralentiza y gana daño y protección durante 7 s.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Rugido comprobado con 5 cargas.",
+    "context": "Daño que genere furia.",
+    "panelErrors": [],
+    "findings": [
+      "H11"
+    ]
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_pulverize",
+    "name": "★ Pulverizar (ULTIMATE)",
+    "description": "Agarra a un enemigo cercano y lo golpea repetidamente contra el suelo. Cada impacto hace más daño y causa un pequeño aturdimiento en área. Durante la canalización no se mueve ni ataca. Los jefes no se levantan ni se desplazan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Pulverizar; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_rock",
+    "name": "Lanzamiento de roca",
+    "description": "Lanza una roca con trayectoria visible a una posición distante. Al aterrizar daña y aturde a los enemigos en área.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Lanzamiento de roca; Recarga/activación registrada; Estados en enemigos",
+    "context": "Blanco a más de 95 px.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_colossal",
+    "name": "Colosal",
+    "description": "Aumenta vida máxima. La vida máxima aumenta ligeramente su tamaño y sus áreas, con límites para conservar la legibilidad.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H01"
+    ]
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_hide",
+    "name": "Piel pétrea",
+    "description": "Reduce daño recibido; durante Pisotear obtiene protección adicional.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "No concluyente en el escenario aislado; revisar condición/pasiva.",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_impact",
+    "name": "Impacto brutal",
+    "description": "Al terminar una Embestida emite una onda física adicional. Solo se activa una vez por carga.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "No concluyente en el escenario aislado; revisar condición/pasiva.",
+    "context": "Embestida terminada.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_shockwave",
+    "name": "Ondas tectónicas",
+    "description": "Rugido libera 3 oleadas de proyectiles terrestres. Su cantidad depende de las cargas consumidas. Las ondas atraviesan enemigos y no generan nuevas ondas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Ondas tectónicas comprobadas con rugido preparado.",
+    "context": "Rugido con furia.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_aftershock",
+    "name": "Roca fragmentada",
+    "description": "La roca principal se divide al caer en 3 fragmentos que impactan detrás del objetivo. Los fragmentos no se vuelven a dividir.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "No concluyente en el escenario aislado; revisar condición/pasiva.",
+    "context": "Roca principal.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_momentum",
+    "name": "Ímpetu salvaje",
+    "description": "Aumenta la velocidad de desplazamiento y el daño de los zarpazos. No permite atacar durante Pisotear, Embestida o Pulverizar.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "devourer",
+    "heroName": "Bestia abisal",
+    "id": "pb_regen",
+    "name": "Vigor ancestral",
+    "description": "Regenera vida de forma constante, sin consumir cadáveres ni invocar criaturas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_rain",
+    "name": "Lluvia ritual",
+    "description": "Crea una zona que aplica Mojado durante 4 s. Mojado aumenta un 15% el daño eléctrico recibido, sin eliminar inmunidades.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_arc",
+    "name": "Arco conductor",
+    "description": "Los impactos del ataque básico saltan a otros enemigos, priorizando mojados. Golpear con el básico a un mojado genera 1 de estática (máximo 30).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Arco conductor",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_thunder",
+    "name": "Tótem del trueno",
+    "description": "Coloca tótems destructibles. Cada descarga consume 1 de estática; permanecen inactivos sin carga.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño del tótem comprobado con estática.",
+    "context": "Estática para que el tótem dispare.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_tide",
+    "name": "Tótem de la marea",
+    "description": "Coloca un tótem destructible que cura al héroe y a aliados cercanos cada segundo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Recuperación de vida registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_wind",
+    "name": "Ráfaga de viento",
+    "description": "Golpea y aleja enemigos cercanos. Los jefes resisten el desplazamiento.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Ráfaga de viento; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_cloud",
+    "name": "Nube cargada",
+    "description": "Una nube sigue lentamente al grupo elegido y descarga cada segundo. Puede mojar durante Monzón.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Nube cargada; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_skin",
+    "name": "Piel de tormenta",
+    "description": "Crea una barrera temporal. Al agotarse o caducar libera una descarga cercana. No acumula barreras de esta habilidad.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Piel de tormenta; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_overload",
+    "name": "Sobrecarga",
+    "description": "Consume Mojado de varios objetivos para causar daño eléctrico adicional y aturdir. Los jefes reciben control reducido.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño comprobado con Mojado.",
+    "context": "Objetivos mojados.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_vortex",
+    "name": "Vórtice",
+    "description": "Una zona atrae enemigos normales y los moja. Los jefes solo se ralentizan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_monsoon",
+    "name": "★ Monzón (ULTIMATE)",
+    "description": "Moja una zona amplia, descarga rayos y genera estática para los tótems una vez por segundo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Monzón; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_bolt",
+    "name": "Golpe de relámpago",
+    "description": "Un rayo enorme cae sobre el enemigo más fuerte y gasta estática. Si el objetivo está mojado, el daño es mucho mayor. Necesita estática suficiente.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño comprobado con estática.",
+    "context": "Estática suficiente (10 de base).",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "shaman",
+    "heroName": "Chamán de la tormenta",
+    "id": "c_orb",
+    "name": "Bola de relámpago",
+    "description": "Un orbe eléctrico recorre despacio al grupo más numeroso: descarga sobre todos los de su alrededor, los moja y genera estática.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Bola de relámpago; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_poison",
+    "name": "Puñal envenenado",
+    "description": "Tus golpes envenenan al enemigo: el veneno se acumula con cada daga.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_crit",
+    "name": "Golpe letal",
+    "description": "Tus golpes pueden ser críticos con mucho daño.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_dodge",
+    "name": "Esquiva",
+    "description": "Posibilidad de evitar por completo un golpe.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Atributos modificados",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_blink",
+    "name": "Puñalada de sombra",
+    "description": "Te teletransportas junto al enemigo más fuerte y lo apuñalas, aturdiéndolo.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Puñalada de sombra; Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_smoke",
+    "name": "Bomba de humo",
+    "description": "Una nube de humo ralentiza, debilita a los enemigos y te protege dentro de ella.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_stealth",
+    "name": "Invisibilidad",
+    "description": "Te vuelves invisible: recibes menos daño, te mueves más rápido y tu siguiente golpe es una emboscada crítica.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H12"
+    ]
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_mark",
+    "name": "Marca de muerte",
+    "description": "Marcas al enemigo más fuerte: recibe más daño y, si muere, se reinician tus recargas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_daggers",
+    "name": "Lluvia de dagas",
+    "description": "Lanzas una andanada de dagas contra los enemigos cercanos.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Lluvia de dagas; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_clone",
+    "name": "Clon de sombra",
+    "description": "Un clon de sombra pelea a tu lado hasta que lo derrotan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Clon de sombra; Invocados: sclone; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_trap",
+    "name": "Trampa venenosa",
+    "description": "Siembras trampas que estallan al pisarlas: dañan, envenenan y frenan.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Explosión y daño comprobados al pisarla.",
+    "context": "Un enemigo que pise la trampa.",
+    "panelErrors": [],
+    "findings": [
+      "H11"
+    ]
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_exec",
+    "name": "Ejecución",
+    "description": "Tus golpes matan al instante a los enemigos con poca vida (los jefes, con la mitad de umbral).",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Ejecución",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "assassin",
+    "heroName": "Asesino",
+    "id": "x_dance",
+    "name": "★ Danza mortal (ULTIMATE)",
+    "description": "Eres invulnerable y saltas de enemigo en enemigo golpeándolos con críticos garantizados.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: ★ Danza mortal; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_flask",
+    "name": "Frasco corrosivo",
+    "description": "Mejora el ataque básico, añade salpicadura e intoxicación y deja un charco ácido al impactar. Máximo 16 charcos propios en total.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_oil",
+    "name": "Aceite inflamable",
+    "description": "Coloca aceite que ralentiza un 30%. El daño de fuego sobre un enemigo dentro prende el charco y consume el aceite.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Recarga/activación registrada; Estados en enemigos",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H14"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_spark",
+    "name": "Chispa reactiva",
+    "description": "Lanza una ignición de fuego sobre un grupo y prende el aceite cercano.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Chispa reactiva; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H02"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_catalyst",
+    "name": "Catalizador",
+    "description": "Adelanta 1 s de daño de venenos y quemaduras propios y reduce su duración en 1 s. No afecta a efectos de otras habilidades generales.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Consumo y daño comprobados con veneno.",
+    "context": "Veneno/fuego propios que consumir.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_mix",
+    "name": "Mezcla inestable",
+    "description": "Consume dos charcos cercanos de sustancias distintas para causar una explosión. No se propaga a otras mezclas.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Explosión comprobada con dos charcos.",
+    "context": "Dos charcos distintos solapados.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_antidote",
+    "name": "Antídoto experimental",
+    "description": "Consume una parte del veneno propio de hasta 3 enemigos cercanos para curarte. No puede curar sin veneno que consumir.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Curación comprobada con veneno y vida perdida.",
+    "context": "Vida perdida y veneno propio.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_coat",
+    "name": "Delantal protector",
+    "description": "Reduce el daño recibido mientras estás cerca de tus charcos; cuenta como máximo 3.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Factor de defensa 0,932 con charcos preparados.",
+    "context": "Charcos cercanos.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_distill",
+    "name": "Destilación rápida",
+    "description": "Acelera el lanzamiento de frascos básicos. No acelera las otras habilidades.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Cambios de daño del básico en la muestra",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_fumes",
+    "name": "Gas volátil",
+    "description": "Crea una nube tóxica persistente que puede combinarse con ácido o aceite mediante Mezcla inestable.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Gas volátil; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": [
+      "H14"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_transmute",
+    "name": "★ Gran transmutación (ULTIMATE)",
+    "description": "Consume hasta 8 charcos y provoca una explosión en cada uno. Las explosiones no crean charcos ni activan nuevas reacciones.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Explosiones comprobadas con charcos.",
+    "context": "Charcos que consumir.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_gold",
+    "name": "Toque de oro",
+    "description": "Conviertes en oro a los enemigos más fuertes: los hieres y te llevas monedas. Cuanto más oro tengas, más fuerte pega.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Daño: Toque de oro; Recarga/activación registrada",
+    "context": "Sin preparación especial identificada para esta prueba.",
+    "panelErrors": [],
+    "findings": []
+  },
+  {
+    "hero": "alchemist",
+    "heroName": "Alquimista",
+    "id": "al_plague",
+    "name": "Pandemia",
+    "description": "Cuando muere un enemigo envenenado, su veneno se contagia a los de alrededor.",
+    "levels": "1 / 20 / 50: sin excepción",
+    "evidence": "Contagio a 6 blancos comprobado.",
+    "context": "Muerte de enemigo envenenado.",
+    "panelErrors": [],
+    "findings": [
+      "H04"
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-16T03:11:04.152Z",
+  "revision": "8d7d184de03804acd0bcc9d8e267957c76291e8c",
+  "indexSha256": "270d601382ba90a8fcc1f50681f7f6ef449359314b08d3cc3cf3cc7eab6cf13f",
+  "heroes": 16,
+  "skills": 192,
+  "motorScenarios": 880,
+  "browserScenarios": 384,
+  "preparedCases": 30,
+  "poses": 256,
+  "uiSelections": 768,
+  "issues": 17,
+  "priorities": {
+    "P1": 5,
+    "P2": 8,
+    "P3": 4
+  },
+  "runtimeErrors": [],
+  "motorErrors": 0,
+  "nonFinite": 0,
+  "invalidRectangles": [],
+  "failedAtlases": [],
+  "sourceHashesMatch": true
+}

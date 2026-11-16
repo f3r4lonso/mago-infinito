@@ -44,6 +44,13 @@ async function main(){
      }
     }
     document.querySelector('#play').click();check(G.one&&G.heroes.length===1&&G.hero==='monk','Partida con un héroe');check(G.mapId==='mapa2','Mapa de partida');
+    const togglePanel=document.querySelector('#panelToggle');
+    const restHeight=document.querySelector('#game').getBoundingClientRect().height;
+    togglePanel.click();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    check(getComputedStyle(document.querySelector('#bottomp')).display==='none'&&G.paused,'Ocultar panel en descanso');
+    check(document.querySelector('#game').getBoundingClientRect().height>restHeight+20,'Más espacio al ocultar panel normal');
+    check(togglePanel.getAttribute('aria-expanded')==='false','Botón recuperable');
+    togglePanel.click();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));check(getComputedStyle(document.querySelector('#bottomp')).display!=='none'&&G.paused,'Recuperar panel en descanso');
     check(getComputedStyle(document.querySelector('#heroSec2')).display==='none','Panel de héroe extra visible');
     showStart();document.querySelector('#modeTeam').click();document.querySelector('#play').click();check(!G.one&&!G.solo&&G.heroes.length===4,'Partida de equipo');
     showStart();document.querySelector('#solo').click();check(document.querySelectorAll('.hcard.on').length===1,'Selección de prueba');document.querySelector('#play').click();check(G.solo&&G.soloWeak&&G.heroes.length===1,'Modo prueba');
@@ -68,6 +75,14 @@ async function main(){
     check(document.querySelector('#bottomp').scrollWidth<=document.querySelector('#bottomp').clientWidth+1,'Panel test desborda');
     document.querySelector('#bottomp').scrollTop=0;
     options.open=false;choice.value=skill.id;choice.dispatchEvent(new Event('change'));play.click();
+    const testHeight=document.querySelector('#game').getBoundingClientRect().height;
+    const testChoice=G.soloTestChoice,testLevel=learnedClv(testChoice);togglePanel.click();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    check(getComputedStyle(document.querySelector('#bottomp')).display==='none'&&G.soloTestRunning,'Ocultar sin detener prueba');
+    check(document.querySelector('#game').getBoundingClientRect().height>testHeight+20,'Más espacio en test');
+    const toggleRect=togglePanel.getBoundingClientRect();check(toggleRect.bottom<=innerHeight&&toggleRect.top>=0,'Mostrar panel accesible');
+    togglePanel.click();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    check(G.soloTestChoice===testChoice&&learnedClv(testChoice)===testLevel,'Conservar prueba al mostrar panel');
+    check(Math.abs(document.querySelector('#game').getBoundingClientRect().height-testHeight)<2,'Restaurar tamaño de campo');
     const visibleButtons=Array.from(document.querySelectorAll('#bottomp button')).filter(b=>!b.closest('details:not([open])')&&b.getClientRects().length&&b.offsetHeight>0);check(visibleButtons.length<=4,'Demasiados botones visibles: '+visibleButtons.map(b=>b.textContent).join(', '));
     check(document.querySelector('#soloTestPlay').getBoundingClientRect().bottom<=innerHeight,'Botón principal fuera de pantalla');
     G.soloAnimTime=.12;

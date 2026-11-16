@@ -11,7 +11,7 @@ D0,D1=62,135
 # basic: src (nombre del ataque basico en el juego), w, ax, spin ; melee: efecto al golpear cuerpo a cuerpo
 H={
  'archer':dict(f='archer1.jpg',cols=7,rows=4,idle=1,atk=2,proj=3,hit=4,basic=dict(src='Flecha',w=38,ax=.82),hw=34,icons='archer2.jpg',kit='a_crit a_aspd a_multi a_pierce a_frost a_shackle a_snipe a_windrun a_gust a_aura a_hawk a_focus'),
- 'assassin':dict(f='acesino1.jpg',grid=True,cols=7,rows=6,idle=1,atk=2,hit=5,melee=True,hw=40,H=58,atks=.78,radial=True,icons='acesino2.jpg',kit='x_poison x_crit x_dodge x_blink x_smoke x_stealth x_mark x_daggers x_clone x_trap x_exec x_dance'),
+ 'assassin':dict(f='acesino1.jpg',grid=True,cols=7,rows=6,idle=1,atk=[2,3],hit=5,melee=True,hw=40,H=58,atks=.78,radial=True,atk_ext=62,fade_r=10,icons='acesino2.jpg',kit='x_poison x_crit x_dodge x_blink x_smoke x_stealth x_mark x_daggers x_clone x_trap x_exec x_dance'),
  'demon':dict(f='demonhunter1.jpg',cols=7,rows=4,idle=1,atk=2,proj=13,hit=14,basic=dict(src='Guadañas viles',w=34,ax=.5,spin=14),hw=38),
  'paladin':dict(f='dragonkings1.jpg',cols=7,rows=4,idle=1,atk=2,melee=True),
  'druid':dict(f='druida1.jpg',cols=7,rows=4,idle=1,atk=2,proj=4,hit=5,basic=dict(src='Cólera',w=44,ax=.8),hw=38),
@@ -38,15 +38,15 @@ def lineas_cuadricula(im):
         if s is not None:o.append((s+p)//2)
         return o
     return centros(m.mean(axis=0)),centros(m.mean(axis=1))
-def region(im,cols,rows,cells,ins=12):
+def region(im,cols,rows,cells,ins=12,ext=None):   # ext: la region unida solo se adentra ext px en la ultima celda (p. ej. la punta de un arma que cruza la linea)
     cells=cells if isinstance(cells,list) else [cells]
     r,c0=divmod(cells[0]-1,cols);c1=divmod(cells[-1]-1,cols)[1]
     Hh,W,_=im.shape;cw,ch=W/cols,Hh/rows
     if GRID:
-        xs,ys=GRID;ins=7;x0=int(xs[c0])+ins;reg=im[int(ys[r])+ins:int(ys[r+1])-ins,x0:int(xs[c1+1])-ins].copy()
+        xs,ys=GRID;ins=7;x0=int(xs[c0])+ins;reg=im[int(ys[r])+ins:int(ys[r+1])-ins,x0:(int(xs[c1])+ext if ext else int(xs[c1+1])-ins)].copy()
         cw=(xs[c1+1]-xs[c0])/(c1-c0+1)
     else:
-        x0=int(c0*cw)+ins;reg=im[int(r*ch)+ins:int((r+1)*ch)-ins,x0:int((c1+1)*cw)-ins].copy()
+        x0=int(c0*cw)+ins;reg=im[int(r*ch)+ins:int((r+1)*ch)-ins,x0:(int(c1*cw)+ext if ext else int((c1+1)*cw)-ins)].copy()
     for k in range(c0+1,c1+1):   # lineas de cuadricula internas de una region unida: se rellenan con las columnas vecinas
         xb=int((GRID[0][k] if GRID else k*cw))-x0
         if 14<xb<reg.shape[1]-14:
@@ -87,7 +87,7 @@ for hid,cfg in H.items():
     sp=[]
     ri=region(im,cfg['cols'],cfg['rows'],cfg['idle']);idle,box=full(ri,thr=cfg.get('thr',10));sp.append((f'{hid}_idle',idle))
     k_idle=idle.width/ri.shape[1]   # misma escala para el ataque
-    atk,_=full(region(im,cfg['cols'],cfg['rows'],cfg['atk']),k=k_idle)
+    atk,_=full(region(im,cfg['cols'],cfg['rows'],cfg['atk'],ext=cfg.get('atk_ext')),k=k_idle)
     atkax=None
     if abs(atk.width-idle.width)<=2 and abs(atk.height-idle.height)<=2:atk=atk.resize(idle.size,Image.LANCZOS)
     else:atkax=round(((box[0]+box[2])/2)/atk.width,3)   # ataque de varias celdas: el cuerpo queda en la primera
