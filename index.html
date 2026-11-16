@@ -288,7 +288,7 @@ body.solo #soloItemsFold{display:block;margin-top:10px;border-top:1px solid #544
 #soloTestOptions{margin:8px 0}#soloToolsMount #soloBar{position:static!important;max-height:none!important;max-width:none!important;overflow:visible!important}
 #soloToolsMount #soloBar>button{display:none}#soloToolsMount #soloBar>div{flex-direction:row!important;flex-wrap:wrap;align-items:center;gap:6px!important}
 #soloToolsMount #soloBar .btn{min-height:32px;margin:0}#soloToolsMount #soloEnemyModeInfo{max-width:175px}
-body.solo #heroSk{display:block}
+body.solo #heroSk{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,1fr);gap:8px 18px;align-items:start}body.solo .solo-left,body.solo .solo-right{min-width:0}body.solo .solo-grid{margin:0}body.solo .solo-caption{min-height:0;margin:6px 0}body.solo .solo-caption:empty{display:none}@media(max-width:900px){body.solo #heroSk{grid-template-columns:1fr}}
 .test-note{font-size:11px;color:var(--mut);line-height:1.4;margin:6px 0}
 body.solo #bar,body.solo #drMini,body.solo #drWin,body.solo #soloResetSkills{display:none!important}
 body.solo #tbar,body.solo #bottomp>.dhead{display:none!important}
@@ -367,6 +367,7 @@ body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
   <button data-d="sh">🛒<span>Torre e inventario</span><i class="bdg" id="bdgSh"></i></button>
 </div>
 <script src="assets/sprites.js"></script>
+<script src="assets/invocaciones/pack-ciclope.js"></script>
 <script src="assets/heroes/mage/pack.js"></script>
 <script src="assets/heroes/mage/pack-nuevo.js"></script>
 <script src="assets/tower/pack.js"></script>
@@ -621,17 +622,17 @@ const CLS={
  mage:[
  ],
  archer:[
-  {id:'a_crit',n:'Golpe crítico',icon:'💥',desc:'Tus flechas pueden hacer golpes críticos.',eff:l=>Math.round(100*Math.min(.6,.10+.025*l))+'% prob. · daño x'+f1(2+.12*l)},
-  {id:'a_aspd',n:'Velocidad de golpe',icon:'⚡',desc:'Disparas más rápido.',eff:l=>'+'+(3*l)+'% velocidad de disparo'},
-  {id:'a_multi',n:'Flechas múltiples',icon:'🏹',desc:'Cada disparo lanza flechas a varios enemigos.',eff:l=>Math.min(4,1+Math.floor(l/5))+' flechas por disparo'},
-  {id:'a_pierce',n:'Flecha perforante',icon:'➳',desc:'Algunas flechas atraviesan a todos los enemigos en línea.',eff:l=>Math.round(100*(.08+.008*l))+'% de las flechas perforan'},
-  {id:'a_frost',n:'Flechas de escarcha',icon:'❄️',desc:'Tus flechas ralentizan al enemigo y pueden congelarlo en el sitio.',eff:l=>'Ralentiza '+Math.round(100*Math.min(.65,.2+.008*l))+'% · congela '+Math.round(100*Math.min(.35,.04+.004*l))+'% prob.'},
-  {id:'a_shackle',n:'Grillete',icon:'⛓️',desc:'Una flecha ata al enemigo más fuerte con otro cercano: ambos quedan aturdidos y heridos.',eff:l=>f1(2+.06*l)+' s · daño x'+f1(2+.05*l)+' · cada '+f1(Math.max(7,13-.3*l))+' s'},
-  {id:'a_snipe',n:'Disparo potente',icon:'🎯',desc:'Una flecha cargada contra el enemigo más fuerte que atraviesa a todos los de su línea: los primeros reciben más daño.',eff:l=>'Daño x5 en línea · cada '+f1(Math.max(7,14-.35*l))+' s'},
-  {id:'a_windrun',n:'Carrera del viento',icon:'🍃',desc:'Pasiva: esquivas ataques. Activa: el viento te hace invulnerable, veloz y más rápido disparando.',eff:l=>Math.round(100*Math.min(.3,.04+.012*l))+'% esquiva · '+f1(2.5+.08*l)+' s · cada '+f1(Math.max(14,24-.5*l))+' s'},
+  {id:'a_crit',n:'Golpe crítico',icon:'💥',desc:'Pasiva: todas tus flechas (disparo básico, múltiples, divididas, de hielo y fuego concentrado) pueden hacer golpes críticos, con un destello dorado.',eff:l=>Math.round(100*Math.min(.6,.10+.025*l))+'% prob. · daño x'+f1(2+.12*l)},
+  {id:'a_aspd',n:'Velocidad de golpe',icon:'⚡',desc:'Pasiva: todos tus disparos de flecha salen más rápido.',eff:l=>'+'+(3*l)+'% velocidad de disparo'},
+  {id:'a_multi',n:'Flechas múltiples',icon:'🏹',desc:'Pasiva: cada disparo lanza flechas a varios enemigos, y cada flecha puede hacer crítico por su cuenta.',eff:l=>Math.min(4,1+Math.floor(l/5))+' flechas por disparo'},
+  {id:'a_pierce',n:'Flechas divididas',icon:'➳',desc:'Pasiva: algunas flechas, tras golpear a un enemigo, se dividen en 3 flechas que buscan a otros enemigos cercanos. Las flechas divididas también pueden hacer crítico.',eff:l=>Math.round(100*Math.min(.7,.08+.008*l))+'% de las flechas se dividen en 3'},
+  {id:'a_frost',n:'Flechas de escarcha',icon:'❄️',desc:'Pasiva: tus flechas ralentizan mucho al enemigo y pueden congelarlo en el sitio. Pueden hacer crítico, dividirse y ser múltiples.',eff:l=>'Ralentiza '+Math.round(100*Math.min(.85,.45+.01*l))+'% · congela '+Math.round(100*Math.min(.35,.04+.004*l))+'% prob.'},
+  {id:'a_shackle',n:'Flecha explosiva',icon:'🧨',desc:'Una flecha explosiva contra el enemigo más fuerte: estalla y daña en área (salpicadura). No se divide, no es de hielo y no hace crítico.',eff:l=>'Daño x'+f1(2.4+.06*l)+' · radio '+Math.round(90+.8*l)+' · cada '+f1(Math.max(7,13-.3*l))+' s'},
+  {id:'a_snipe',n:'Disparo potente',icon:'🎯',desc:'Una gran flecha cruza todo el mapa contra el enemigo más fuerte y atraviesa a todos los de su línea. No la afectan las pasivas.',eff:l=>'Daño x5 en línea · cada '+f1(Math.max(7,14-.35*l))+' s'},
+  {id:'a_windrun',n:'Carrera del viento',icon:'🍃',desc:'Pasiva: esquivas ataques. Activa: esquivas el 100% de los ataques y te mueves mucho más rápido.',eff:l=>Math.round(100*Math.min(.3,.04+.012*l))+'% esquiva (100% al activarla) · '+f1(2.5+.08*l)+' s · cada '+f1(Math.max(14,24-.5*l))+' s'},
   {id:'a_gust',n:'Ráfaga',icon:'🌬️',desc:'Una ráfaga empuja a los enemigos y silencia a los que disparan desde lejos.',eff:l=>'Radio '+Math.round(200+3*l)+' · silencia '+f1(2.5+.06*l)+' s · cada '+f1(Math.max(8,15-.35*l))+' s'},
-  {id:'a_aura',n:'Aura de precisión',icon:'🎯',desc:'Pasiva: todos los héroes del equipo infligen más daño.',eff:l=>'+'+Math.round(100*(.05+.004*l))+'% de daño del equipo'},
-  {id:'a_hawk',n:'Halcón compañero',icon:'🦅',desc:'Un halcón te acompaña, se lanza en picado sobre el enemigo más fuerte y lo marca: los marcados reciben más daño y tus flechas contra ellos son críticas.',eff:l=>'Marca cada '+f1(Math.max(1.4,3.4-.08*l))+' s · +'+Math.round(20+1.2*l)+'% daño recibido · '+f1(6+.2*l)+' s'},
+  {id:'a_aura',n:'Aura de precisión',icon:'🎯',desc:'Pasiva: un aura que da más daño y más probabilidad de crítico a todos los héroes y aliados de rango.',eff:l=>'+'+Math.round(100*(.05+.004*l))+'% de daño · +'+Math.round(100*(.03+.0025*l))+'% prob. de crítico (rango)'},
+  {id:'a_hawk',n:'Halcón compañero',icon:'🦅',desc:'Un halcón te acompaña, se lanza en picado sobre el enemigo más fuerte y lo marca (sangra con sus garras): los marcados reciben más daño y tus flechas contra ellos son críticas. Cada 3 picadas lanza un chillido que aturde a los enemigos de alrededor.',eff:l=>'Marca cada '+f1(Math.max(1.4,3.4-.08*l))+' s · +'+Math.round(20+1.2*l)+'% daño recibido · '+f1(6+.2*l)+' s'},
   {id:'a_focus',n:'★ Fuego concentrado (ULTIMATE)',icon:'🏹',desc:'Disparas a todos los enemigos a tu alcance a una velocidad enorme, con menos daño por flecha.',eff:l=>f1(7+.25*l)+' s · x2,5 velocidad · hasta 12 objetivos · cada '+f1(Math.max(40,80-1.5*l))+' s'}
  ],
  necro:[
@@ -923,16 +924,55 @@ function addDot(e,type,dps,dur,stack){
   if(!d)e.dots[type]={dps,t:dur,src:SRC};
   else{d.t=dur;d.src=SRC;d.dps=stack?Math.min(d.dps+dps*.5,dps*5):Math.max(d.dps,dps)}
 }
+/* disparo potente: una gran flecha recorre la línea hasta el final del mapa */
+function bigArrowFx(x,y,a,L){
+  const ca=Math.cos(a),sa=Math.sin(a);
+  G.fx.push({k:'cfx',t:.6,d:.6,fn:(c,p)=>{const q=Math.min(1,p*1.8),pos=L*q*q*.5+L*q*.5,al=p<.75?1:Math.max(0,(1-p)/.25);c.save();c.translate(x+ca*pos,y+sa*pos);c.rotate(a);c.globalAlpha=al;
+    c.globalCompositeOperation='lighter';const tr=c.createLinearGradient(-240,0,0,0);tr.addColorStop(0,'rgba(255,220,120,0)');tr.addColorStop(1,'rgba(255,240,170,.75)');c.fillStyle=tr;c.fillRect(-240,-5,240,10);
+    c.globalCompositeOperation='source-over';c.fillStyle='#8a5a2a';c.fillRect(-46,-3,60,6);c.fillStyle='#e8d9a8';c.fillRect(-46,-1.2,60,2.4);
+    c.fillStyle='#d8dde8';c.beginPath();c.moveTo(34,0);c.lineTo(12,-11);c.lineTo(14,0);c.lineTo(12,11);c.closePath();c.fill();c.strokeStyle='#6a7080';c.lineWidth=1.2;c.stroke();
+    c.fillStyle='#ffd24a';c.beginPath();c.moveTo(-46,0);c.lineTo(-58,-9);c.lineTo(-40,-3);c.closePath();c.fill();c.beginPath();c.moveTo(-46,0);c.lineTo(-58,9);c.lineTo(-40,3);c.closePath();c.fill();
+    c.restore()}});
+}
+/* destello dorado de crítico del arquero */
+function critBurst(x,y){
+  const rays=[];for(let i=0;i<8;i++)rays.push(i/8*6.283+Math.random()*.2);
+  G.fx.push({k:'cfx',t:.35,d:.35,fn:(c,p)=>{c.save();c.globalCompositeOperation='lighter';c.globalAlpha=1-p;
+    const gr=c.createRadialGradient(x,y,0,x,y,16+22*p);gr.addColorStop(0,'rgba(255,250,200,.9)');gr.addColorStop(1,'rgba(255,190,60,0)');c.fillStyle=gr;c.beginPath();c.arc(x,y,16+22*p,0,6.3);c.fill();
+    c.strokeStyle='#ffe27a';c.lineWidth=2.4;c.lineCap='round';for(const a of rays){c.beginPath();c.moveTo(x+Math.cos(a)*(8+10*p),y+Math.sin(a)*(8+10*p));c.lineTo(x+Math.cos(a)*(18+30*p),y+Math.sin(a)*(18+30*p));c.stroke()}
+    c.restore()}});
+}
+/* explosión de la flecha explosiva */
+function explosionFx(x,y,R){
+  G.fx.push({k:'cfx',t:.45,d:.45,fn:(c,p)=>{c.save();c.globalCompositeOperation='lighter';c.globalAlpha=(1-p)*.9;
+    const r=(R||80)*(.25+.75*Math.min(1,p*2.2)),gr=c.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba(255,245,200,.95)');gr.addColorStop(.45,'rgba(255,150,50,.65)');gr.addColorStop(1,'rgba(255,80,20,0)');c.fillStyle=gr;c.beginPath();c.arc(x,y,r,0,6.3);c.fill();c.restore()}});
+}
+/* flechas divididas: tras el impacto salen 3 flechas hacia otros enemigos cercanos; también pueden hacer crítico */
+function splitArrows(p,e){
+  const tg=G.enemies.filter(o=>!o.dead&&o!==e&&(o.x-e.x)**2+(o.y-e.y)**2<=300*300).sort((a,b)=>((a.x-e.x)**2+(a.y-e.y)**2)-((b.x-e.x)**2+(b.y-e.y)**2)).slice(0,3);
+  if(!tg.length)return;
+  const cl=clv('a_crit'),tc=tf('a_crit'),pc=Math.min(.8,.10+.025*cl+(tc?tc.critc:0))+auraCrit();
+  for(const o of tg){
+    let d=(p.dmg0||p.dmg/(p.crit?2:1))*.6,crit=false;
+    if(Math.random()<pc){d*=(2+.12*cl)*(tc?tc.critm:1);crit=true}
+    const q={kind:'home',x:e.x,y:e.y-8,spd:520,size:p.crit?5:4,type:p.type,dmg:d,tgt:o,exp:0,life:2.5,src:'Flechas divididas',col:p.col,arrow:true,isSplit:true,crit,slow:p.slow,stunC:p.stunC,stunT:p.stunT,frost:p.frost};
+    if(crit)q.critT='¡CRÍTICO!';
+    G.projs.push(q);
+  }
+  G.fx.push({k:'cfx',t:.25,d:.25,fn:(c,pr)=>{c.save();c.globalCompositeOperation='lighter';c.globalAlpha=1-pr;c.fillStyle='#fff7d0';c.beginPath();c.arc(e.x,e.y-8,5+14*pr,0,6.3);c.fill();c.restore()}});
+}
 function hitEnemy(p,e){
   SRC=p.src||p.type;
   {const bs=SPR.on?SPR.basicOf(p.src):null;if(bs&&bs.hit&&G.fx.length<300)G.fx.push({k:'spr',id:bs.hit,x:e.x,y:e.y,w:(bs.hw||36)*(p.crit?1.25:1),d:.3,t:.3,fi:0,fo:.6,g0:.5,g1:1.1})}
   if(p.critT&&p.critT.indexOf('CABEZA')>0&&dwSpr())fxSeq('d_head',4,{x:e.x,y:e.y-e.r*.7,w:90,d:.45,fi:0,fo:.3});
-  if(p.frost&&G.hero==='archer'&&arSpr())fxSeq('a_fri',4,{x:e.x,y:e.y,w:p.crit?84:64,d:.4,fi:0,fo:.3});
+  if(p.crit&&G.hero==='archer'&&p.arrow)critBurst(e.x,e.y-e.r*.3);
   if(p.arrow&&!p.skelArrow&&G.hero==='assassin'&&asSpr())sprFx({seq:asSeq('x_dagh',3),x:e.x,y:e.y-e.r*.3,w:p.crit?64:46,d:.3,fi:0,fo:.2});
   if(p.flask&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'al_splash',x:e.x,y:e.y+4,w:40,d:.4,t:.4,fi:0,fo:.6,g0:.5,g1:1.1});
   if(p.src==='Rayo arcano de la torre'&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'t_impact',x:e.x,y:e.y,w:30,d:.25,t:.25,fi:0,fo:.7,g0:.5,g1:1.2,add:true});
   if(p.src==='Disparo arcano'&&SPR.on&&G.fx.length<300)G.fx.push({k:'spr',id:'impact',x:e.x,y:e.y,w:p.crit?52:36,d:.3,t:.3,fi:0,fo:.7,g0:.5,g1:1.2,add:true});
   dealDamage(e,p.dmg,p.type);
+  if(p.split&&!p.isSplit&&G.hero==='archer')splitArrows(p,e);
+  if(p.explosive)explosionFx(p.x,p.y,p.splash);
   if(p.sk==='wind'&&!e.dead&&!(e.root>0)){const vl=Math.hypot(p.vx,p.vy)||1,k=(e.boss?12:e.elite?30:46)*tf('wind').rad;e.x+=p.vx/vl*k;e.y+=p.vy/vl*k;if(!LOWQ)G.fx.push({k:'p',x:e.x,y:e.y,vx:p.vx*.15,vy:p.vy*.15,t:.3,c:'#cfeaff'})}
   newHeroesHit(p,e);
   if(p.goldK&&e.dead){const gb=Math.ceil(e.gold*GOLDK*(1+.15*p.goldK)*(1+G.t/120)*S.goldM);G.gold+=gb;txt(e.x,e.y-e.r-14,'+'+gb+' 🪙','#ffd24a',15)}
@@ -1580,7 +1620,8 @@ function updateSkelDragons(dt){
 function hurt(d){
   if(G.heroInv>0)return;
   if(G.ht&&G.ht.nirvOn>0)d*=.5;if(G.ht&&G.ht.bastOn>0)d*=.35;if(G.ht&&G.ht.bersOn>0)d*=.6;if(G.ht&&G.ht.callOn>0)d*=.6;if(G.ht&&G.ht.hideOn>0)d*=.4;if(G.ht&&G.ht.smokeIn>0)d*=.75;if(G.ht&&G.ht.wolfOn>0)d*=.65;if(G.ht&&G.ht.bearOn>0)d*=.4;d*=(G.tdef||1);
-  if(S.dodge&&Math.random()<S.dodge){if(G.t-(G.dodgeT||-9)>.8){G.dodgeT=G.t;txt(cx()+(Math.random()-.5)*30,cy()-34,'¡Esquiva!','#7be07b',13)}return}
+  const dgP=(G.hero==='archer'&&G.ht&&G.ht.windOn>0)?1:S.dodge;
+  if(dgP&&Math.random()<dgP){if(G.t-(G.dodgeT||-9)>.8){G.dodgeT=G.t;txt(cx()+(Math.random()-.5)*30,cy()-34,'¡Esquiva!','#7be07b',13)}return}
   d*=newHeroesDefense();
   if(G.hero==='shaman'&&G.ht.stormShield>0&&G.ht.stormShieldUntil>G.t){const a=Math.min(G.ht.stormShield,d);G.ht.stormShield-=a;d-=a}
   if(G.shield>0){const a=Math.min(G.shield,d);G.shield-=a;d-=a}
@@ -1784,7 +1825,7 @@ function updateAllies(dt){
     heroCtx(a.owner??0,()=>{
       const L=G.lvl;
       if(TEMP_ALLY.has(a.kind)&&a.life<900)a.life-=dt;else a.life=999;
-      a.cd-=dt;if(a.roarT>0)a.roarT-=dt;
+      a.cd-=dt*(G.allyHaste>0&&ownAlly(a)?1.5:1);if(a.roarT>0)a.roarT-=dt;
       const k=ALLYK[a.kind||'skel'];
       const ox=a.tower?towX(a.towerIndex??0):cx(),oy=a.tower?towY(a.towerIndex??0):cy();
       SRC=a.src||(a.kind==='golem'?'Golems de piedra':a.kind==='mummy'?'Momias':a.kind==='vamp'?'Vampiros':'Soldados esqueleto');
@@ -1800,7 +1841,8 @@ function updateAllies(dt){
       if(near){
         if(a.cd<=0){
           a.cd=k.rate/bardAllySpeed(a)/(a.roarT>0?a.roarS:1);a.atkAt=G.t;a.tx=t.x;a.ty=t.y;
-          const base=(a.dmgAbs!=null?a.dmgAbs:(18+4*L)*S.dmg*(a.dmgK||1))*(a.scaleT?tsc()/a.tsAt:1)*(a.roarT>0?a.roarK:1);
+          let base=(a.dmgAbs!=null?a.dmgAbs:(18+4*L)*S.dmg*(a.dmgK||1))*(a.scaleT?tsc()/a.tsAt:1)*(a.roarT>0?a.roarK:1);
+          if(ALLY_RANGED.has(a.kind)&&G.heroes&&G.heroes.includes('archer')){const al=G.cls&&G.cls.a_aura||0;if(al){base*=1+(.05+.004*al);if(Math.random()<.03+.0025*al)base*=2}}   /* aura de precisión sobre los aliados de rango */
           if(a.kind==='skelA'){
             const p={kind:'home',x:a.x,y:a.y-6,spd:430,size:4,type:'phys',dmg:base,tgt:t,exp:base*mult(t,'phys'),life:3,src:SRC,arrow:true,skelArrow:true};
             p.ang=Math.atan2(t.y-p.y,t.x-p.x);t.pending+=p.exp;G.projs.push(p);
@@ -1895,13 +1937,15 @@ function shot(t,dmg,b,h){
   const tcf=h==='troll'?tf('t_crit'):h==='archer'?tf('a_crit'):h==='dwarf'?tf('d_crit'):null;if(tcf&&tcf.exec&&t.hp<t.max*tcf.exec[0])d*=tcf.exec[1];
   if(cl&&Math.random()<Math.min(.8,.10+.025*cl+(tcf?tcf.critc:0))){d*=(2+.12*cl)*(tcf?tcf.critm:1);crit=true;if(tcf&&tcf.heal)G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.01)}
   const pl=h==='archer'?clv('a_pierce'):0;
+  if(!crit){const ac=auraCrit();if(ac>0&&Math.random()<ac){d*=2;crit=true}}   /* aura de precisión: más probabilidad de crítico a los héroes de rango */
   let p;
-  if(pl&&Math.random()<Math.min(.7,.08+.008*pl+tf('a_pierce').pc)){
+  if(false){
     const a=Math.atan2(t.y-cy(),t.x-cx()),dm=d*.6,ex=dm*mult(t,b.type);
     p={kind:'orb',x:cx(),y:cy()-8,vx:Math.cos(a)*720,vy:Math.sin(a)*720,size:6,life:1.1,type:b.type,dmg:dm,tgt:t,exp:ex,hit:new Set(),src:'Flecha perforante',col:b.col,arrow:true};
   }else{
     const ex=d*mult(t,b.type);
-    p={kind:'home',x:cx(),y:cy()-10,spd:b.spd,size:4,type:b.type,dmg:d,tgt:t,exp:ex,life:8,src:b.n,col:b.col,arrow:h==='archer'||h==='troll'};
+    p={kind:'home',x:cx(),y:cy()-10,spd:b.spd,size:4,type:b.type,dmg:d,tgt:t,exp:ex,life:8,src:b.n,col:b.col,arrow:h==='archer'||h==='troll',dmg0:dmg};
+    if(pl&&Math.random()<Math.min(.7,.08+.008*pl+tf('a_pierce').pc))p.split=true;   /* flecha que se divide en 3 al golpear */
     const po=h==='archer'?clv('a_poison'):h==='troll'?clv('t_venom'):0;
     const tvf=h==='troll'?tf('t_venom'):h==='archer'?tf('a_poison'):null;if(po&&Math.random()<.25+.02*po+(tvf?tvf.pc:0)){p.pdps=hdmg(po)*.35*(tvf?tvf.dm:1);p.col='#82e04e';if(tvf){if(tvf.stun){p.stunC=tvf.stun[0];p.stunT=tvf.stun[1]}if(tvf.slow){const tt=t;G.delayed.push({t:.06,fn:()=>{if(!tt.dead)tt.slow={a:tvf.slow[0],t:tvf.slow[1]}}})}}}
   }
@@ -1912,7 +1956,7 @@ function shot(t,dmg,b,h){
     if(ha){const dd=Math.hypot(t.x-cx(),t.y-cy()),k=1+Math.min(.9,.4+.01*ha)*Math.min(1,dd/(heroShot()*.9));p.dmg*=k;p.exp*=k}
     if(hl){const fh=tf('d_head');if(Math.random()<Math.min(.4,.08+.01*hl+fh.pc)){const k=(1.6+.02*hl)*fh.dm;p.dmg*=k;p.exp*=k;p.crit=true;p.critT='🎯 ¡TIRO A LA CABEZA!';p.size*=1.5;p.stunC=1;p.stunT=(.8+.02*hl)*fh.dur;const tt=t,a=Math.atan2(t.y-cy(),t.x-cx());G.delayed.push({t:.08,fn:()=>{if(!tt.dead&&!tt.boss&&!(tt.root>0)){tt.x+=Math.cos(a)*50;tt.y+=Math.sin(a)*50}}})}}
   }
-  if(h==='archer'){const fl=clv('a_frost');if(fl){const ff=tf('a_frost');p.slow=Math.max(p.slow||0,Math.min(.65,.2+.008*fl+(ff.slow?ff.slow[0]:0)));p.stunC=Math.max(p.stunC||0,Math.min(.35,.04+.004*fl+ff.pc));p.stunT=Math.max(p.stunT||0,1+.02*fl);p.col='#9fe3ff';p.frost=true}}
+  if(h==='archer'){const fl=clv('a_frost');if(fl){const ff=tf('a_frost');p.slow=Math.max(p.slow||0,Math.min(.85,.45+.01*fl+(ff.slow?ff.slow[0]:0)));p.stunC=Math.max(p.stunC||0,Math.min(.35,.04+.004*fl+ff.pc));p.stunT=Math.max(p.stunT||0,1+.02*fl);p.col='#9fe3ff';p.frost=true}}
   if(h==='paladin'){
     /* Forma de dragón: el bonus de daño va en S.dmg (básico y habilidades) */
     const cl=clv('pl_cleave'),fcl=tf('pl_cleave');if(cl){p.splash=(40+2*cl)*fcl.rad;if(fcl.dm!==1){p.dmg*=fcl.dm;p.exp*=fcl.dm}if(fcl.slow)p.slow=fcl.slow[0]}
@@ -1978,7 +2022,7 @@ function updateMelee(dt){
   const m=HEROES[G.hero].melee||RANGED_MOVE;
   let rangedTarget=null;
   const ox=G.bx,oy=G.by,px=cx(),py=cy();
-  let tx=0,ty=0,sp=m.spd*(G.haste>0?1.3:1)*(1+.01*clv('k_wind'))*(G.hero==='devourer'?(1+.01*clv('pb_momentum'))*tf('pb_momentum').atk:1),lim=m.leash;
+  let tx=0,ty=0,sp=m.spd*(G.haste>0?1.3:1)*(G.hero==='archer'&&G.ht.windOn>0?1.7:1)*(1+.01*clv('k_wind'))*(G.hero==='devourer'?(1+.01*clv('pb_momentum'))*tf('pb_momentum').atk:1),lim=m.leash;
   if(G.dash){
     G.dash.t-=dt;tx=G.dash.x-hx()-(G.hoff||0);ty=G.dash.y-hy();sp=1500;lim=m.leash+120;
     if(G.dash.t<=0||Math.hypot(tx-G.bx,ty-G.by)<8){const d=G.dash;G.dash=null;d.fn&&d.fn()}
@@ -2032,7 +2076,7 @@ function heroAttackTiming(){
   const h=G.hero,b=HEROES[h].basic;
   let n=1,burst=1,rate=b.cd;
   rate/=newHeroesAttack();
-  if(h==='archer'){rate/=(1+.03*clv('a_aspd'))*tf('a_aspd').atk*(G.ht.windOn>0?1.3:1)*(G.ht.focusOn>0?2.5:1);n=Math.min(7,1+Math.floor(clv('a_multi')/5)+tf('a_multi').cnt);if(G.ht.focusOn>0)n=Math.max(n,Math.min(12,countNear(cx(),cy(),heroShot())))}
+  if(h==='archer'){rate/=(1+.03*clv('a_aspd'))*tf('a_aspd').atk*(G.ht.focusOn>0?2.5:1);n=Math.min(7,1+Math.floor(clv('a_multi')/5)+tf('a_multi').cnt);if(G.ht.focusOn>0)n=Math.max(n,Math.min(12,countNear(cx(),cy(),heroShot())))}
   if(h==='troll'){rate/=(1+.03*clv('t_multi'))*(clv('t_fury')&&G.ht.stance!==1?(1+(.2+.006*clv('t_fury'))*tf('t_fury').atk):1);n=Math.min(6,1+Math.floor(clv('t_multi')/5)+tf('t_multi').cnt);if(G.ht.loaOn>0)rate/=1.5}
   if(h==='werewolf'){rate/=(1+.03*clv('w_cleave'))*(G.ht.wolfOn>0?1.5:1);n=Math.min(6,1+Math.floor(clv('w_cleave')/5)+tf('w_cleave').cnt)}
   if(h==='druid'){rate/=1+.02*clv('u_wrath');n=Math.min(5,1+Math.floor(clv('u_wrath')/7)+tf('u_wrath').cnt);if(G.ht.bearOn>0)rate/=1.2}
@@ -2046,12 +2090,13 @@ function heroAttackTiming(){
   rate=Math.max(.34,rate/(S.atk*(G.haste>0?1.5:1)));
   return {n,burst,rate};
 }
+const MAGE_ORBS=['#ff4a4a','#4fb8ff','#ff7ad9'];
 function fireBasic(){
   if(G.basicCd>0||heroActionBusy())return;
   if(!soloPowerEnabled('basic')){G.basicCd=0;return}
   if(G.hero==='dwarf'&&G.ht.sniAim){G.basicCd=.1;return}
   if(G.hero==='devourer'&&(G.ht.pbTrample>0||G.ht.pbCharge||G.ht.pbPulverize)){G.basicCd=0;return}
-  const h=G.hero,b=HEROES[h].basic;
+  const h=G.hero,b=h==='mage'?{...HEROES[h].basic,col:MAGE_ORBS[(G.mageOrb=(G.mageOrb||0)+1)%3]}:HEROES[h].basic;   /* el mago alterna el color de sus orbes: rojo, azul y rosa */
   SRC=b.n;
   const dmg=(16+3.6*G.lvl)*DMG_K*S.dmg*b.m*hpw()*(h==='archer'&&G.ht.focusOn>0?.55*tf('a_focus').dm:1);
   const {n,burst,rate}=heroAttackTiming();
@@ -3496,6 +3541,7 @@ function drawAllies(){
     else if(ALLY_SPR[k]&&SPR.has(ALLY_SPR[k]+'_1'))SPR.drawFit(ctx,ALLY_SPR[k]+'_'+(1+Math.floor(G.t*5+(a.ph||0)*5)%2),0,13,54,38);
     else f(ctx,a,{t:G.t,ph:a.ph,sp:a.sp,u,dx:dxT/dl*a.face,dy:dyT/dl,fxn:a.fxn});
     ctx.restore();ctx.globalAlpha=1;
+    if(G.allyHaste>0&&ownAlly(a))drawHasteIcon(a.x,yy-a.r*s-24);
     if(a.max<1e8&&a.hp<a.max){ctx.fillStyle='#000a';ctx.fillRect(a.x-12,yy-a.r*s-12,24,3);ctx.fillStyle='#7be07b';ctx.fillRect(a.x-12,yy-a.r*s-12,24*Math.max(0,a.hp/a.max),3)}
   }
 }
@@ -3776,7 +3822,7 @@ CLS.druid.splice(7,0,
 defTiers('a_crit',null,[['Ojo de halcón','+10% de prob. de crítico.',{critc:.1}],['Golpe mortal','+40% de daño crítico.',{critm:1.4}],['Cazador sediento','+10% de prob. y los críticos te curan.',{critc:.1,heal:.08}],['Ejecutor','+100% de daño a enemigos bajo el 25% de vida y +30% de crítico.',{exec:[.25,2],critm:1.3}]]);
 defTiers('a_aspd',null,[['Mano ágil','+12% de velocidad de disparo.',{atk:1.12}],['Ráfaga','+12% de velocidad de disparo.',{atk:1.12}],['Pulso firme','+15% de velocidad de disparo.',{atk:1.15}],['Lluvia veloz','+25% de velocidad de disparo.',{atk:1.25}]]);
 defTiers('a_multi','Flecha',[['Flecha extra','+1 flecha por disparo.',{cnt:1}],['Flechas potentes','+25% de daño.',{dm:1.25}],['Flechas explosivas','+1 flecha y explotan en área (40%).',{cnt:1,splash:[55,.4]}],['Tormenta de flechas','+2 flechas y +30% de daño.',{cnt:2,dm:1.3}]]);
-defTiers('a_pierce','Flecha perforante',[['Punta afilada','+8% de prob. de perforar.',{pc:.08}],['Punta de acero','+50% de daño.',{dm:1.5}],['Punta ardiente','+10% de prob., +30% de daño y quema.',{pc:.1,dm:1.3,burn:.4}],['Atravesador','+15% de prob., +50% de daño y ejecuta bajo el 30% de vida.',{pc:.15,dm:1.5,exec:[.3,2]}]]);
+defTiers('a_pierce','Flechas divididas',[['Punta afilada','+8% de prob. de dividirse.',{pc:.08}],['Punta de acero','+50% de daño.',{dm:1.5}],['Punta ardiente','+10% de prob. y +30% de daño.',{pc:.1,dm:1.3}],['Lluvia de astillas','+15% de prob. y +50% de daño.',{pc:.15,dm:1.5}]]);
 defTiers('a_snipe','Disparo potente',[['Mira láser','+40% de daño.',{dm:1.4}],['Recarga ágil','-30% de enfriamiento.',{cd:.7}],['Bala perforante','+50% de daño y ejecuta bajo el 30% de vida.',{dm:1.5,exec:[.3,2]}],['Doble disparo','Un disparo más contra otro objetivo, +40% de daño y aturde 1 s.',{cnt:1,dm:1.4,stun:[1,1]}]]);
 /* ---- mejoras: Nigromante ---- */
 defTiers('n_raise','Esqueletos del nigromante',[['Cementerio','+10% de prob. de levantar un esqueleto.',{pc:.1}],['Esqueletos de acero','+50% de vida y +30% de daño.',{hpm:1.5,dm:1.3}],['Legión','+1 esqueleto por muerte y más límite.',{cnt:1}],['Ejército de huesos','+10% de prob., +1 esqueleto, +40% de daño y +50% de vida.',{pc:.1,cnt:1,dm:1.4,hpm:1.5}]]);
@@ -4538,12 +4584,10 @@ function heroTick3(h,dt,T,x0,y0,rdy,done,retry){
     {queueHeroCast(rdy,'a_snipe',()=>{l=clv('a_snipe');f=tf('a_snipe');if((l=clv('a_snipe'))&&rdy('a_snipe')){
       f=tf('a_snipe');const cs=inR(rg('a_snipe')).sort((a,b)=>b.hp-a.hp).slice(0,1+f.cnt);
       if(!cs.length)retry('a_snipe');
-      else{SRC='Disparo potente';const d=hdmg(l)*5,L=rg('a_snipe')+40;
+      else{SRC='Disparo potente';const d=hdmg(l)*5,L=1800;
         for(const t of cs){const a=Math.atan2(t.y-y0,t.x-x0);
-          lineHit(a,L,14,e=>{dealDamage(e,e===t?d:d*.6,'phys');if(arSpr())fxSeq('a_sni',4,{x:e.x,y:e.y,w:e===t?110:70,d:.4,fi:0,fo:.25,add:true});else ring(e.x,e.y,e.r+8,'#ffd24a',.25)});
-          if(arSpr()){fxSeq('a_snc',2,{x:x0+Math.cos(a)*22,y:y0-10+Math.sin(a)*22,w:46,d:.2,fi:0,fo:.2,add:true});fxSeq('a_snb',3,{x:x0,y:y0-10,to:[x0+Math.cos(a)*L,y0-10+Math.sin(a)*L],h:44,d:.4,fi:0,fo:.3,add:true})}
-          else{G.fx.push({k:'bolt',pts:[[x0,y0-10],[x0+Math.cos(a)*L,y0-10+Math.sin(a)*L]],t:.35,c:'#ffe9a8'});
-          G.fx.push({k:'bolt',pts:[[x0,y0-10],[x0+Math.cos(a)*L,y0-10+Math.sin(a)*L]],t:.25,c:'#ffffff'})}
+          lineHit(a,L,16,e=>{dealDamage(e,e===t?d:d*.6,'phys');if(arSpr())fxSeq('a_sni',4,{x:e.x,y:e.y,w:e===t?110:70,d:.4,fi:0,fo:.25,add:true});else ring(e.x,e.y,e.r+8,'#ffd24a',.25)});
+          bigArrowFx(x0,y0-10,a,L);
           txt(t.x,t.y-t.r-14,'🎯','#ffd24a',20)}
         txt(x0,y0-70,'🎯 ¡Disparo potente!','#ffd24a',16);done('a_snipe',Math.max(7,14-.35*l))}
     }});}
@@ -5519,6 +5563,7 @@ function draw(){
       else if(p.frost){if(SPR.draw(ctx,'a_frp_'+fr,p.x,p.y,{w:p.crit?50:40,ax:.8,rot:an}))continue}
       else if(G.ht&&G.ht.focusOn>0){if(SPR.draw(ctx,'a_str_'+fr,p.x,p.y,{w:p.crit?66:52,ax:.85,rot:an,add:true}))continue}
     }
+    if(G.hero==='mage'&&p.src==='Disparo arcano'){const mc=p.col||'#b684ff',r=p.crit?9:6;ctx.save();ctx.globalCompositeOperation='lighter';const gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*2.6);gr.addColorStop(0,'#fff');gr.addColorStop(.3,mc);gr.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(p.x,p.y,r*2.6,0,6.3);ctx.fill();const an=Math.atan2(p.vy||0,p.vx||1);ctx.strokeStyle=mc;ctx.globalAlpha=.5;ctx.lineWidth=r*.9;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-Math.cos(an)*r*3.4,p.y-Math.sin(an)*r*3.4);ctx.stroke();ctx.restore();continue}
     if(SPR.on){const bs=SPR.basicOf(p.src);if(bs){const ang=(p.kind==='orb'||p.kind==='boom')?Math.atan2(p.vy,p.vx):(p.ang||0);if(SPR.draw(ctx,bs.proj,p.x,p.y,{w:bs.w*(p.crit?1.25:1),ax:bs.ax,rot:bs.spin?G.t*bs.spin:ang}))continue}}
     if(p.primalWave){drawPrimalRock(ctx,p.x,p.y,8,G.t*3);continue}
     if(p.flask){if(!(SPR.on&&SPR.draw(ctx,(clv('al_flask')&&hxSpr('al_flask_a')?'al_flask_a':'al_proj'),p.x,p.y,{w:clv('al_flask')?46:40,rot:Math.atan2(p.vy||0,p.vx||1),ax:.78})))drawAlchemistFlask(ctx,p.x,p.y,p.size||6,G.t*7);continue}
@@ -5537,6 +5582,7 @@ function draw(){
   // efectos
   for(const f of G.fx){
     if(f.k==='spr'){SPR.drawFx(ctx,f);continue}
+    if(f.k==='cfx'){f.fn(ctx,Math.min(1,Math.max(0,1-f.t/f.d)),f);continue}   /* efecto dibujado por código (mago) */
     if(f.T&&drawSkFx(f))continue;
     if(f.k==='p'){ctx.globalAlpha=Math.max(0,f.t*2);ctx.fillStyle=f.c;ctx.fillRect(f.x,f.y,3,3);ctx.globalAlpha=1}
     else if(f.k==='ring'){ctx.globalAlpha=f.t/.3;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(1.3-f.t),0,6.3);ctx.strokeStyle=f.c;ctx.lineWidth=2;ctx.stroke();ctx.lineWidth=1;ctx.globalAlpha=1}
@@ -5694,7 +5740,7 @@ function refreshTip(){if(tipSrc){if(!document.body.contains(tipSrc)||tipSrc.offs
 function tipTouch(el){if(matchMedia('(pointer:coarse)').matches){showTip(el);clearTimeout(tipTo);tipTo=setTimeout(()=>showTip(null),2500)}}
 function setupTip(){
   const bp=$('#bottomp');
-  bp.addEventListener('mouseover',e=>{const el=e.target.closest('.slot');if(el!==tipSrc)showTip(el)});
+  bp.addEventListener('mouseover',e=>{const el=e.target.closest('.slot,.solo-pw');if(el!==tipSrc)showTip(el)});
   bp.addEventListener('mouseleave',()=>showTip(null));
 }
 function powerStarInfo(level,isItem=false){
@@ -6074,6 +6120,7 @@ function soloEnsureTargets(need){
   if(need.lowHp)for(const e of alive){e.max=5000;e.hp=Math.max(1,5000*need.lowHp)}
   if(need.inv)for(const e of alive){e.inv={every:6,dur:2};e.invCd=6;e.invT=8}
 }
+const SOLO_FORM_SK=['pl_wrath','u_bear','z_meta','w_moon'];   /* poderes que transforman al héroe (dragón, oso, demonio, lobo) */
 function previewSoloSkill(id,supportBasic=false){
   if(!G.solo||(id!=='basic'&&!CLS[G.hero].some(s=>s.id===id)))return;
   setSoloAnimation('auto');setAllSoloPowers(false);
@@ -6087,7 +6134,11 @@ function previewSoloSkill(id,supportBasic=false){
     if(!CLS[G.hero].some(s=>s.id===dep))continue;
     G.soloDeps[dep]=learnedClv(dep);G.cls[dep]=Math.max(learnedClv(dep),Math.min(10,learnedClv(id)||1));setSoloPowerEnabled(dep,true);
   }
-  if(need.deps)G.tv=(G.tv||0)+1,recalc();
+  if(SOLO_FORM_SK.includes(id)){   /* transformaciones: durante la forma el héroe conserva el ataque básico y todas sus habilidades (las no aprendidas suben a nivel 10 solo durante la prueba) */
+    setSoloPowerEnabled('basic',true);
+    for(const s of CLS[G.hero]){if(s.id===id||G.soloDeps[s.id]!==undefined)continue;G.soloDeps[s.id]=learnedClv(s.id);G.cls[s.id]=Math.max(learnedClv(s.id),10);setSoloPowerEnabled(s.id,true)}
+    G.tv=(G.tv||0)+1;recalc();
+  }else if(need.deps)G.tv=(G.tv||0)+1,recalc();
   soloEnsureTargets(need);
   if(need.allies)for(const k in need.allies)for(let i=0;i<need.allies[k];i++){const v=addAlly(k,cx()-30+i*14,cy()+30,allyHp(150),hdmg(10)*.5,1e9,'Soldados esqueleto');v.perm=true}
   if(need.kill)for(let k=0;k<need.kill;k++)G.delayed.push({t:.4+k*.25,fn:()=>{const e=G.enemies.find(q=>!q.dead);if(e){e.hp=1;dealDamage(e,1e6,'phys')}}});
@@ -6106,17 +6157,17 @@ function soloRestoreDeps(){
   G.soloDeps={};
 }
 function buildSoloTestPanel(box){
-  box.innerHTML='<div class="solo-simple"><label class="solo-choice">Qué probar<select id="soloTestChoice"><option value="basic">Ataque básico</option><optgroup label="Habilidades">'+CLS[G.hero].map(s=>'<option value="'+s.id+'">'+esc(s.n)+'</option>').join('')+'</optgroup><optgroup label="Animaciones"><option value="anim:idle">Reposo</option><option value="anim:walk">Caminar</option><option value="anim:attack">Animación de ataque</option><option value="anim:hurt">Recibir daño</option>'+(G.hero==='paladin'?'<option value="anim:dragon-fly">Dragón · volar</option><option value="anim:dragon-move">Dragón · moverse</option><option value="anim:dragon-bite">Dragón · mordisco</option><option value="anim:dragon-fire">Dragón · soplo de fuego</option><option value="anim:dragon-hurt">Dragón · recibir daño</option>':'')+'</optgroup></select></label>'+
+  box.innerHTML='<div class="solo-left"><div class="solo-grid" id="soloGrid" role="group" aria-label="Probar un poder con un toque"></div></div><div class="solo-right"><div class="solo-simple"><label class="solo-choice">Qué probar<select id="soloTestChoice"><option value="basic">Ataque básico</option><optgroup label="Habilidades">'+CLS[G.hero].map(s=>'<option value="'+s.id+'">'+esc(s.n)+'</option>').join('')+'</optgroup><optgroup label="Animaciones"><option value="anim:idle">Reposo</option><option value="anim:walk">Caminar</option><option value="anim:attack">Animación de ataque</option><option value="anim:hurt">Recibir daño</option>'+(G.hero==='paladin'?'<option value="anim:dragon-fly">Dragón · volar</option><option value="anim:dragon-move">Dragón · moverse</option><option value="anim:dragon-bite">Dragón · mordisco</option><option value="anim:dragon-fire">Dragón · soplo de fuego</option><option value="anim:dragon-hurt">Dragón · recibir daño</option>':'')+'</optgroup></select></label>'+
     '<div class="solo-level" id="soloLevelControl"><span>Nivel · gratis</span><div><button id="soloLevelDown" aria-label="Bajar nivel">−</button><input id="soloSkillLevel" type="number" min="0" max="50" aria-label="Nivel de la habilidad"><button id="soloLevelUp" aria-label="Subir nivel">+</button></div></div><button id="soloTestPlay" class="solo-play">▶ Probar</button></div>'+
-    '<p class="solo-caption" id="soloTestCaption" aria-live="polite"></p><div class="solo-grid" id="soloGrid" role="group" aria-label="Probar un poder con un toque"></div><p class="solo-prep" id="soloPrep"></p><details id="soloTestOptions"><summary>Ajustes</summary><div class="solo-settings">'+
+    '<p class="solo-caption" id="soloTestCaption" aria-live="polite"></p><details id="soloTestOptions"><summary>Ajustes</summary><div class="solo-settings">'+
     '<label>Enemigos<select id="soloEnemyMode"><option value="none">Solo objetivos de prueba</option><option value="weak">Pocos y débiles</option><option value="progressive">Continuos y progresivos</option></select></label>'+
     '<label>Dirección<select id="soloAnimDirection"><option value="0">Derecha</option><option value="3.141592653589793">Izquierda</option></select></label>'+
     '<label>Velocidad (pose, combate y efectos)<select id="soloAnimSpeed"><option value="0.5">Lenta · ×0,5</option><option value="1" selected>Normal · ×1</option><option value="2">Rápida · ×2</option></select></label>'+
-    '<label class="solo-support"><input id="soloSupportBasic" type="checkbox"> Usar ataque básico de apoyo</label></div><p class="test-note">El ataque de apoyo permite probar habilidades que se activan al golpear. Las habilidades con requisitos necesitan cumplirlos.</p></details>';
+    '<label class="solo-support"><input id="soloSupportBasic" type="checkbox"> Usar ataque básico de apoyo</label></div><p class="test-note">El ataque de apoyo permite probar habilidades que se activan al golpear. Las habilidades con requisitos necesitan cumplirlos.</p></details></div>';
   {const grid=$('#soloGrid');   /* un toque = elegir el poder, generar sus circunstancias y lanzarlo */
-   for(const a of CLS[G.hero]){const b=document.createElement('button');b.type='button';b.className='solo-pw';b.dataset.id=a.id;b.title=a.n;b.setAttribute('aria-label','Probar '+a.n);
+   for(const a of CLS[G.hero]){const b=document.createElement('button');b.type='button';b.className='solo-pw';b.dataset.id=a.id;b._tip=()=>heroTip(a)+'<div class="kv"><span>🧪 Test</span><b>'+esc(soloNeedNote(a.id))+'</b></div>';b.setAttribute('aria-label','Probar '+a.n);
      b.innerHTML=SPR.iconHtml(a.id,34,a.icon)+'<span class="pl"></span>';b.onclick=()=>soloQuick(a.id);grid.appendChild(b)}
-   const bb=document.createElement('button');bb.type='button';bb.className='solo-pw solo-pw-basic';bb.dataset.id='basic';bb.title='Ataque básico';bb.setAttribute('aria-label','Probar el ataque básico');bb.innerHTML='<span class="si">⚔️</span>';bb.onclick=()=>soloQuick('basic');grid.insertBefore(bb,grid.firstChild)}
+   const bb=document.createElement('button');bb.type='button';bb.className='solo-pw solo-pw-basic';bb.dataset.id='basic';bb._tip=()=>'<h3>⚔️ Ataque básico</h3><p>'+esc(HEROES[G.hero].basic?.n||'Ataque básico')+': el golpe normal del héroe, sin otras habilidades.</p>';bb.setAttribute('aria-label','Probar el ataque básico');bb.innerHTML='<span class="si">⚔️</span>';bb.onclick=()=>soloQuick('basic');grid.insertBefore(bb,grid.firstChild)}
   $('#soloTestChoice').onchange=e=>selectSoloTest(e.target.value);
   $('#soloTestPlay').onclick=()=>G.soloTestRunning?stopSoloTest():runSoloTest();
   $('#soloSkillLevel').onchange=e=>{setSoloSkillLevel(G.soloTestChoice,e.target.value);if(G.soloTestRunning)runSoloTest()};
@@ -6163,7 +6214,7 @@ function refreshSoloTestPanel(){
   $('#soloTestPlay').textContent=G.soloTestRunning?'■ Detener':(skill&&level<1?'▶ Probar (Nv 1)':'▶ Probar');
   $('#soloTestPlay').setAttribute('aria-pressed',String(!!G.soloTestRunning));
   {const activa=skill&&level>0&&/cada [\d.,]+ ?s/.test(skill.eff(level)),waiting=skill&&G.soloTestRunning&&activa&&!(G.ht[id]>0)&&!G.dead,pasiva=skill&&G.soloTestRunning&&level>0&&!activa;
-   $('#soloTestCaption').textContent=(skill?skill.desc:id==='basic'?'Prueba el golpe básico sin otras habilidades.':'Observa la animación sin combate.')+(skill&&level<1?' · Nivel 0: Probar la sube a nivel 1.':'')+(waiting?' · ⏳ Esperando a que se cumpla su condición (objetivos, estado o golpes).':'')+(pasiva?' · ℹ️ Pasiva: actúa sola cuando se da su condición.':'')}
+   $('#soloTestCaption').textContent=(id.startsWith('anim:')?'Observa la animación sin combate.':'')+(skill&&level<1?'Nivel 0: Probar la sube a nivel 1. ':'')+(waiting?'⏳ Esperando a que se cumpla su condición (objetivos, estado o golpes). ':'')+(pasiva?'ℹ️ Pasiva: actúa sola cuando se da su condición.':'')}
   {const prep=$('#soloPrep');if(prep)prep.textContent=skill?'🧪 Circunstancias que prepara el test: '+soloNeedNote(id):'';
    for(const b of ($('#soloGrid')?.children||[])){const bid=b.dataset.id;b.classList.toggle('sel',bid===id);b.classList.toggle('run',bid===id&&!!G.soloTestRunning);
      const pl=b.querySelector('.pl');if(pl)pl.textContent=learnedClv(bid)||''}}
@@ -6598,13 +6649,39 @@ const INV={
   i_blast:{cd:l=>Math.max(8,15-.35*l)},
   i_field:{cd:l=>Math.max(30,55-.5*l)},i_laguna:{cd:l=>Math.max(24,45-.4*l)}
 };
-Object.assign(RNG,{i_cold:420,i_ghost:260,i_wall:420,i_emp:420,i_tornado:440,i_alacrity:300,i_sun:1500,i_forge:300,i_meteor:480,i_blast:380,i_field:330,i_laguna:1500});
+Object.assign(RNG,{i_cold:420,i_ghost:420,i_wall:420,i_emp:420,i_tornado:440,i_alacrity:300,i_sun:1500,i_forge:300,i_meteor:480,i_blast:380,i_field:330,i_laguna:1500});
 Object.assign(ALLYK,{spirit:{e:'🔥',spd:210,rate:.6,fly:true,type:'fire'}});
 AL.spirit=(c,a,o)=>{
   const fl=Math.sin(o.t*9+a.ang),th=o.u>=0?Math.sin(o.u*3.14):0;
   hGlow(c,0,-2,15+th*5,'#ff7a2a',.55);hEll(c,0,0,7.5,9+fl,'#ff9a3d');hEll(c,0,1,4.5,6,'#ffd24a');hPoly(c,[-4,-6,0,-16-fl*2,4,-6],'#ff6a1a',.9);
   c.fillStyle='#fff';c.fillRect(-3,-2,1.8,2.4);c.fillRect(1.2,-2,1.8,2.4);
 };
+/* estallido de esquirlas de hielo dibujado por código (translúcido) */
+function invShards(x,y,R){
+  const n=14,sh=[];for(let i=0;i<n;i++)sh.push({a:i/n*6.283+Math.random()*.3,s:.6+Math.random()*.6,w:3+Math.random()*3});
+  G.fx.push({k:'cfx',t:.6,d:.6,fn:(c,p)=>{c.save();c.globalCompositeOperation='lighter';c.globalAlpha=(1-p)*.7;
+    const gr=c.createRadialGradient(x,y,0,x,y,R*(.3+.7*p));gr.addColorStop(0,'rgba(190,235,255,.55)');gr.addColorStop(1,'rgba(120,200,255,0)');c.fillStyle=gr;c.beginPath();c.arc(x,y,R*(.3+.7*p),0,6.3);c.fill();
+    c.fillStyle='#e6f8ff';for(const q of sh){const d=R*(.15+.85*p)*q.s,tx=x+Math.cos(q.a)*d,ty=y+Math.sin(q.a)*d*.8,L=14*q.s*(1-p*.5);c.save();c.translate(tx,ty);c.rotate(q.a);c.beginPath();c.moveTo(L,0);c.lineTo(-L*.4,-q.w);c.lineTo(-L*.4,q.w);c.closePath();c.fill();c.restore()}
+    c.restore()}});
+}
+/* rayo solar (Sunstrike): columna de luz desde el cielo que se afina y un destello en el suelo */
+function invSunstrike(x,y,R){
+  G.fx.push({k:'cfx',t:.8,d:.8,fn:(c,p)=>{c.save();c.globalCompositeOperation='lighter';
+    const w=R*.8*(p<.15?p/.15:1-(p-.15)/.85*.85),a=p<.15?1:Math.max(0,1-(p-.15)/.85);
+    const gx=c.createLinearGradient(x-w,0,x+w,0);gx.addColorStop(0,'rgba(255,200,80,0)');gx.addColorStop(.35,'rgba(255,240,170,'+(.85*a)+')');gx.addColorStop(.5,'rgba(255,255,255,'+a+')');gx.addColorStop(.65,'rgba(255,240,170,'+(.85*a)+')');gx.addColorStop(1,'rgba(255,200,80,0)');
+    c.fillStyle=gx;c.fillRect(x-w,y-900,w*2,900);
+    const r=R*(.35+.75*Math.min(1,p*3)),gr=c.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba(255,255,230,'+(.9*a)+')');gr.addColorStop(.5,'rgba(255,200,80,'+(.45*a)+')');gr.addColorStop(1,'rgba(255,140,40,0)');c.fillStyle=gr;c.beginPath();c.ellipse(x,y,r,r*.6,0,0,6.3);c.fill();
+    c.restore()}});
+}
+/* ventisca: disco de escarcha translúcido que sigue al mago, con copos que caen */
+function invBlizzard(q){
+  const fl=[];for(let i=0;i<46;i++)fl.push({a:Math.random()*6.283,r:Math.sqrt(Math.random()),ph:Math.random()*6.283,s:1.2+Math.random()*1.8});
+  G.fx.push({k:'cfx',t:q.t,d:q.t,fn:(c,p)=>{if(!G.ht||!G.ht.field)return;const x=cx(),y=cy()+6,R=q.R,a=Math.min(1,p*8,(1-p)*6);c.save();c.globalAlpha=a;
+    const gr=c.createRadialGradient(x,y,R*.2,x,y,R);gr.addColorStop(0,'rgba(190,235,255,.16)');gr.addColorStop(.85,'rgba(160,215,255,.22)');gr.addColorStop(1,'rgba(200,240,255,.30)');c.fillStyle=gr;c.beginPath();c.ellipse(x,y,R,R*.62,0,0,6.3);c.fill();
+    c.strokeStyle='rgba(215,242,255,.45)';c.lineWidth=1.5;c.beginPath();c.ellipse(x,y,R,R*.62,0,0,6.3);c.stroke();
+    c.fillStyle='#f2fbff';const T=G.t;for(const s of fl){const fy=((T*45*s.s+s.ph*60)%(R*1.1)),px=x+Math.cos(s.a)*s.r*R+Math.sin(T*1.5+s.ph)*6,py=y-R*.55+fy+Math.sin(s.a)*s.r*R*.2;c.globalAlpha=a*.7;c.fillRect(px,py,s.s*1.9,s.s*1.9)}
+    c.restore()}});
+}
 function invTarget(R,x0,y0){
   let b=null,bs=-1;
   for(const e of G.enemies){if(e.dead||e.invT>0)continue;const d=Math.hypot(e.x-x0,e.y-y0);if(d>R+e.r)continue;const s=(e.boss?1e9:e.elite?1e6:0)+e.hp;if(s>bs){bs=s;b=e}}
@@ -6635,23 +6712,23 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
       let e=c.e;
       if(!e||e.dead){e=null;let bd=1e9;for(const o of G.enemies){if(o.dead||c.hit.has(o))continue;const d=Math.hypot(o.x-c.x,o.y-c.y);if(d<c.hop&&d<bd){bd=d;e=o}}}
       if(!e||c.n<=0){c.done=true;continue}
-      c.hit.add(e);G.fx.push({k:'bolt',pts:[[c.x,c.y],[e.x,e.y]],t:.2,c:'#9fe0ff'});
+      c.hit.add(e);
       SRC='Cadena de hielo';
       for(const o of G.enemies)if(!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<=c.R+o.r){dealDamage(o,c.dmg,'ice');if(!o.dead)o.slow={a:.4,t:2}}
-      spr({id:'chainlink',x:c.x,y:c.y,to:[e.x,e.y],h:26,d:.25,fi:.1,fo:.5});spr({id:'iceexplosion',x:e.x,y:e.y,w:c.R*2.4,d:.55,g0:.5,g1:1.1,fi:0,fo:.6});
-      ring(e.x,e.y,c.R,'#9fe0ff',.4);c.x=e.x;c.y=e.y;c.dmg*=.92;c.n--;c.d=.3;c.e=null;
+      spr({id:'chainlink',x:c.x,y:c.y,to:[e.x,e.y],h:26,d:.25,fi:.1,fo:.5,a:.5});spr({id:'iceexplosion',x:e.x,y:e.y,w:c.R*2.4,d:.55,g0:.5,g1:1.1,fi:0,fo:.6,a:.45});
+      c.x=e.x;c.y=e.y;c.dmg*=.92;c.n--;c.d=.3;c.e=null;
     }
     T.frost=T.frost.filter(c=>!c.done);
   }
   if(T.alacT>0)T.alacT-=dt;
+  G.allyHaste=T.alacT>0?T.alacT:0;   /* los aliados también atacan más rápido mientras dure */
   if(T.field){
     const q=T.field;q.t-=dt;q.k-=dt;q.x=x0;q.y=y0;
     if(q.k<=0){
       q.k=.35;SRC='Campo de hielo';
       for(let i=0;i<2;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*q.R,ex=x0+Math.cos(a)*r,ey=y0+Math.sin(a)*r;
         for(const o of G.enemies)if(!o.dead&&Math.hypot(o.x-ex,o.y-ey)<=60+o.r){dealDamage(o,q.d,'ice');if(!o.dead)o.slow={a:.6,t:1.5}}
-        spr({id:Math.random()<.5?'snow1':'snow2',x:ex,y:ey-30,w:18+Math.random()*14,d:.9,vy:40,vx:(Math.random()-.5)*30,spin:(Math.random()-.5)*3,fi:.1,fo:.5});
-        ring(ex,ey,60,'#bfeaff',.3);for(let j=0;j<3;j++)G.fx.push({k:'p',x:ex,y:ey,vx:(Math.random()-.5)*120,vy:-Math.random()*90,t:.5,c:'#e6f6ff'})}
+        invShards(ex,ey,50)}
     }
     if(q.t<=0)T.field=null;
   }
@@ -6661,17 +6738,30 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
       SRC='Golpe gélido';cast('i_cold','QQQ','¡Golpe gélido!');
       invHit(e,hdmg(l)*2.4,'ice',(1.6+.05*l)*f.dur,0,0);
       if(!e.dead){e.slow={a:.5,t:3*f.dur};addDot(e,'ice',hdmg(l)*.5,3*f.dur,false)}
-      G.fx.push({k:'bolt',pts:[[x0,y0-20],[e.x,e.y]],t:.25,c:'#9fe0ff'});ring(e.x,e.y,50,'#9fe0ff',.4);
-      {const sd=(1.6+.05*l)*f.dur;spr({id:'iceblock',x:e.x,y:e.y,w:e.r*3.2+30,d:sd,g0:.6,g1:1,fi:.1,fo:.25});spr({id:'iceshards',x:e.x,y:e.y,w:e.r*3+30,wait:sd,d:sd+.45,g0:.7,g1:1.2,fi:0,fo:.8})}
+      {const sd=(1.6+.05*l)*f.dur,R=(105+.5*l)*f.rad,ex=e.x,ey=e.y,ed=hdmg(l)*1.4;spr({id:'iceblock',x:e.x,y:e.y,w:e.r*3.2+30,d:sd,g0:.6,g1:1,fi:.1,fo:.25});
+        G.delayed.push({t:sd,fn:()=>{SRC='Golpe gélido';   /* el cubo estalla: daño y ralentización a los enemigos de alrededor */
+          for(const o of G.enemies)if(!o.dead&&o!==e&&Math.hypot(o.x-ex,o.y-ey)<=R+o.r){dealDamage(o,ed,'ice');if(!o.dead)o.slow={a:.45,t:2}}
+          invShards(ex,ey,R)}})}
       done('i_cold',INV.i_cold.cd(l))}
   }});}
+  if(T.miss&&T.miss.length){   /* misiles mágicos: salen en todas direcciones y se curvan hacia el enemigo más cercano */
+    for(const m of T.miss){
+      m.t+=dt;m.life-=dt;
+      if(m.t>.28){if(!m.tg||m.tg.dead){m.tg=null;let bd=420*420;for(const o of G.enemies){if(o.dead)continue;const d=(o.x-m.x)**2+(o.y-m.y)**2;if(d<bd){bd=d;m.tg=o}}}
+        if(m.tg){const want=Math.atan2(m.tg.y-m.y,m.tg.x-m.x);let cur=Math.atan2(m.vy,m.vx),df=Math.atan2(Math.sin(want-cur),Math.cos(want-cur));cur+=Math.max(-7*dt,Math.min(7*dt,df));m.vx=Math.cos(cur)*m.sp;m.vy=Math.sin(cur)*m.sp}}
+      m.x+=m.vx*dt;m.y+=m.vy*dt;m.tr.push([m.x,m.y]);if(m.tr.length>7)m.tr.shift();
+      for(const o of G.enemies){if(o.dead||(o.x-m.x)**2+(o.y-m.y)**2>(o.r+8)**2)continue;SRC='Misiles mágicos';dealDamage(o,m.d,'magic');m.life=0;
+        G.fx.push({k:'cfx',t:.25,d:.25,fn:(c,p)=>{c.save();c.globalCompositeOperation='lighter';c.globalAlpha=1-p;c.fillStyle=m.col;c.beginPath();c.arc(o.x,o.y,6+16*p,0,6.3);c.fill();c.restore()}});break}
+    }
+    T.miss=T.miss.filter(m=>m.life>0);
+  }
   {queueHeroCast(rdy,'i_ghost',()=>{l=clv('i_ghost');f=tf('i_ghost');if((l=clv('i_ghost'))&&rdy('i_ghost')){
     f=tf('i_ghost');
     if(!countNear(x0,y0,rg('i_ghost')))retry('i_ghost');else{
-      cast('i_ghost','QQW','¡Paso fantasma!');G.heroInv=Math.max(G.heroInv||0,(1.8+.06*l)*f.dur);
-      for(const e of G.enemies)if(!e.dead&&Math.hypot(e.x-x0,e.y-y0)<=rg('i_ghost')+e.r)e.slow={a:.5,t:(3+.1*l)*f.dur};
-      spr({id:'ghost',x:x0,y:y0+4,pos:()=>[cx(),cy()+4],w:110,d:(1.8+.06*l)*f.dur,a:.85,pulse:6,fi:.1,fo:.3});
-      ring(x0,y0,rg('i_ghost'),'#b8a0ff',.6);done('i_ghost',INV.i_ghost.cd(l))}
+      cast('i_ghost','','¡Misiles mágicos!');
+      const n=10+Math.floor(l/3)+f.cnt,cols=['#ff7ad9','#b684ff','#7fd0ff'];if(!T.miss)T.miss=[];
+      for(let i=0;i<n;i++){const an=i/n*6.283+Math.random()*.2;T.miss.push({x:x0,y:y0-12,vx:Math.cos(an)*340,vy:Math.sin(an)*340,sp:340,t:0,life:2.4,d:hdmg(l)*.55,tr:[],col:cols[i%3],tg:null})}
+      done('i_ghost',INV.i_ghost.cd(l))}
   }});}
   {queueHeroCast(rdy,'i_wall',()=>{l=clv('i_wall');f=tf('i_wall');if((l=clv('i_wall'))&&rdy('i_wall')){
     f=tf('i_wall');const e=invTarget(rg('i_wall'),x0,y0);
@@ -6688,7 +6778,7 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
       G.delayed.push({t:1,mark:{x:ex,y:ey,r:R,spr:'pulsemarker',spin:.8},fn:()=>{SRC='Pulso electromagnético';
         for(const o of G.enemies)if(!o.dead&&Math.hypot(o.x-ex,o.y-ey)<=R+o.r)invHit(o,d,'elec',.6*f.dur,0,0);
         spr({id:'pulsering',x:ex,y:ey,w:R*2.2,d:.5,g0:.4,g1:1.05,fi:0,fo:.55,add:true});
-        ring(ex,ey,R,'#c06bff',.5);G.fx.push({k:'bolt',pts:[[ex,ey-160],[ex,ey]],t:.3,c:'#e0b0ff'})}});
+        }});
       done('i_emp',INV.i_emp.cd(l))}
   }});}
   {queueHeroCast(rdy,'i_tornado',()=>{l=clv('i_tornado');f=tf('i_tornado');if((l=clv('i_tornado'))&&rdy('i_tornado')){
@@ -6698,26 +6788,22 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
       const an=Math.atan2(e.y-y0,e.x-x0),len=rg('i_tornado'),d=hdmg(l)*1.5;let n=0;
       for(const o of G.enemies){if(o.dead)continue;const dx=o.x-x0,dy=o.y-y0,al=dx*Math.cos(an)+dy*Math.sin(an),pp=Math.abs(-dx*Math.sin(an)+dy*Math.cos(an));
         if(al<0||al>len||pp>70*f.rad)continue;n++;invHit(o,d,'magic',(1.2+.04*l)*f.dur,50,an);o.slow={a:.4,t:2}}
-      for(let i=0;i<8;i++)G.fx.push({k:'p',x:x0+Math.cos(an)*i*len/8,y:y0+Math.sin(an)*i*len/8,vx:Math.cos(an+1.5)*60,vy:Math.sin(an+1.5)*60,t:.7,c:'#d8e8ff'});
-      G.fx.push({k:'bolt',pts:[[x0,y0],[x0+Math.cos(an)*len,y0+Math.sin(an)*len]],t:.3,c:'#d8e8ff'});
       for(let q=0;q<2;q++)spr({anim:['tornado1','tornado2','tornado3','tornado4'],fps:10,x:x0,y:y0,path:[x0,y0,x0+Math.cos(an)*len,y0+Math.sin(an)*len],w:90*f.rad,ax:.5,ay:.85,wait:q*.12,d:.9+q*.12,fi:.1,fo:.25});
       done('i_tornado',INV.i_tornado.cd(l))}
   }});}
   {queueHeroCast(rdy,'i_alacrity',()=>{l=clv('i_alacrity');f=tf('i_alacrity');if((l=clv('i_alacrity'))&&rdy('i_alacrity')){
     f=tf('i_alacrity');
     if(!countNear(x0,y0,rg('i_alacrity')+120))retry('i_alacrity');else{
-      cast('i_alacrity','WWE','¡Alacridad!');T.alacT=(6+.15*l)*f.dur;G.haste=Math.max(G.haste||0,T.alacT);ring(x0,y0,70,'#ffb060',.5);
-      spr({id:'windring',x:x0,y:y0+6,pos:()=>[cx(),cy()+6],w:100,d:T.alacT,spin:1.5,a:.9,add:true,fi:.15,fo:.2});
+      cast('i_alacrity','WWE','¡Alacridad!');T.alacT=(6+.15*l)*f.dur;G.haste=Math.max(G.haste||0,T.alacT);
       done('i_alacrity',INV.i_alacrity.cd(l))}
   }});}
   {queueHeroCast(rdy,'i_sun',()=>{l=clv('i_sun');f=tf('i_sun');if((l=clv('i_sun'))&&rdy('i_sun')){
     f=tf('i_sun');const e=invTarget(rg('i_sun'),x0,y0);
     if(!e)retry('i_sun');else{
       cast('i_sun','EEE','¡Rayo solar!');const R=(95+l)*f.rad,ex=e.x,ey=e.y,d=hdmg(l)*5.5;
-      G.delayed.push({t:1.7,mark:{x:ex,y:ey,r:R,spr:'sunimpact'},fn:()=>{SRC='Rayo solar';
+      G.delayed.push({t:1.7,mark:{x:ex,y:ey,r:R},fn:()=>{SRC='Rayo solar';
         for(const o of G.enemies)if(!o.dead&&Math.hypot(o.x-ex,o.y-ey)<=R+o.r)invHit(o,d,'fire',0,0,0);
-        spr({id:'sunbeam',x:ex,y:ey,w:R*.9,h:700,ax:.5,ay:1,d:.5,fi:.05,fo:.7,add:true});spr({id:'sunimpact',x:ex,y:ey,w:R*2.2,d:.6,g0:.5,g1:1.1,fo:.6,add:true});
-        ring(ex,ey,R,'#fff0a0',.6);G.fx.push({k:'bolt',pts:[[ex,ey-600],[ex,ey]],t:.45,c:'#fff0a0'})}});
+        invSunstrike(ex,ey,R)}});
       done('i_sun',INV.i_sun.cd(l))}
   }});}
   {queueHeroCast(rdy,'i_field',()=>{l=clv('i_field');f=tf('i_field');if((l=clv('i_field'))&&rdy('i_field')){
@@ -6725,18 +6811,16 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
     if(!countNear(x0,y0,rg('i_field')))retry('i_field');else{
       cast('i_field','','¡Campo de hielo!');
       T.field={t:(6+.1*l)*f.dur,k:0,R:rg('i_field')*f.rad,d:hdmg(l)*.8*f.dm,x:x0,y:y0};
-      spr({id:'frostpatch',x:x0,y:y0+10,pos:()=>[cx(),cy()+10],w:rg('i_field')*f.rad*1.9,d:T.field.t,a:.26,fi:.1,fo:.1});
-      ring(x0,y0,rg('i_field')*f.rad,'#bfeaff',.8);done('i_field',INV.i_field.cd(l))}
+      invBlizzard(T.field);done('i_field',INV.i_field.cd(l))}
   }});}
   {queueHeroCast(rdy,'i_laguna',()=>{l=clv('i_laguna');f=tf('i_laguna');if((l=clv('i_laguna'))&&rdy('i_laguna')){
     f=tf('i_laguna');let e=null;
     for(const o of G.enemies)if(!o.dead&&o.boss&&o.invT<=0&&(!e||o.hp>e.hp))e=o;
     if(!e)retry('i_laguna');else{
       cast('i_laguna','','¡Rayo de luz!');SRC='Rayo de luz';
-      const d=Math.min(hdmg(l)*14*f.dm,e.hp*.4+hdmg(l)*4);
-      dealDamage(e,d,'divine');
-      G.fx.push({k:'bolt',pts:[[x0,y0-20],[e.x,e.y]],t:.5,c:'#fff6b0'});ring(e.x,e.y,70,'#fff6b0',.5);
-      spr({id:'lagunabeam',x:x0,y:y0-20,to:[e.x,e.y],h:46,d:.6,fi:.05,fo:.5,add:true});spr({id:'flare',x:x0,y:y0-20,w:70,d:.5,add:true});spr({id:'flare',x:e.x,y:e.y,w:110,d:.6,add:true});
+      {const an=Math.atan2(e.y-y0,e.x-x0),Lb=Math.min(1500,rg('i_laguna')),ca=Math.cos(an),sa=Math.sin(an),ex2=x0+ca*Lb,ey2=y0+sa*Lb;   /* el rayo atraviesa y golpea a todos los enemigos de su línea */
+        for(const o of G.enemies){if(o.dead)continue;const dx=o.x-x0,dy=o.y-y0,al=dx*ca+dy*sa;if(al<0||al>Lb||Math.abs(-dx*sa+dy*ca)>o.r+34)continue;dealDamage(o,Math.min(hdmg(l)*14*f.dm,o.hp*.4+hdmg(l)*4),'divine');if(!o.dead&&o!==e)G.fx.push({k:'cfx',t:.4,d:.4,fn:(c,p)=>{c.save();c.globalCompositeOperation='lighter';c.globalAlpha=1-p;c.fillStyle='#fff6b0';c.beginPath();c.arc(o.x,o.y,10+26*p,0,6.3);c.fill();c.restore()}})}
+        spr({id:'lagunabeam',x:x0,y:y0-20,to:[ex2,ey2],h:46,d:.6,fi:.05,fo:.5,add:true});spr({id:'flare',x:x0,y:y0-20,w:70,d:.5,add:true});spr({id:'flare',x:e.x,y:e.y,w:110,d:.6,add:true})}
       T.alacT=(8+.1*l)*f.dur;G.haste=Math.max(G.haste||0,T.alacT);ring(x0,y0,60,'#fff6b0',.5);
       done('i_laguna',INV.i_laguna.cd(l))}
   }});}
@@ -6755,7 +6839,7 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
       cast('i_meteor','EEW','¡Meteoro del caos!');const an=Math.atan2(e.y-y0,e.x-x0),R=(70+1.5*l)*f.rad,d=hdmg(l)*2,n=3+f.cnt;
       const base=Math.max(100,Math.hypot(e.x-x0,e.y-y0)-60);
       for(let i=0;i<n;i++){const ex=x0+Math.cos(an)*(base+i*70),ey=y0+Math.sin(an)*(base+i*70);
-        spr({id:i%2?'meteor2':'meteor1',x:ex,y:ey,path:[ex-210,ey-210,ex,ey],w:70+R*.4,ax:.82,ay:.82,wait:i*.3,d:.7+i*.3,fi:0,fo:0});
+        {const fl=Math.cos(an)<0;spr({id:i%2?'meteor2':'meteor1',x:ex,y:ey,path:[ex-Math.cos(an)*230,ey-210,ex,ey],w:70+R*.4,ax:.82,ay:.82,flip:fl,wait:i*.3,d:.7+i*.3,fi:0,fo:0})}
         G.delayed.push({t:.7+i*.3,mark:{x:ex,y:ey,r:R},fn:()=>{SRC='Meteoro del caos';
           for(const o of G.enemies)if(!o.dead&&Math.hypot(o.x-ex,o.y-ey)<=R+o.r){invHit(o,d,'fire',0,0,0);addDot(o,'fire',d*.4,3,false)}
           spr({id:'crater',x:ex,y:ey,w:R*1.4,d:2,a:.55,fi:.05,fo:.5});spr({id:'fireball',x:ex,y:ey,w:R*1.7,d:.45,g0:.4,g1:1,fo:.6,add:true,a:.8});
@@ -6769,32 +6853,40 @@ function invokerTick(h,dt,T,x0,y0,rdy,done,retry){
       const an=Math.atan2(e.y-y0,e.x-x0),R=rg('i_blast')*f.rad,d=hdmg(l)*1.9;
       for(const o of G.enemies){if(o.dead)continue;const dx=o.x-x0,dy=o.y-y0,dd=Math.hypot(dx,dy);if(dd>R+o.r)continue;
         let da=Math.atan2(dy,dx)-an;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)>.6)continue;
-        invHit(o,d,'magic',.8*f.dur,90*f.rad,an)}
-      spr({id:'blastarcs',x:x0,y:y0,w:R*1.05,ax:0,ay:.5,rot:an,d:.45,g0:.5,g1:1,fi:.05,fo:.55,add:true});
+        invHit(o,d,'magic',.8*f.dur,125*f.rad,an)}
+      spr({id:'blastarcs',x:x0,y:y0,w:R*1.05,ax:0,ay:.5,rot:an,d:.45,g0:.5,g1:1,fi:.05,fo:.55,add:true,a:.5});
       for(let i=0;i<14;i++){const a2=an+(i/13-.5)*1.2;G.fx.push({k:'p',x:x0,y:y0,vx:Math.cos(a2)*420,vy:Math.sin(a2)*420,t:.5,c:['#4fb8ff','#c06bff','#ff8a2a'][i%3]})}
       done('i_blast',INV.i_blast.cd(l))}
   }});}
 }
+function drawHasteIcon(x,y){   /* marca del buff sobre la cabeza, como en Dota 2: círculo con dos flechas veloces */
+  const c=ctx,pu=1+.08*Math.sin(G.t*8);c.save();c.translate(x,y);c.scale(pu,pu);c.fillStyle='rgba(30,18,6,.85)';c.beginPath();c.arc(0,0,8,0,6.3);c.fill();c.strokeStyle='#ffb060';c.lineWidth=1.6;c.stroke();
+  c.strokeStyle='#ffd27a';c.lineWidth=2;c.lineCap='round';c.lineJoin='round';for(const dx of[-3.2,1.8]){c.beginPath();c.moveTo(dx,-3.6);c.lineTo(dx+3.4,0);c.lineTo(dx,3.6);c.stroke()}c.restore();
+}
 function drawInvoker(c,T,x0,y0){
-  if(T.alacT>0){c.save();c.globalAlpha=.35+.15*Math.sin(G.t*10);c.strokeStyle='#ffb060';c.lineWidth=2;c.beginPath();c.arc(x0,y0,34,0,6.3);c.stroke();c.restore()}
+  if(T.alacT>0)drawHasteIcon(x0,y0-78);
+  if(T.miss&&T.miss.length){c.save();c.globalCompositeOperation='lighter';c.lineCap='round';
+    for(const m of T.miss){for(let i=1;i<m.tr.length;i++){c.globalAlpha=i/m.tr.length*.6;c.strokeStyle=m.col;c.lineWidth=1+4*i/m.tr.length;c.beginPath();c.moveTo(m.tr[i-1][0],m.tr[i-1][1]);c.lineTo(m.tr[i][0],m.tr[i][1]);c.stroke()}
+      c.globalAlpha=1;const gr=c.createRadialGradient(m.x,m.y,0,m.x,m.y,9);gr.addColorStop(0,'#fff');gr.addColorStop(.4,m.col);gr.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=gr;c.beginPath();c.arc(m.x,m.y,9,0,6.3);c.fill()}
+    c.restore()}
 }
 const _ci=(id,n,icon,desc,eff)=>({id,n,icon,desc,eff});
 CLS.mage.push(
  _ci('i_cold','Golpe gélido','🧊','Congela al enemigo más fuerte (jefes primero): aturde, ralentiza y lo hiela con daño en el tiempo.',l=>'Daño x2,4 · aturde '+f1(1.6+.05*l)+' s · cada '+f1(INV.i_cold.cd(l))+' s'),
- _ci('i_ghost','Paso fantasma','👻','Te vuelves intangible: invulnerable unos segundos y los enemigos cercanos se ralentizan.',l=>'Invulnerable '+f1(1.8+.06*l)+' s · cada '+f1(INV.i_ghost.cd(l))+' s'),
+ _ci('i_ghost','Misiles mágicos','✨','Lanza una salva de misiles mágicos en todas direcciones; se curvan hacia el enemigo más cercano.',l=>(10+Math.floor(l/3))+' misiles · daño x0,55 cada uno · cada '+f1(INV.i_ghost.cd(l))+' s'),
  _ci('i_wall','Cadena de hielo (Lich)','❄️','Una cadena de explosiones de hielo salta de enemigo en enemigo: daña en área y ralentiza.',l=>(6+Math.floor(l/4))+' explosiones · daño x1,6 · cada '+f1(INV.i_wall.cd(l))+' s'),
  _ci('i_emp','Pulso electromagnético','🌀','Tras un instante, un pulso estalla sobre el grupo más denso: daño en área y aturdimiento breve.',l=>'Radio '+Math.round(130+2*l)+' · daño x2,1 · cada '+f1(INV.i_emp.cd(l))+' s'),
  _ci('i_tornado','Tornado','🌪️','Un tornado barre una línea: daña, aturde en el aire y empuja a los enemigos.',l=>'Daño x1,5 · aturde '+f1(1.2+.04*l)+' s · cada '+f1(INV.i_tornado.cd(l))+' s'),
- _ci('i_alacrity','Alacridad','💨','Te potencias: ataques mucho más rápidos durante unos segundos.',l=>'+50% vel. ataque '+f1(6+.15*l)+' s · cada '+f1(INV.i_alacrity.cd(l))+' s'),
+ _ci('i_alacrity','Alacridad','💨','Tú y tus aliados atacáis mucho más rápido durante unos segundos; el buff se marca sobre la cabeza.',l=>'+50% vel. ataque '+f1(6+.15*l)+' s · cada '+f1(INV.i_alacrity.cd(l))+' s'),
  _ci('i_sun','Rayo solar','☀️','Un rayo del sol cae desde cualquier punto del mapa sobre el enemigo más fuerte (jefes primero).',l=>'Daño x5,5 · radio '+(95+l)+' · cada '+f1(INV.i_sun.cd(l))+' s'),
  _ci('i_forge','Espíritu de fuego','🔥','Invoca espíritus de fuego que vuelan y queman a los enemigos.',l=>(2+Math.floor(l/10))+' espíritus · duran '+f1(20+.4*l)+' s · cada '+f1(INV.i_forge.cd(l))+' s'),
  _ci('i_meteor','Meteoro del caos','☄️','Una hilera de meteoros cae hacia el grupo: daño en área y quemadura.',l=>(3)+' impactos · radio '+Math.round(70+1.5*l)+' · cada '+f1(INV.i_meteor.cd(l))+' s'),
  _ci('i_blast','Explosión ensordecedora','📢','Onda en cono que daña, empuja con fuerza y aturde.',l=>'Daño x1,9 · cono · cada '+f1(INV.i_blast.cd(l))+' s'),
  _ci('i_field','Campo de hielo (Crystal Maiden)','🌨️','Ultimate de Crystal Maiden: una ventisca de hielo cae a tu alrededor, dañando y ralentizando a todos los cercanos.',l=>'Daño x0,8 por golpe · '+f1(6+.1*l)+' s · radio 330 · cada '+f1(INV.i_field.cd(l))+' s'),
- _ci('i_laguna','Rayo de luz (Lina)','⚡','Ultimate de Lina: un rayo de luz devastador solo contra jefes. Después ganas un bono de velocidad de ataque.',l=>'Daño x14 solo a jefes · +50% vel. ataque '+f1(8+.1*l)+' s · cada '+f1(INV.i_laguna.cd(l))+' s')
+ _ci('i_laguna','Rayo de luz (Lina)','⚡','Ultimate de Lina: un rayo de luz devastador que atraviesa y golpea a todos los enemigos de su línea (se lanza contra jefes). Después ganas un bono de velocidad de ataque.',l=>'Daño x14 a todos los que atraviesa · +50% vel. ataque '+f1(8+.1*l)+' s · cada '+f1(INV.i_laguna.cd(l))+' s')
 );
 defTiers('i_cold','Golpe gélido',[['Escarcha larga','+30% de duración.',{dur:1.3}],['Golpe profundo','+40% de daño.',{dm:1.4}],['Recarga fría','-20% de enfriamiento.',{cd:.8}],['Cero absoluto','+60% de daño y +30% de duración.',{dm:1.6,dur:1.3}]]);
-defTiers('i_ghost','Paso fantasma',[['Fase larga','+30% de duración.',{dur:1.3}],['Recarga corta','-15% de enfriamiento.',{cd:.85}],['Curación espectral','Te curas un 15% de vida al lanzarlo.',{cheal:.15}],['Más allá','+40% de duración y -15% de enfriamiento.',{dur:1.4,cd:.85}]]);
+defTiers('i_ghost','Misiles mágicos',[['Salva extra','+4 misiles.',{cnt:4}],['Misiles potentes','+40% de daño.',{dm:1.4}],['Recarga corta','-15% de enfriamiento.',{cd:.85}],['Tormenta arcana','+6 misiles y +30% de daño.',{cnt:6,dm:1.3}]]);
 defTiers('i_wall','Cadena de hielo',[['Rebote extra','+1 explosión.',{cnt:1}],['Escarcha amplia','+30% de radio.',{rad:1.3}],['Hielo potente','+40% de daño.',{dm:1.4}],['Cadena infinita','+3 explosiones y -20% de enfriamiento.',{cnt:3,cd:.8}]]);
 defTiers('i_emp','Pulso electromagnético',[['Pulso amplio','+25% de radio.',{rad:1.25}],['Descarga fuerte','+40% de daño.',{dm:1.4}],['Recarga rápida','-20% de enfriamiento.',{cd:.8}],['Colapso','+25% de radio y +50% de daño.',{rad:1.25,dm:1.5}]]);
 defTiers('i_tornado','Tornado',[['Tornado ancho','+30% de anchura.',{rad:1.3}],['Larga suspensión','+40% de aturdimiento.',{dur:1.4}],['Vendaval','+40% de daño.',{dm:1.4}],['Ciclón','+30% de anchura, +50% de daño.',{rad:1.3,dm:1.5}]]);
@@ -6828,7 +6920,7 @@ function drawTW(c,o){
 }
 function drawHawk(c,hk){
   const d=hk.dir||1,fl=Math.sin(hk.wing)*(hk.st===1?.25:1);c.save();c.translate(hk.x,hk.y);c.scale(d,1);
-  if(SPR.on&&SPR.drawFit(c,'a_hawk_'+(fl>0?1:2),0,10,36,28)){c.restore();return}
+  if(SPR.on&&SPR.drawFit(c,'a_hawk_'+(fl>0?1:2),0,14,62,48)){c.restore();return}
   hPoly(c,[-2,-1,-14,-8-fl*8,-8,2],'#7a5230');hPoly(c,[6,-6,2,-1,12,-9-fl*8,8,2],'#9a6a3a');
   hPoly(c,[-7,1,-17,3,-7,4.4],'#6a4020');hEll(c,0,1,8,4.2,'#8a5a30');hEll(c,2,3,5,2.4,'#e8dcc0',0,0);
   hEll(c,8,-1.4,3.6,3.2,'#f4f0e4');hPoly(c,[10.5,-1.4,15.5,.4,10.5,1.4],'#e8b020');hEll(c,9,-2.2,.9,.9,'#140e22',0,0);c.restore();
@@ -7053,7 +7145,10 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
           const du=(6+.2*l)*f.dur;SRC='Halcón compañero';
           const marks=[t,...alive5(t.x,t.y,150).filter(e=>e!==t&&!(e.hawk>G.t)).slice(0,f.cnt)];
           for(const e of marks){e.hawk=G.t+du;e.vt=Math.max(e.vt||0,G.t+du);e.vm=Math.max(e.vm||1,1.2+.012*l+f.vmx);ring5(e.x,e.y,e.r+10,'#ffd24a',.4)}
-          dealDamage(t,hdmg(l)*1.6,'phys');txt(t.x,t.y-t.r-16,'🦅 ¡Marcado!','#ffd24a',15);hk.st=2;hk.cd=Math.max(1.4,3.4-.08*l)*f.cd
+          dealDamage(t,hdmg(l)*1.6,'phys');if(!t.dead)addDot(t,'phys',hdmg(l)*.7,4,true);   /* garras sangrantes */
+          hk.n=(hk.n||0)+1;txt(t.x,t.y-t.r-16,'🦅 ¡Marcado!','#ffd24a',15);
+          if(hk.n%3===0){for(const o of alive5(t.x,t.y,190)){o.stun=Math.max(o.stun||0,o.boss?.4:1.2)}ring5(t.x,t.y,190,'#ffe9a0',.5);txt(t.x,t.y-t.r-34,'🦅 ¡Chillido!','#ffe9a0',16)}   /* chillido: aturde a los de alrededor */
+          hk.st=2;hk.cd=Math.max(1.4,3.4-.08*l)*f.cd
         }else{hk.x+=dx/d*st;hk.y+=dy/d*st}}
     }else{
       const dx=x0-hk.x,dy=y0-60-hk.y,d=Math.hypot(dx,dy)||1,st=420*dt;hk.dir=dx>=0?1:-1;
@@ -7706,7 +7801,12 @@ drawFx3=function(x0,y0){
   if(G.hero==='archer'&&arSpr()){   /* auras del arquero con sprites */
     if(clv('a_aura'))SPR.draw(c,'a_aura_'+(1+Math.floor(tt*6)%4),cx(),cy()+16,{w:96,ax:.5,ay:.5,a:.5,add:true});
     if(T.focusOn>0)SPR.draw(c,'a_foc_'+(1+Math.floor(tt*12)%4),cx(),cy()-6,{w:120,ax:.5,ay:.5,a:.5,add:true});
-    if(T.windOn>0)SPR.draw(c,'a_wind_'+(1+Math.floor(tt*12)%4),cx(),cy()-8,{w:96,ax:.5,ay:.5,a:.7});
+  }
+  if(G.hero==='archer'&&T.windOn>0){   /* carrera del viento: remolinos verdes translúcidos y estelas de velocidad */
+    c.save();c.globalCompositeOperation='lighter';c.lineCap='round';
+    for(let i=0;i<3;i++){const a0=tt*5+i*2.094;c.globalAlpha=.55;c.strokeStyle='#bff5c0';c.lineWidth=2.2;c.beginPath();c.ellipse(cx(),cy()-6,26+i*3,10+i*2,0,a0,a0+1.7);c.stroke()}
+    c.globalAlpha=.35;c.strokeStyle='#e6ffe0';c.lineWidth=1.6;const dir=-(G.hface||1);for(let i=0;i<4;i++){const yy=cy()-22+i*10,len=22+((tt*90+i*17)%24);c.beginPath();c.moveTo(cx()+dir*14,yy);c.lineTo(cx()+dir*(14+len),yy);c.stroke()}
+    c.restore()
   }
   if(G.hero==='barbarian'&&bbSpr()){   /* auras del orco con sprites */
     if(T.whirlOn>0){const R=(140+4*clv('b_whirl'))*tf('b_whirl').rad;SPR.draw(c,'b_whirl_'+(1+Math.floor(tt*14)%6),cx(),cy(),{w:Math.min(R*1.1,250),ax:.5,ay:.5,a:.7})}
@@ -7714,9 +7814,12 @@ drawFx3=function(x0,y0){
     else if((G.rage||0)>2&&clv('b_rage'))SPR.draw(c,'b_rage_'+(1+Math.floor(tt*10)%4),cx(),cy()-2,{w:112,ax:.5,ay:.62,a:Math.min(.8,.3+G.rage*.05)});
   }
 };
-function teamAura(){const l=clv('a_aura');return l&&G.heroes&&G.heroes.includes('archer')?(.05+.004*l)*tf('a_aura').dm:0}
+const isRangedHero=h=>!!HEROES[h]&&!HEROES[h].melee;
+function teamAura(){const l=clv('a_aura');return l&&G.heroes&&G.heroes.includes('archer')&&isRangedHero(G.hero)?(.05+.004*l)*tf('a_aura').dm:0}
+function auraCrit(){const l=clv('a_aura');return l&&G.heroes&&G.heroes.includes('archer')&&isRangedHero(G.hero)?(.03+.0025*l)*tf('a_aura').dm:0}
+const ALLY_RANGED=new Set(['skelA','spirit','angel']);
 defTiers('a_frost','Flechas de escarcha',[['Escarcha densa','+15% de ralentización.',{slow:[.15,2.5]}],['Congelación','+8% de prob. de congelar.',{pc:.08}],['Frío intenso','+15% de ralentización y +8% de prob. de congelar.',{slow:[.3,2.5],pc:.08}],['Invierno eterno','Ralentiza un 45% y +15% de prob. de congelar.',{slow:[.45,2.5],pc:.15}]]);
-defTiers('a_shackle','Grillete',[['Cadenas largas','+30% de duración.',{dur:1.3}],['Hierro frío','+50% de daño.',{dm:1.5}],['Doble grillete','Ata una pareja más.',{cnt:1}],['Prisión','+40% de daño, -20% de enfriamiento y +30% de duración.',{dm:1.4,cd:.8,dur:1.3}]]);
+defTiers('a_shackle','Flecha explosiva',[['Carga potente','+50% de daño.',{dm:1.5}],['Onda ancha','+30% de radio.',{rad:1.3}],['Doble flecha','+1 flecha explosiva.',{cnt:1}],['Gran estallido','+40% de daño, -20% de enfriamiento y +30% de radio.',{dm:1.4,cd:.8,rad:1.3}]]);
 defTiers('a_windrun','Carrera del viento',[['Pies ligeros','+5% de esquiva.',{dodge:.05}],['Viento largo','+30% de duración.',{dur:1.3}],['Brisa fresca','-20% de enfriamiento y +2 vida/s.',{cd:.8,reg:2}],['Tormenta de plumas','+5% de esquiva, +30% de duración y -15% de enfriamiento.',{dodge:.05,dur:1.3,cd:.85}]]);
 defTiers('a_gust','Ráfaga',[['Ráfaga amplia','+30% de radio.',{rad:1.3}],['Silencio largo','+50% de duración del silencio.',{dur:1.5}],['Viento cortante','+60% de daño.',{dm:1.6}],['Vendaval','-25% de enfriamiento y +30% de radio.',{cd:.75,rad:1.3}]]);
 defTiers('a_aura','Aura de precisión',[['Mira afinada','+25% de efecto del aura.',{dm:1.25}],['Pulso firme','+25% de efecto del aura.',{dm:1.25}],['Ojo de halcón','+25% de efecto del aura.',{dm:1.25}],['Precisión divina','+30% de efecto del aura.',{dm:1.3}]]);
@@ -7725,25 +7828,22 @@ const _t3El=heroTick3;
 heroTick3=function(h,dt,T,x0,y0,rdy,done,retry){_t3El(h,dt,T,x0,y0,rdy,done,retry);if(h==='archer')elfTick(dt,T,x0,y0,rdy,done,retry)};
 function elfTick(dt,T,x0,y0,rdy,done,retry){
   let l,f;
-  if(T.windOn>0){T.windOn-=dt;G.haste=Math.max(G.haste||0,.2);if(!arSpr()&&Math.random()<dt*14)G.fx.push({k:'p',x:cx()+(Math.random()-.5)*20,y:cy()+(Math.random()-.5)*20,t:.4,c:'#bff5c0'});if(T.windOn<=0)T.windOn=0}
+  if(T.windOn>0){T.windOn-=dt;if(T.windOn<=0)T.windOn=0}
   if(T.focusOn>0){T.focusOn-=dt;if(!arSpr()&&Math.random()<dt*10)asRing(cx(),cy(),50+Math.random()*40,.3,'#ffe27a');if(T.focusOn<=0)T.focusOn=0}
   {queueHeroCast(rdy,'a_shackle',()=>{l=clv('a_shackle');f=tf('a_shackle');if((l=clv('a_shackle'))&&rdy('a_shackle')){
-    f=tf('a_shackle');const es=asFoes(x0,y0,rg('a_shackle')).sort((a,b)=>b.max-a.max),used=new Set();let did=0;
-    for(const c of es){
-      if(did>=1+f.cnt)break;if(used.has(c))continue;
-      const o=es.find(q=>q!==c&&!used.has(q)&&Math.hypot(q.x-c.x,q.y-c.y)<=280);if(!o)continue;
-      used.add(c);used.add(o);did++;SRC='Grillete';
-      const du=(2+.06*l)*f.dur,d=hdmg(l)*(2+.05*l)*f.dm;
-      for(const e of [c,o]){dealDamage(e,d,'phys');if(!e.dead){e.stun=Math.max(e.stun||0,e.boss?du*.4:du);if(arSpr())fxLoop('a_ring',4,8,{x:e.x,y:e.y+e.r*.5,w:e.r*3+20,ax:.5,ay:.5,d:e.boss?du*.4:du,fi:.1,fo:.25});else asRing(e.x,e.y,e.r+10,.4,'#cfd4de')}}
-      if(arSpr()){fxSeq('a_chain',3,{x:x0,y:y0-10,to:[c.x,c.y],h:26,d:.35,fi:0,fo:.3});fxSeq('a_chain',3,{x:c.x,y:c.y,to:[o.x,o.y],h:30,d:.6,fi:0,fo:.3})}
-      else{G.fx.push({k:'bolt',pts:[[x0,y0-10],[c.x,c.y]],t:.2,c:'#e8ecf5'});G.fx.push({k:'bolt',pts:[[c.x,c.y],[o.x,o.y]],t:.5,c:'#aab4c8'})}
-    }
-    if(!did)retry('a_shackle');else{txt(x0,y0-60,'⛓️ ¡Grillete!','#dfe6f5',17);done('a_shackle',Math.max(7,13-.3*l))}
+    f=tf('a_shackle');const es=asFoes(x0,y0,rg('a_shackle')).sort((a,b)=>b.max-a.max).slice(0,1+f.cnt);
+    if(!es.length)retry('a_shackle');
+    else{
+      for(const e of es){   /* flecha explosiva: no pasa por los pasivos (sin crítico, hielo ni división) */
+        const d=hdmg(l)*(2.4+.06*l),R=(90+.8*l)*f.rad;
+        G.projs.push({kind:'home',x:x0,y:y0-10,spd:540,size:6,type:'fire',dmg:d,tgt:e,exp:0,life:4,src:'Flecha explosiva',col:'#ff8a3a',arrow:true,explosive:true,splash:R});
+      }
+      txt(x0,y0-60,'🧨 ¡Flecha explosiva!','#ffb070',17);done('a_shackle',Math.max(7,13-.3*l))}
   }});}
   {queueHeroCast(rdy,'a_windrun',()=>{l=clv('a_windrun');f=tf('a_windrun');if((l=clv('a_windrun'))&&rdy('a_windrun')){
     f=tf('a_windrun');
     if(countNear(x0,y0,260)<3)retry('a_windrun');
-    else{T.windOn=(2.5+.08*l)*f.dur;G.heroInv=Math.max(G.heroInv||0,T.windOn);G.haste=Math.max(G.haste||0,T.windOn);if(!arSpr())asRing(x0,y0,80,.4,'#bff5c0');txt(x0,y0-60,'🍃 ¡Carrera del viento!','#bff5c0',17);done('a_windrun',Math.max(14,24-.5*l))}
+    else{T.windOn=(2.5+.08*l)*f.dur;txt(x0,y0-60,'🍃 ¡Esquiva 100%!','#bff5c0',17);done('a_windrun',Math.max(14,24-.5*l))}
   }});}
   {queueHeroCast(rdy,'a_gust',()=>{l=clv('a_gust');f=tf('a_gust');if((l=clv('a_gust'))&&rdy('a_gust')){
     f=tf('a_gust');const R=(200+3*l)*f.rad,es=asFoes(x0,y0,R);
@@ -8007,6 +8107,9 @@ function drawCyclopes(){
     q.px=q.x;q.py=q.y;
     c.save();c.translate(q.x,q.y-22);c.scale(1.9,1.9);
     c.fillStyle='rgba(0,0,0,.32)';c.beginPath();c.ellipse(0,21,22,6,0,0,6.3);c.fill();
+    if(SPR.on&&typeof CYC_ART!=='undefined'){   /* arte nuevo: reposo, caminar y golpe de maza */
+      const A=CYC_ART,sq=atk>.05?A.hit:(moving?A.walk:A.idle),k=atk>.05?Math.min(sq.length-1,Math.floor((1-atk)*sq.length)):Math.floor(G.t*(moving?9:4))%sq.length;
+      if(SPR.draw(c,sq[k],0,22,{h:A.h,ax:A.ax,ay:A.ay,flip:f<0})){c.restore();continue}}
     if(SPR.on&&SPR.draw(c,atk>.05?'u_cyc_hit':'u_cyc_idle',0,22,{h:42,ax:.5,ay:1,flip:f<0,rot:sw*.008})){c.restore();continue}
     c.lineJoin='round';c.strokeStyle='#14141c';c.lineWidth=2;
     const stone='#8d93a1',dark='#6a707e',light='#b3b9c6';
