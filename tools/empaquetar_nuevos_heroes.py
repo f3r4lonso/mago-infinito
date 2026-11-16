@@ -51,7 +51,7 @@ H={
  'mage':('magoinvocador.png',80,['0.0','0.1','0.2','0.3'],['0.4','0.5','0.6','0.7','0.8'],[['1.0','1.1','1.2','1.3']],[['2.0','2.1'],['3.0','3.1','3.2'],['4.1','4.2','4.3']],'4.5'),
  'necro':('necro.png',68,['1.1','1.2','1.3','1.4'],['2.1','2.2','2.3','2.4','2.5','2.6'],[['3.0','3.1','3.2']],[['3.7','3.9']],'4.1'),
  'paladin':('paladin dragon.png',72,['1.2'],['2.0','2.1','2.2','2.3','2.4','2.5','2.6','2.7','2.8','2.9'],[['4.1','4.2','4.3','4.4'],['4.5','4.6','4.7','4.8']],[['5.1','5.2']],None),
- 'monk':('panda.png',70,['0.1','0.2','0.3','0.4'],['1.0','1.1','1.2','1.3','1.4','1.5','1.6','1.7'],[['3.0','3.1','3.3','3.5']],[['4.0','4.1','4.2','4.3']],None),
+ 'monk':('panda.png',70,['0.1','0.2','0.3','0.4'],['1.0','1.1','1.2','1.3','1.4','1.5','1.6','1.7'],[['3.0','3.1','3.3','3.5']],[['4.1','4.2']],None),
  'devourer':('primarbeast.png',62,['0.1','0.2','0.3','0.4'],['0.5','0.6','0.7','0.8'],[['1.4','1.5','1.6','1.7']],[['2.1','2.3']],'3.4'),
  'dwarf':('sniper.png',58,['0.2'],['1.2','2.2'],[['3.2','4.2']],[['3.2','4.1','4.2']],'5.3'),
  'shaman':('troll chaman.png',72,['1.0','1.1','1.2','1.3'],['2.0','2.1','2.2','2.3','2.4','2.5','2.6'],[['3.0','3.1','3.2','3.3','3.4']],[['4.1','4.2','4.3']],'5.1'),
@@ -114,8 +114,40 @@ def ciclope():
         fh.write('/* Generado por tools/empaquetar_nuevos_heroes.py (ciclope). Cíclope de piedra de la torre del castillo. No editar a mano. */'+chr(10))
         fh.write('SPR.addPack("ciclope_nuevo",'+json.dumps({'game':{'img':'assets/invocaciones/ciclope-nuevo.png','w':atlas.width,'h':atlas.height,'s':desc}},separators=(',',':'))+');'+chr(10)+'var CYC_ART='+json.dumps(art,separators=(',',':'))+';'+chr(10))
     print('ciclope lienzo',cw,ch,'H',Hp,'atlas',atlas.size,len(desc))
+# formas de transformación: id del héroe -> (nombre de la forma, hoja, alto de la figura, idle, walk, atk, cast, herido)
+FORMAS={
+ 'werewolf':('wolf','hombre lobo y lobo.png',50,['2.0','2.1','2.2','2.3'],['2.5','2.6','2.1','2.2'],['3.0','3.2','3.3'],['3.2','3.3','3.4','3.5'],'3.0'),
+ 'druid':('bear','hombre oso.png',92,['0.1'],['1.0','1.1','1.2','1.3'],['2.4','2.5','2.6','2.7'],['3.0','3.1','3.2','3.3'],'3.5'),
+}
+def forma(hid):
+    nom,hoja,fig,idle,walk,atk,cast,hurt=FORMAS[hid];rgba,fg,rows=extraer(hoja);items=[]
+    def add(pref,refs):
+        ids=[]
+        for i,r in enumerate(refs):
+            sid=f'nh_{hid}_{nom}_{pref}{i+1}';items.append((sid,uno(r,rows)));ids.append(sid)
+        return ids
+    o_idle=add('idle',idle);o_walk=add('walk',walk);o_atk=add('atk',atk);o_cast=add('cast',cast);o_hurt=add('hurt',[hurt])[0]
+    dat=[]
+    for sid,b in items:
+        base,ax_=pies(rgba,b);dat.append((sid,Image.fromarray(rgba[b[1]:b[3],b[0]:b[2]],'RGBA'),base,ax_))
+    Lm=int(max(d[3] for d in dat))+1;R=int(max(d[1].width-d[3] for d in dat))+1;A=int(max(d[2] for d in dat))+1;B=int(max(d[1].height-d[2] for d in dat))+1
+    cw,ch=Lm+R,A+B;sp=[]
+    for sid,img,base,ax_ in dat:
+        can=Image.new('RGBA',(cw,ch),(0,0,0,0));can.alpha_composite(img,(Lm-int(round(ax_)),A-base));sp.append((sid,can))
+    d0=dat[0];cuerpo=d0[2]-int(np.where(np.array(d0[1])[...,3]>0)[0].min())
+    Hp=round(ch*fig/cuerpo,1);ax=round(Lm/cw,3);ay=round(A/ch,3);out=f'assets/heroes/{hid}'
+    atlas,desc=empaquetar(sp,1024);atlas.save(f'{out}/{hid}-forma.png',optimize=True)
+    F={'stand':1,'idle':o_idle,'walk':o_walk,'atk':o_atk,'cast':o_cast,'hurt':o_hurt,'fps':9,'ax':ax,'ay':ay,'H':Hp}
+    with open(f'{out}/pack-forma.js','w',encoding='utf-8') as fh:
+        fh.write('/* Generado por tools/empaquetar_nuevos_heroes.py (forma). Añade la forma de transformación del héroe. No editar a mano. */'+chr(10))
+        fh.write('SPR.addPack("'+hid+'_forma",'+json.dumps({'game':{'img':f'{out}/{hid}-forma.png','w':atlas.width,'h':atlas.height,'s':desc}},separators=(',',':'))+');'+chr(10))
+        fh.write('{const o=SPR.heroMeta("'+hid+'")||{};SPR.addMeta("'+hid+'",Object.assign({},o,{forms:Object.assign({},o.forms||{},{'+nom+':'+json.dumps(F,separators=(',',':'))+'})}))}'+chr(10))
+    bg=Image.new('RGBA',atlas.size,(70,100,70,255));bg.alpha_composite(atlas);bg.convert('RGB').save(f'guias-arte/prev-{hid}-forma.png')
+    print(f'forma {hid}/{nom} lienzo {cw}x{ch} H {Hp} ax {ax} ay {ay} atlas {atlas.size}')
 if __name__=='__main__':
-    if not sys.argv[1:] or 'ciclope' in sys.argv[1:]:ciclope()
-    sys.argv=[a for a in sys.argv if a!='ciclope']
-    if len(sys.argv)==1 and False:pass
-    for hid in (sys.argv[1:] or list(H)):hacer(hid)
+    args=sys.argv[1:]
+    if 'formas' in args:
+        for hid in FORMAS:forma(hid)
+        sys.exit()
+    if not args or 'ciclope' in args:ciclope()
+    for hid in ([a for a in args if a!='ciclope'] or list(H)):hacer(hid)

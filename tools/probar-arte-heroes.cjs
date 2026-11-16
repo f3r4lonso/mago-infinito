@@ -43,19 +43,20 @@ function probar(hero,id){
     G.tv=(G.tv||0)+1;recalc();G.hp=S.maxHp;runSoloTest();
   }catch(e){R.errors.push('preparar: '+e.message);return R}
   const hm=SPR.heroMeta(hero);R.meta=hm?{idle:SPR.has(hm.idle),atk:SPR.has(hm.atk),basic:!!hm.basic,melee:!!hm.melee}:null;
-  const seen=new WeakSet(),ids=new Set(),h0=new Map(),kinds=new Set();let lastCast=G.castAt,projSprites=0;
+  const seen=new WeakSet(),ids=new Set(),h0=new Map(),kinds=new Set(),fk=new Set();let lastCast=G.castAt,projSprites=0;
   for(const e of G.enemies)h0.set(e,e.hp);
   const STEPS=LARGOS.includes(id)?[10,40,80,120,160,199]:[2,5,9,15,24,40];
   for(let s=0;s<=STEPS[STEPS.length-1];s++){
     try{update(.05);draw()}catch(e){R.errors.push('paso '+s+': '+e.message);break}
     for(const e of G.enemies)if(!h0.has(e))h0.set(e,e.hp);
+    for(const f of G.fx)if(f.k)fk.add(f.k);
     for(const f of G.fx)if(f.k==='spr'&&!seen.has(f)){seen.add(f);for(const i of [f.id,...(f.seq||[]),...(f.anim||[])])if(i)ids.add(i)}
     R.allies=Math.max(R.allies,G.allies.length);for(const a of G.allies)kinds.add(a.kind);
     if(G.castAt!==lastCast){R.casts++;lastCast=G.castAt}
     if(STEPS.includes(s))R.frames.push(crop());
   }
   for(const [e,hp] of h0){if(e.n!=='Objetivo de prueba'&&e.n!=='Jefe de prueba')continue;R.dmg+=Math.max(0,5000-(e.dead?0:e.hp));if(e.dead)R.kills++}   /* los objetivos de prueba nacen con 5000 de vida; el lanzamiento inicial ocurre antes de medir */
-  R.dmg=Math.round(R.dmg);R.ids=[...ids];R.kinds=[...kinds];R.missing=R.ids.filter(i=>!SPR.has(i));
+  R.fk=[...fk];R.dmg=Math.round(R.dmg);R.ids=[...ids];R.kinds=[...kinds];R.missing=R.ids.filter(i=>!SPR.has(i));
   R.cast=G.castAt!=null;R.cd=G.ht&&G.ht[id]>0?+G.ht[id].toFixed(1):0;R.hp=Math.round(G.hp);R.finite=Number.isFinite(G.hp)&&G.enemies.every(e=>Number.isFinite(e.x)&&Number.isFinite(e.y)&&Number.isFinite(e.hp));
   R.fxLive=G.fx.length;
   return R;
@@ -68,7 +69,7 @@ function poses(hero){   /* cuerpo del héroe: reposo, caminar, ataque, recibir d
   for(const s of st){
     if(G.ht)for(const k of Object.values(FORMA))G.ht[k]=0;
     if(s.forma){G.ht[s.forma]=30;G.soloAnimation='auto'}else G.soloAnimation='idle';
-    Object.assign(s,{n:0,face:1});if(s.forma)s.form=({paladin:'dragon',demon:'demon'})[hero]||0;   /* forma: dragón (paladín) o demonio (cazador) */
+    Object.assign(s,{n:0,face:1});if(s.forma)s.form=({paladin:'dragon',demon:'demon',werewolf:'wolf',druid:'bear'})[hero]||0;   /* forma: dragón, demonio, lobo u oso */
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#b99d6b';ctx.fillRect(0,0,W,H);
     drawHeroOn(ctx,W/2,H/2,hero,1.7,0,1.25,s);
     const c=document.createElement('canvas');c.width=CW;c.height=CH;
