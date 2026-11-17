@@ -176,7 +176,7 @@ var SPR=(function(){
     /* formas (paladín en dragón): el cuerpo se sustituye por su animación mientras dura la transformación */
     if(st.form&&m.forms&&m.forms[st.form]&&m.forms[st.form].stand){const F=m.forms[st.form],sq=(u>=0&&st.cast&&F.cast)?F.cast:F.atk;let did;
       if((st.hurt||0)>.35&&F.hurt)did=F.hurt;else if(u>=0)did=sq[Math.min(sq.length-1,Math.floor(u*sq.length))];else if((st.run||0)>.2)did=F.walk[Math.floor(t*F.fps)%F.walk.length];else did=F.idle[Math.floor(t*4)%F.idle.length];
-      if(api.has(did)){const sp2=ids[did],W2=F.H*sp2.w/sp2.h,run2=(st.run||0)*.4,bob2=Math.sin(t*2.3)*.6-Math.abs(Math.sin(t*11))*3*run2;c.save();c.scale(fx,1);c.translate(0,31+bob2);c.rotate((.09*Math.sign(st.vx||1)*run2)*(fx<0?-1:1));c.translate(st.hurt>0?-4*st.hurt*Math.sin(t*38):0,0);api.draw(c,did,0,0,{w:W2,ax:F.ax,ay:F.ay});c.restore();return true}}
+      if(api.has(did)){const sp2=ids[did],W2=F.k?sp2.w*F.k:F.H*sp2.w/sp2.h,run2=(st.run||0)*.4,bob2=Math.sin(t*2.3)*.6-Math.abs(Math.sin(t*11))*3*run2;c.save();c.scale(fx,1);c.translate(0,31+bob2);c.rotate((.09*Math.sign(st.vx||1)*run2)*(fx<0?-1:1));c.translate(st.hurt>0?-4*st.hurt*Math.sin(t*38):0,0);if(F.k){const o2=(window.OB_OFF&&OB_OFF[did])||[0,0];api.draw(c,did,o2[0]*F.k,(F.cy||0)+o2[1]*F.k,{w:W2,ax:.5,ay:.5})}else api.draw(c,did,0,0,{w:W2,ax:F.ax,ay:F.ay});c.restore();return true}}
     if(st.form&&m.forms&&m.forms[st.form]&&!m.forms[st.form].stand){const F=m.forms[st.form];let did;
       if((st.hurt||0)>.5&&F.hurt)did=F.hurt;else if(u>=0)did=F.atk[Math.min(F.atk.length-1,Math.floor(u*F.atk.length))];else did=F.fly[Math.floor(t*F.fps*(1+.5*(st.run||0)))%F.fly.length];
       if(api.has(did)){c.save();c.scale(fx,1);c.translate(0,F.y+Math.sin(t*3)*2.5);c.rotate(.14*(st.run||0)*Math.sign(st.vx||1)*(fx<0?-1:1));api.draw(c,did,0,0,{w:F.W,ax:.5,ay:.5});c.restore();return true}}
@@ -188,14 +188,14 @@ var SPR=(function(){
     if((st.hurt||0)>.35&&m.hurt&&api.has(m.hurt))id=m.hurt;
     const wk=(m.walk&&m.walk.indexOf(id)>=0)?.4:1;
     if(!api.has(id))return false;
-    const run=(st.run||0)*wk,k=st.atk||0,sp=ids[id],W=H*sp.w/sp.h;
+    const run=(st.run||0)*wk,k=st.atk||0,sp=ids[id],W=m.k?sp.w*m.k:H*sp.w/sp.h;   /* m.k: escala fija px->unidades (todos los fotogramas del mismo tamaño); m.axs: anclaje horizontal por fotograma */
     c.save();c.scale(fx,1);
     const sn=Math.sin(t*11),bob=Math.sin(t*2.3)*.6-Math.abs(sn)*3*run;
     const lean=(.09*Math.sign(st.vx||1)*run)*(fx<0?-1:1)+Math.sin(t*1.7)*.012;
     const step=.045*run*sn;   /* caminar: aplastado alternado al apoyar cada pie · recibir daño: sacudida corta hacia atrás (H13) */
     const sx=1+(u>=0?.04*k:0)+Math.sin(t*2.3)*.01-step,sy=1-(u>=0?.04*k:0)-Math.sin(t*2.3)*.01+step;
     c.translate(0,31+bob);c.rotate(lean);c.translate((st.hurt>0?-4*st.hurt*Math.sin(t*38):0),0);c.scale(sx,sy);
-    api.draw(c,id,0,0,{w:W,ax:(id===atk&&atkax!=null)?atkax:ax,ay:ay,a:st.hurt>0?1-.25*st.hurt:1});
+    api.draw(c,id,0,0,{w:W,ax:(m.axs&&m.axs[id]!=null)?m.axs[id]:(id===atk&&atkax!=null)?atkax:ax,ay:ay,a:st.hurt>0?1-.25*st.hurt:1});
     c.restore();
     if(st.hurt>0)hGlow(c,0,-20,34,'rgba(255,60,60,'+(.45*st.hurt)+')');
     return true;

@@ -468,6 +468,10 @@ body:not(.solo) .slot-wrap>.auto-upgrade{min-height:0;min-width:0;padding:1px}bo
 <script src="assets/summons/pack.js"></script>
 <script src="assets/ICONOS/pack-iconos.js"></script>
 <script src="assets/ICONOS/jefes/pack-jefes.js"></script>
+<script src="assets/dragon/pack-dragon.js"></script>
+<script src="assets/oso/pack-oso.js"></script>
+<script src="assets/asesino/pack-asesino.js"></script>
+<script src="assets/ICONOS/jefes/pack-jefes2.js"></script>
 <script>
 "use strict";
 /* Si no se cargó assets/sprites.js (pruebas automáticas), SPR se comporta como "sin sprites" y se usa el dibujo vectorial. */
@@ -1503,6 +1507,24 @@ function drawBreath(f){
   }
   ctx.restore();
 }
+/* dragón del huevo: hoja de 6 animaciones (vuelo, aliento, giro, reposo, herido, caída); el color del nivel se aplica con un giro de tono */
+const DG_HUE=[110,205,270,0,42];
+function dgDrawNew(dg,tier,hurt,breath,bite,tail){
+  const t=G.t;let row='idle',idx;
+  const mv=dg._lx!==undefined&&Math.hypot(dg.x-dg._lx,dg.y-dg._ly)>.15;dg._lx=dg.x;dg._ly=dg.y;
+  if(hurt>=0){row='dmg';idx=Math.min(6,Math.floor(hurt*7))}
+  else if(breath>=0){row='fire';idx=Math.min(8,Math.floor(breath*9))}
+  else if(dg.dash){row='turn';idx=Math.floor(t*16)%9}
+  else if(mv){row='fly';idx=Math.floor((((dg.flap/6.2832)%1)+1)%1*9)%9}
+  else{row='idle';idx=Math.floor(t*8)%5}
+  const id='dg_'+row+'_'+(idx+1),z=SPR.size(id),o=(window.DG_OFF&&DG_OFF[id])||[0,0],k=.78;
+  if(!z)return;
+  if(bite>=0)SPR.draw(ctx,'dr_fx_bite',30,-6,{w:34,a:1-bite,rot:.2});
+  if(tail>=0)SPR.draw(ctx,'dr_fx_tail',-34,6,{w:34,a:1-tail,flip:true});
+  ctx.save();if(DG_HUE[tier])ctx.filter='hue-rotate('+DG_HUE[tier]+'deg)';
+  SPR.draw(ctx,id,o[0]*k,-6+o[1]*k,{w:z.w*k,h:z.h*k,ax:.5,ay:.5});
+  ctx.restore();
+}
 function drawDragonUnit(dg,skel){
   const dr=G.dr,t=G.t,tier=skel?2:drTier(),P=skel?DR_SKEL:DR_PAL[tier],face=dg.face||1;
   if(dg._phT===undefined||t<dg._phT||t-dg._phT>.25){if(dg._ph!==undefined&&dg.hp<dg._ph-dg.max*.03)dg.hurtAt=t;dg._ph=dg.hp;dg._phT=t}
@@ -1518,7 +1540,8 @@ function drawDragonUnit(dg,skel){
     ctx.strokeStyle='#d8ecff';ctx.lineWidth=2;for(let i=0;i<3;i++){ctx.globalAlpha=.6-i*.15;ctx.beginPath();ctx.arc(0,0,(30+i*9)*sc,t*14+i*2,t*14+i*2+2.2);ctx.stroke()}ctx.globalAlpha=1}
   ctx.scale(sc*face,sc);ctx.lineCap='round';ctx.lineJoin='round';
   {const did=skel?'dr_skel':'dr_t'+(tier+1);
-   if(SPR.on&&SPR.has(did+'_1')){
+   if(!skel&&SPR.on&&SPR.has('dg_fly_1')){dgDrawNew(dg,tier,hurt,breath,bite,tail);ctx.beginPath();ctx.rect(0,0,0,0);ctx.clip()}
+   else if(SPR.on&&SPR.has(did+'_1')){
      if(bite>=0)SPR.draw(ctx,'dr_fx_bite',26,-6,{w:34,a:1-bite,rot:.2});
      if(tail>=0)SPR.draw(ctx,'dr_fx_tail',-28,6,{w:34,a:1-tail,flip:true});
      ctx.save();ctx.rotate(flap*.06);ctx.scale(1+flap*.02,1-flap*.03);
@@ -3583,6 +3606,20 @@ AL.angel=(c,a,o)=>{
   hLimb(c,[-3,-3,-8,2],2,'#f4f0e4');hEll(c,-8,2,1.8,1.8,'#f1c9a0');
   if(th>.2)hGlow(c,18+ex,2,6+th*6,'#fff2b0',.7);
 };
+/* oso de guerra del druida (aliado): caminar, combate, reposo y muerte con la hoja de 41 fotogramas */
+const OBK=.4;
+function obFrame(id,x,y,al){const z=SPR.size(id);if(!z)return false;const o=(window.OB_OFF&&OB_OFF[id])||[0,0];return SPR.draw(ctx,id,x+o[0]*OBK,y-2+o[1]*OBK,{w:z.w*OBK,h:z.h*OBK,ax:.5,ay:.5,a:al==null?1:al})}
+function obDrawAlly(a,u){
+  const t=G.t,ph=a.ph||0;let id;
+  if(u>=0)id='ob_cmb_'+(3+Math.min(6,Math.floor(u*7)));
+  else if((a.sp||0)>.25)id='ob_walk_'+(1+Math.floor(t*10+ph)%9);
+  else id='ob_idle_'+(1+Math.floor(t*6+ph)%7);
+  obFrame(id,0,0);
+}
+function obDrawDeath(d,u){
+  const id='ob_death_'+(1+Math.min(8,Math.floor(u*1.2*9))),al=u<.7?1:Math.max(0,1-(u-.7)/.3);
+  ctx.save();ctx.translate(d.x,d.y);ctx.scale(d.fl*d.r/13,d.r/13);obFrame(id,0,0,al);ctx.restore();
+}
 function aState(a){
   const now=G.t;if(a.lt==null){a.lt=now;a.lx=a.x;a.ly=a.y;a.ph=Math.random()*6;a.sp=0;a.face=1;if(a.born==null)a.born=now}
   const dt=now-a.lt;if(dt>0){const v=Math.hypot(a.x-a.lx,a.y-a.ly)/dt;if(Math.abs(a.x-a.lx)>.2)a.face=a.x>a.lx?1:-1;
@@ -3605,6 +3642,7 @@ function drawAllies(){
     if(!a.fly&&e<1){ctx.beginPath();ctx.rect(-30,-30,60,30+14*e+4);ctx.clip()}
     if((k==='skel'||k==='skelA')&&SPR.has('u_skelw_1'))SPR.draw(ctx,(k==='skel'?'u_skelw_':'u_skela_')+(1+Math.floor(G.t*5+(a.ph||0)*5)%2),0,13,{h:32,ax:.5,ay:1});
     else if(k==='spirit'&&SPR.has('spirit1'))SPR.draw(ctx,'spirit'+(1+Math.floor(G.t*10+(a.ph||0)*7)%4),0,0,{w:34,ax:.5,ay:.55});
+    else if((k==='bear'||k==='sbear')&&SPR.has('ob_walk_1'))obDrawAlly(a,u);
     else if(ALLY_SPR[k]&&SPR.has(ALLY_SPR[k]+'_1'))SPR.drawFit(ctx,ALLY_SPR[k]+'_'+(1+Math.floor(G.t*5+(a.ph||0)*5)%2),0,13,54,38);
     else f(ctx,a,{t:G.t,ph:a.ph,sp:a.sp,u,dx:dxT/dl*a.face,dy:dyT/dl,fxn:a.fxn});
     ctx.restore();ctx.globalAlpha=1;
@@ -5527,6 +5565,7 @@ function drawDying(ctx){
   for(const d of L){
     const u=Math.min(1,d.t/d.T),R=d.r,st=foeDeathSprite(d,u,d.t);
     if(d.fbid)fbDrawDeath(ctx,d,u);
+    if(d.obear)obDrawDeath(d,u);
     if(st.al>0.01&&!d.nospr){
       if(SPR.on&&FOE_SPR[d.n]&&SPR.has('e_'+FOE_SPR[d.n]+'_1')){
         ctx.save();ctx.globalAlpha=Math.min(1,st.al);ctx.translate(d.x+st.dx,d.y+R*.9+st.dy);ctx.rotate(st.rot);ctx.scale(st.sx*d.fl,st.sy);
@@ -6689,13 +6728,17 @@ const FB={
   A:{idle:[8,9,10,11],walk:[8,9,10,11],atk:[12,13,14],cast:[12,15,12],hurt:[15]},fps:{idle:4,walk:6},ab:['slam','summon','stomp']},
  trent_arbol:{n:'Demonio del bosque',e:'🌳',hoja:'trent',hp:340,sp:40,dmg:18,r:56,sc:.85,
   A:{idle:[4],walk:[4,3],atk:[2,3,4],cast:[2,3,2],hurt:[4]},fps:{idle:4,walk:5},ab:['roots','slam']},
+ necro_boss:{n:'Nigromante maldito',e:'☠️',hoja:'necro',hp:300,sp:48,dmg:15,r:46,sc:1.75,
+  A:{idle:[0,1,2,3,4,5,6,7,8],walk:[9,10,11,12,13,14,15,16,17],atk:[18,19,20,21,24,25],cast:[26,27,28,29,30,31,32,33,34],hurt:[35,36],death:[41,42,43,44,45,46,47,48,49]},fps:{idle:6,walk:9},ab:['volley','summon','slam']},
+ shaman_boss:{n:'Chamán de la tormenta',e:'⚡',hoja:'shaman',hp:320,sp:44,dmg:16,r:50,sc:1.95,
+  A:{idle:[0,1,2,3],walk:[4,5,6,7,8,9,10],atk:[11,12,14,15,16],cast:[17,18,19,20,21],cast2:[23,24,25,26,28,29],hurt:[30,31],death:[35,36,37,38,39,40,41,42]},fps:{idle:5,walk:9},ab:['chain','heal','slam']},
  trent_buho:{n:'Búho del bosque',e:'🦉',hoja:'trent',hp:320,sp:52,dmg:17,r:54,sc:1.0,
   A:{idle:[5],walk:[5,6],atk:[7],cast:[6,7,6],hurt:[5]},fps:{idle:4,walk:6},ab:['nova','leap']},
 };
-const FB_ORDER=['jabali','escorpion','mantis','vampiro','ciclope_verde','trex','demonio','ciclope_oscuro','trent_arbol','trent_buho'];
+const FB_ORDER=['jabali','escorpion','mantis','vampiro','ciclope_verde','trex','shaman_boss','demonio','necro_boss','ciclope_oscuro','trent_arbol','trent_buho'];
 const FBDEF={};
 for(const id in FB){const b=FB[id];FBDEF[id]={n:b.n,e:b.e,armor:'Jefe final',hp:b.hp,sp:b.sp,dmg:b.dmg*.9,xp:30,gold:45,r:b.r/1.8,from:0,fb:id,res:{phys:.85,magic:.9}}}
-Object.assign(FKIND,{'Jabalí colosal':'fall','Escorpión real':'fall','Mantis segadora':'leaves','Murciélago vampiro':'bat','Cíclope pantanoso':'crumble','Tiranosaurio rojo':'fall','Demonio alado':'demon','Cíclope de las calaveras':'crumble','Demonio del bosque':'leaves','Búho del bosque':'leaves'});
+Object.assign(FKIND,{'Jabalí colosal':'fall','Escorpión real':'fall','Mantis segadora':'leaves','Murciélago vampiro':'bat','Cíclope pantanoso':'crumble','Tiranosaurio rojo':'fall','Demonio alado':'demon','Cíclope de las calaveras':'crumble','Demonio del bosque':'leaves','Búho del bosque':'leaves','Nigromante maldito':'bones','Chamán de la tormenta':'zap'});
 /* habilidades: wind = aviso, run/air/hits = ejecución, rec = recuperación; mult = daño sobre el daño base del jefe */
 const FBAB={
  charge:{cd:8,range:470,min:160,wind:.9,run:.8,spd:560,mult:3,anim:'atk',tg:'line',rec:.7,txt:'¡Embestida!'},
@@ -6709,7 +6752,9 @@ const FBAB={
  nova:{cd:8,range:400,wind:.85,n:10,spd:230,mult:1.2,col:'#e8d070',anim:'cast',rec:.4,radial:true,txt:'¡Tormenta!'},
  leap:{cd:7,range:430,min:140,wind:.6,air:.65,R:95,mult:3,anim:'atk',tg:'circle',rec:.5,txt:'¡Salto!'},
  roots:{cd:9,range:540,wind:1.15,R:78,mult:3,n:3,anim:'cast',tg:'multi',rec:.5,txt:'¡Raíces!'},
- summon:{cd:14,range:620,wind:1,n:4,anim:'cast',rec:.4,txt:'¡Los muertos se alzan!'}
+ summon:{cd:14,range:620,wind:1,n:4,anim:'cast',rec:.4,txt:'¡Los muertos se alzan!'},
+ chain:{cd:6,range:480,wind:.75,n:3,mult:1.7,anim:'cast',rec:.4,txt:'¡Rayo en cadena!'},
+ heal:{cd:12,range:700,wind:1.1,R:230,pct:.14,anim:'cast2',rec:.4,txt:'¡Ola curativa!'}
 };
 /* blancos que un jefe puede herir: torres, héroes y aliados */
 function fbTargets(){
@@ -6748,9 +6793,18 @@ function fbAct(e,dt){
     if(a.t<ab.wind*.65||ab.tg!=='line')a.a=Math.atan2(e._ty-e.y,e._tx-e.x);   /* apunta hasta poco antes del golpe */
     if(a.t>=ab.wind){
       a.t=0;a.ph='act';a.sx=e.x;a.sy=e.y;a.tx=e._tx;a.ty=e._ty;
-      if(ab.n&&a.id!=='roots'&&a.id!=='summon'){
+      if(ab.n&&a.id!=='roots'&&a.id!=='summon'&&a.id!=='chain'){
         for(let i=0;i<ab.n;i++){const an=ab.radial?a.a+i/ab.n*6.283:a.a+(i-(ab.n-1)/2)*ab.spread;fbShot(e,an,ab.spd,dmg,ab.col)}
         G.fx.push({k:'ring',x:e.x,y:e.y,r:e.r*1.6,t:.3,c:ab.col});
+      }
+      if(a.id==='chain'){   /* rayo que salta entre varios blancos */
+        const P=fbTargets().sort((p,q)=>Math.hypot(p.x-e.x,p.y-e.y)-Math.hypot(q.x-e.x,q.y-e.y)).slice(0,ab.n);let px=e.x,py=e.y-e.r*.5;
+        for(const t of P){G.fx.push({k:'bolt',pts:[[px,py],[t.x,t.y]],t:.3,c:'#9fd0ff'});G.fx.push({k:'ring',x:t.x,y:t.y,r:24,t:.3,c:'#cfe8ff'});t.hit(dmg);px=t.x;py=t.y}
+      }
+      if(a.id==='heal'){   /* cura a los enemigos cercanos y un poco al propio jefe */
+        G.fx.push({k:'ring',x:e.x,y:e.y,r:ab.R,t:.6,c:'#e6b8ff'});
+        for(const o of G.enemies){if(o.dead||o===e||Math.hypot(o.x-e.x,o.y-e.y)>ab.R)continue;o.hp=Math.min(o.max,o.hp+o.max*ab.pct);G.fx.push({k:'ring',x:o.x,y:o.y,r:o.r+10,t:.4,c:'#e6b8ff'})}
+        e.hp=Math.min(e.max,e.hp+e.max*.06);txt(e.x,e.y-e.r*2.4,'+'+Math.round(ab.pct*100)+'%','#e6b8ff',16);
       }
       if(a.id==='summon'){
         const d0=EN.find(d=>d.n==='Esqueleto')||EN[0];
@@ -7818,7 +7872,7 @@ AL.bear=(c,a,o)=>{
   if(bite>.3)hPoly(c,[15+bite*4,2,16+bite*4,5,17.6+bite*4,2],'#fff',.6);
   for(let i=0;i<3;i++)hPoly(c,[-8+i*5,12.6,-7+i*5,15,-6+i*5,12.6],'#e8e0d0',.5);
 };
-const _ad6=allyDie;allyDie=function(a){if(a.kind==='bear'||a.kind==='sbear'){const k=a.kind;a.kind='golem';try{_ad6(a)}finally{a.kind=k}}else _ad6(a)};
+const _ad6=allyDie;allyDie=function(a){if(a.kind==='bear'||a.kind==='sbear'){const k=a.kind;a.kind='golem';try{_ad6(a)}finally{a.kind=k}if(SPR.on&&SPR.has('ob_death_1')&&G.dying&&G.dying.length){const d=G.dying[G.dying.length-1];d.obear=1;d.fl=a.face||1;d.T=Math.max(d.T,1.2)}}else _ad6(a)};
 AL.sbear=AL.bear;
 
 /* ---- dibujo de la bola de relámpago ---- */
@@ -8122,6 +8176,7 @@ drawFx3=function(x0,y0){
       for(let i=0;i<7;i++){const a=i*0.898+tt*.18*(i%2?1:-1),r=s.R*(i?.5+.15*Math.sin(i*2.1):0),ph=Math.floor(tt*3+i*1.7)%4;
         SPR.draw(c,fr[ph],s.x+Math.cos(a)*r,s.y+Math.sin(a)*r*.6,{w:s.R*.95,ax:.5,ay:.62,a:.42*fo})}}
     if(T.traps)for(const m of T.traps)SPR.draw(c,'x_trapa_'+(1+Math.floor(tt*4+m.x)%3),m.x,m.y+3,{w:34,ax:.5,ay:.6});
+    if(T.danceOn>0&&SPR.has('x_dance_1')){SPR.draw(c,'x_dance_'+(1+Math.floor(tt*14)%3),cx(),cy()+6,{w:84,ax:.5,ay:.5,a:.9,rot:tt*10});SPR.draw(c,'x_danceb',cx(),cy()+6,{w:100,ax:.5,ay:.5,a:.7,rot:-tt*7})}
     if(T.hideOn>0)SPR.draw(c,'x_stealth_'+(1+Math.floor(tt*10)%4),cx(),cy()+16,{w:84,ax:.5,ay:.5,a:.9,add:true});
     for(const e of G.enemies)if(!e.dead&&e.xm>G.t)SPR.draw(c,'x_mark_'+(1+Math.floor(tt*8+e.x)%5),e.x,e.y-e.r-22,{w:26,ax:.5,ay:.5,a:.95});
     return;
