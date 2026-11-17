@@ -31,6 +31,7 @@ var SPR=(function(){
   api.meleeOf=h=>meleeBy[h]||null;
   metas.alchemist={idle:'alchemist_idle',atk:'alchemist_atk',walk:['alchemist_walk_1','alchemist_walk_2','alchemist_walk_3','alchemist_walk_4'],hurt:'alchemist_hurt',ax:.422,ay:1,H:64};   /* rework: pack2.js (caminar y golpeado con sprites) */
   api.has=id=>{const s=ids[id];return !!(api.enabled&&s&&s.A.ok)};
+  api.size=id=>{const s=ids[id];return s&&api.enabled&&s.A.ok?{w:s.w,h:s.h}:null};   /* tamaño en px del sprite en el atlas */
 
   /* encaja el sprite en una caja bw x bh sin deformarlo, apoyado por abajo en (x,y). Devuelve la altura dibujada (0 si no hay sprite). */
   api.drawFit=function(c,id,x,y,bw,bh,o){
