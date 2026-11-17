@@ -324,7 +324,7 @@ body.start-screen #panelToggle{display:none!important}
 body.panel-hidden #bottomp,body.panel-hidden #tbar{display:none!important}
 @media(max-width:900px){body.panel-hidden #game{bottom:0!important}}
 /* ===== UI horizontal: el menú de mejoras es un panel grande y centrado que solo aparece entre olas ===== */
-#restHead,#rotate{display:none}
+#restHead{display:none}
 body:not(.solo) #game{position:fixed;inset:0;bottom:0}
 body:not(.solo) #tbar,body:not(.solo) #panelToggle,body:not(.solo) #bottomp>.dhead{display:none!important}
 body:not(.solo) #bottomp{display:none;position:fixed;left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);width:min(1120px,95vw);max-height:92vh;overflow:auto;z-index:30;grid-column:auto;grid-row:auto;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px 14px;padding:14px 16px 16px;border:3px solid #8a6a2a;border-radius:16px;box-shadow:0 0 0 100vmax rgba(5,5,12,.62),0 20px 60px #000}
@@ -372,12 +372,18 @@ body:not(.solo) #skbar .slot .sl,body:not(.solo) #skbar .slot .sc{position:relat
 body:not(.solo) #skbar .slot.dim .si,body:not(.solo) #skbar .slot.off .si{opacity:1;filter:none}
 @media (max-height:520px){body:not(.solo) #skbar .sks,body:not(.solo) #skbar .pws{grid-template-columns:repeat(10,42px)}body:not(.solo) #skbar .slot{width:42px;height:42px}}
 body:not(.solo) .slot-wrap>.auto-upgrade{min-height:0;min-width:0;padding:1px}body:not(.solo) .slot-wrap>.auto-upgrade input{width:14px;height:14px}
-/* el juego solo se juega en horizontal */
-@media (orientation:portrait) and (max-width:900px){
-  #rotate{display:flex;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:#0b0b14;color:#ffe7a8;font-size:20px;text-align:center;padding:24px}
-  #rotate i{font-style:normal;font-size:64px;display:block;animation:rot 2s ease-in-out infinite}
+/* móvil en vertical: el menú de mejoras ocupa casi toda la pantalla, un héroe por fila, y las barras se acomodan al ancho */
+@media (max-width:700px){
+  body:not(.solo) #bottomp{width:96vw;max-height:94vh;padding:10px}
+  body.resting:not(.solo) #bottomp #restHead{margin:-10px -10px 0;padding:10px;top:-10px;flex-wrap:wrap;gap:8px}
+  #restHead .btn{width:100%;padding:12px;font-size:16px}
+  body.resting:not(.solo) #bottomp[data-mode] #heroSec,body.resting:not(.solo) #bottomp[data-mode] #heroSec2,body.resting:not(.solo) #bottomp[data-mode] #heroSec3,body.resting:not(.solo) #bottomp[data-mode] #heroSec4{grid-column:span 12;--c:4}
+  body.resting:not(.solo) #bottomp[data-mode] #skSec{grid-column:span 12;--c:4}
+  body.resting:not(.solo) #bottomp[data-mode] #invSec{grid-column:span 12;--c:5}
+  body:not(.solo) #skbar .sks,body:not(.solo) #skbar .pws{grid-template-columns:repeat(5,48px)}
+  body:not(.solo) #skbar .slot{width:48px;height:48px}
+  body:not(.solo) #bar{top:auto;bottom:134px;right:6px;max-width:52vw}
 }
-@keyframes rot{0%,30%{transform:rotate(0)}70%,100%{transform:rotate(-90deg)}}
 </style>
 </head>
 <body>
@@ -418,7 +424,6 @@ body:not(.solo) .slot-wrap>.auto-upgrade{min-height:0;min-width:0;padding:1px}bo
 </div>
 <button id="panelToggle" type="button" aria-controls="bottomp" aria-expanded="true">Ocultar panel</button>
 <div id="tip"></div>
-<div id="rotate"><i>📱</i><div>Gira el dispositivo<br><span style="font-size:14px;color:#a9a5c4">El juego solo se juega en horizontal</span></div></div>
 <div id="tbar">
   <button data-d="sk">⚔️<span>Habilidades</span><i class="bdg" id="bdgSk"></i></button>
   <button data-d="sh">🛒<span>Torre e inventario</span><i class="bdg" id="bdgSh"></i></button>
@@ -884,6 +889,7 @@ function spawnEnemy(boss,def,o){
   if(d.fb)rng=null;   /* los jefes finales usan sus propias habilidades */
   e.rng=rng;e.shotCd=rng?rng.cd*Math.random():0;
   {const k=G.rounds?1:1/cntF(G.t);e.hp*=k;e.dmg*=Math.sqrt(k);e.xp*=k;e.gold*=k;e.r*=Math.min(1.5,Math.pow(k,.2))}
+  if(G.rounds&&G.goldK)e.gold*=G.goldK;   /* con más criaturas por ola, cada una da menos oro: la ola da solo un poco más */
   if(o.hpAbs){e.hp=o.hpAbs;e.dmg=o.dmg;e.sp=o.sp;e.r=o.r;e.xp=o.xp;e.gold=o.gold}
   if(!boss&&!o.hpAbs&&!o.gen&&(o.elite||(!G.rounds&&eT(G.t)>240&&Math.random()<Math.min(.3,.04+(eT(G.t)-240)/2400)))){
     const af=ELITE[Math.floor(Math.random()*ELITE.length)];af.f(e);
@@ -6272,7 +6278,10 @@ function buildSoloTestPanel(box){
     '<label>Enemigos<select id="soloEnemyMode"><option value="none">Solo objetivos de prueba</option><option value="weak">Pocos y débiles</option><option value="progressive">Continuos y progresivos</option></select></label>'+
     '<label>Dirección<select id="soloAnimDirection"><option value="0">Derecha</option><option value="3.141592653589793">Izquierda</option></select></label>'+
     '<label>Velocidad (pose, combate y efectos)<select id="soloAnimSpeed"><option value="0.5">Lenta · ×0,5</option><option value="1" selected>Normal · ×1</option><option value="2">Rápida · ×2</option></select></label>'+
-    '<label class="solo-support"><input id="soloSupportBasic" type="checkbox"> Usar ataque básico de apoyo</label></div><p class="test-note">El ataque de apoyo permite probar habilidades que se activan al golpear. Las habilidades con requisitos necesitan cumplirlos.</p></details></div>';
+    '<label class="solo-support"><input id="soloSupportBasic" type="checkbox"> Usar ataque básico de apoyo</label></div><p class="test-note">El ataque de apoyo permite probar habilidades que se activan al golpear. Las habilidades con requisitos necesitan cumplirlos.</p></details>'+
+    '<details id="soloEnemyBox" open><summary>👹 Invocar criaturas y jefes</summary><div class="solo-settings"><label>Unidad<select id="soloSpawnSel"><optgroup label="Criaturas">'+EN.map((d,i)=>'<option value="c:'+i+'">'+esc(d.e+' '+d.n)+'</option>').join('')+'</optgroup><optgroup label="Jefes normales (versión jefe)">'+EN.map((d,i)=>'<option value="b:'+i+'">'+esc('👑 '+d.n)+'</option>').join('')+'</optgroup><optgroup label="Jefes finales">'+FB_ORDER.map(id=>'<option value="f:'+id+'">'+esc(FB[id].e+' '+FB[id].n)+'</option>').join('')+'</optgroup></select></label>'+
+    '<label>Cantidad<select id="soloSpawnN"><option>1</option><option>3</option><option>5</option><option>10</option></select></label>'+
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn sm" id="soloSpawnBtn">Invocar</button><button type="button" class="btn sm alt" id="soloSpawnFB">Todos los jefes finales</button><button type="button" class="btn sm alt" id="soloSpawnClear">Quitar enemigos</button></div></div></details></div>';
   {const grid=$('#soloGrid');   /* un toque = elegir el poder, generar sus circunstancias y lanzarlo */
    for(const a of CLS[G.hero]){const b=document.createElement('button');b.type='button';b.className='solo-pw';b.dataset.id=a.id;b._tip=()=>heroTip(a)+'<div class="kv"><span>🧪 Test</span><b>'+esc(soloNeedNote(a.id))+'</b></div>';b.setAttribute('aria-label','Probar '+a.n);
      b.innerHTML=SPR.iconHtml(a.id,34,a.icon)+'<span class="pl"></span>';b.onclick=()=>soloQuick(a.id);grid.appendChild(b)}
@@ -6283,6 +6292,14 @@ function buildSoloTestPanel(box){
   $('#soloLevelDown').onclick=()=>{setSoloSkillLevel(G.soloTestChoice,learnedClv(G.soloTestChoice)-1);if(G.soloTestRunning)runSoloTest()};
   $('#soloLevelUp').onclick=()=>{setSoloSkillLevel(G.soloTestChoice,learnedClv(G.soloTestChoice)+1);if(G.soloTestRunning)runSoloTest()};
   $('#soloEnemyMode').onchange=e=>{const mode=e.target.value;setSoloWeak(mode!=='progressive');G.noSpawn=mode==='none';refreshSoloTestPanel()};
+  {const put=(val,k,n)=>{   /* invoca criaturas, jefes normales o jefes finales alrededor del héroe de prueba */
+     const a=Math.random()*Math.PI*2,r=190+Math.random()*70,x=cx()+Math.cos(a)*r,y=cy()+Math.sin(a)*r;
+     if(val.startsWith('c:'))spawnEnemy(false,EN[+val.slice(2)],{x,y});
+     else if(val.startsWith('b:'))spawnEnemy(true,EN[+val.slice(2)],{x,y});
+     else if(val.startsWith('f:'))spawnEnemy(true,FBDEF[val.slice(2)],{x,y})};
+   $('#soloSpawnBtn').onclick=()=>{const v=$('#soloSpawnSel').value,n=+$('#soloSpawnN').value||1;for(let i=0;i<n;i++)put(v)};
+   $('#soloSpawnFB').onclick=()=>{for(const id of FB_ORDER)put('f:'+id)};
+   $('#soloSpawnClear').onclick=()=>clearSoloArena()}
   $('#soloAnimDirection').onchange=e=>{G.soloAnimAim=Number(e.target.value)};
   $('#soloAnimSpeed').onchange=e=>{G.soloAnimSpeed=Number(e.target.value)};
   $('#soloSupportBasic').onchange=e=>{G.soloSupportBasic=e.target.checked;if(G.soloTestRunning)runSoloTest()};
@@ -6616,7 +6633,7 @@ function setupDrawers(){
   window.closeDrawers=closeAll;
   window.openRestDrawer=()=>{const b=btns[0];if(!b||bp.classList.contains('open'))return;bp.dataset.mode=b.getAttribute('data-d');bp.classList.add('open');b.classList.add('on')};
 }
-const ZMIN=.85;   /* no se puede alejar demasiado: se ve el mapa casi completo */
+const ZMIN=(typeof innerWidth!=='undefined'&&innerWidth<700)?.6:.85;   /* no se puede alejar demasiado; en el móvil vertical se permite algo más */
 function setZoom(z){
   Z=Math.max(ZMIN,Math.min(1.8,z));
   try{localStorage.setItem('mago_zoom',String(Z))}catch(e){}
@@ -6654,7 +6671,8 @@ const fbIdOf=n=>FB_ORDER[(n-2)%FB_ORDER.length];
 function buildWave(n){
   const T=eT(waveTime(n)),av=nm=>{const d=EN.find(x=>x.n===nm);return d&&d.from*1.6<=T?d:null},avs=a=>a.map(av).filter(Boolean);
   const pool=EN.filter(d=>d.from*1.6<=T&&!d.siege&&!d.bomb&&!d.swarm),rnd=a=>a[Math.floor(Math.random()*a.length)];
-  const N=n<=1?7:Math.min(100,Math.round((12+4.4*n)*(1+.15*Math.max(0,(7-n)/5)))),kind=n<=1?WAVE_KINDS[0]:WAVE_KINDS[(n-1)%6],q=[];
+  const team=!!G&&!G.solo&&!G.one,mN=(G&&G.solo)?1:(team?1.4:1.25);   /* olas más largas: más criaturas, sobre todo con el equipo de 4 héroes */
+  const N=n<=1?7:Math.min(170,Math.round((12+4.4*n)*(1+.15*Math.max(0,(7-n)/5))*mN)),kind=n<=1?WAVE_KINDS[0]:WAVE_KINDS[(n-1)%6],q=[];
   const add=(d,c,t,o)=>{if(d&&c>0)q.push(Object.assign({t,d,n:Math.round(c),hpK:1,a:Math.random()*6.283},o||{}))};
   const groups=(d,total,gn,t0,gap,o)=>{for(let i=0;i<gn;i++)add(d,total/gn,t0+i*gap,o)};
   const light=pool.filter(d=>d.hp<=60&&!d.ranged),heavy=pool.filter(d=>d.hp>60&&!d.ranged),rng=pool.filter(d=>d.ranged);
@@ -6691,6 +6709,11 @@ function buildWave(n){
   if(n%5===0&&n>=10)for(let i=0;i<1+Math.floor(n/10);i++)add(rnd(heavy.length?heavy:pool),1,2+i*4,{boss:true});
   const fbid=hasFB(n)?fbIdOf(n):null;
   if(fbid)add(FBDEF[fbid],1,5,{boss:true});   /* jefe final de la ola */
+  if(n>=2){   /* más jefes: el equipo de 4 héroes recibe jefes finales extra y un jefe normal más cada ola */
+    const extra=team?(n>=10)+(n>=16)+(n>=22):(n>=14)+(n>=22);
+    for(let i=0;i<extra;i++)add(FBDEF[FB_ORDER[(n+3+i*4)%FB_ORDER.length]],1,14+i*9,{boss:true});
+    if(team&&n>=6)add(rnd(heavy.length?heavy:pool),Math.floor(n/6),18,{boss:true});
+  }
   q.sort((a,b)=>a.t-b.t);
   return {n,kind,q,fb:fbid};
 }
@@ -6702,8 +6725,8 @@ function waveXp(W){   /* reparte la experiencia de la ola para que héroes y tor
   let sum=0;for(const w of W.q)sum+=w.n*w.d.xp*(w.boss?8:1)*w.hpK*(w.elite?2:1);
   sum=Math.max(1,sum);const ids=HIDX().length;let need0=0;
   for(const i of HIDX())heroCtx(i,()=>{need0+=need()});need0/=Math.max(1,ids);
-  G.waveXpK=1.5*need0*ids/(1.2*sum*Math.max(.5,S.xpM));
-  G.waveTXpK=.8*tNeed(tProgress())/(sum*.575*Math.max(.5,S.xpM));
+  G.waveXpK=1.75*need0*ids/(1.2*sum*Math.max(.5,S.xpM));
+  G.waveTXpK=.9*tNeed(tProgress())/(sum*.575*Math.max(.5,S.xpM));
 }
 /* ============ JEFES FINALES ============
    Sprites animados (assets/ICONOS/jefes) con una máquina de estados como la de un héroe enemigo:
@@ -6942,7 +6965,7 @@ function startRound(){
   setResting(false);
   G.modal=null;G.paused=false;G.roundT=0;
   G.spawnAcc=0;
-  {const W=G.waveNext&&G.waveNext.n===G.round?G.waveNext:buildWave(G.round);G.waveQ=W.q.map(x=>({...x,t:x.t*1.6}));G.waveT=waveTime(G.round);G.waveHp=waveHpCurve(G.round);G.roundLen=(G.waveQ.length?G.waveQ[G.waveQ.length-1].t:0)+3;G.wLv={};G.wTw=0;waveXp(W);
+  {const W=G.waveNext&&G.waveNext.n===G.round?G.waveNext:buildWave(G.round);G.waveQ=W.q.map(x=>({...x,t:x.t*(G.round>1?2.6:1.6)}));G.goldK=G.round>1?1.2/(!G.one?1.4:1.25):1;G.waveT=waveTime(G.round);G.waveHp=waveHpCurve(G.round);G.roundLen=(G.waveQ.length?G.waveQ[G.waveQ.length-1].t:0)+3;G.wLv={};G.wTw=0;waveXp(W);
    txt(cx(),cy()-110,'🌊 Ola '+G.round+': '+W.kind.nom,'#ff9a5a',24)}
   $('#roundbar').style.display='none';
 }
@@ -6973,8 +6996,7 @@ cv.addEventListener('touchstart',e=>{
 cv.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch){e.preventDefault();setZoom(pinch.z*tdist(e)/pinch.d)}},{passive:false});
 cv.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null;setTimeout(()=>{mouse.x=-1},1500)});
 cv.addEventListener('wheel',e=>{e.preventDefault();setZoom(Z*(e.deltaY<0?1.1:1/1.1))},{passive:false});
-try{const mq=matchMedia('(orientation:portrait) and (max-width:900px)');const pz=()=>{if(mq.matches&&G&&!G.modal&&!G.over)G.paused=true};mq.addEventListener('change',pz);
-  const lockLand=()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};document.addEventListener('touchstart',lockLand,{once:true,passive:true})}catch(e){}
+
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&!G.modal)G.paused=true});
 
 /* ===== TANDA 5: 26 habilidades nuevas (2 por héroe) con mejoras en nv 5/10/15/20 ===== */
@@ -8735,7 +8757,7 @@ const midPos=()=>{const ps=HIDX().map(heroPos);return{x:ps.reduce((n,q)=>n+q.x,0
 {const _n=newHeroesHit;newHeroesHit=function(p,e){if(G.hl&&p.nh){const o=Math.max(0,G.heroes.indexOf(p.nh));return heroCtx(o,()=>_n(p,e))}return _n(p,e)}}
 {const r0=loadRank();best=r0.length?r0[0].t:0}
 resize();buildShop();buildSkillsMenu();buildAutoUpgradeHeaders();buildBar();buildRankBtn();buildTabs();setupDrawers();setupTip();
-{let z=NaN;try{z=parseFloat(localStorage.getItem('mago_zoom'))}catch(e){}if(z)Z=Math.max(ZMIN,Math.min(1.8,z))}
+{let z=NaN;try{z=parseFloat(localStorage.getItem('mago_zoom'))}catch(e){}if(z)Z=Math.max(ZMIN,Math.min(1.8,z));else if(typeof innerWidth!=='undefined'&&innerWidth<700)Z=.75}
 newGame();showStart();
 if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>resize()).observe($('#game'));
 setTimeout(resize,60);
