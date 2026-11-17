@@ -477,6 +477,7 @@ body:not(.solo) .slot-wrap>.auto-upgrade{min-height:0;min-width:0;padding:1px}bo
 <script src="assets/oso/pack-oso.js"></script>
 <script src="assets/asesino/pack-asesino.js"></script>
 <script src="assets/enano/pack-enano.js"></script>
+<script src="assets/druida/pack-druida.js"></script>
 <script src="assets/ICONOS/jefes/pack-jefes2.js"></script>
 <script src="assets/ICONOS/jefes/pack-jefes3.js"></script>
 <script>
@@ -3465,7 +3466,7 @@ function drawHero(px,py){
   const atk=Math.max(0,1-since/.3),u=since<DUR?since/DUR:-1,hurt=Math.max(0,1-(G.t-(G.hurtAt==null?-9:G.hurtAt))/.25);
   const pa=G.t-G.punchAt,lu=HEROES[G.hero].melee&&pa<.16?Math.sin(pa/.16*Math.PI)*9:0,run=Math.min(1,(G.mv||0)/200);
   if(run>.3&&dt>0){const s=Math.floor(G.t*11/Math.PI);if(s!==G.hstep){G.hstep=s;if(G.fx.length<300)G.fx.push({k:'p',x:px+(Math.random()-.5)*12,y:py+27,vx:(Math.random()-.5)*30,vy:-10-Math.random()*20,t:.4,c:'#c8b48acc'})}}
-  const st={run,atk,u,n:G.atkN||0,since,face:G.hface,vx:G.hvx,hurt,form:(G.hero==='paladin'&&G.ht&&G.ht.wrathOn>0)?'dragon':(G.hero==='demon'&&G.ht&&G.ht.metaOn>0)?'demon':(G.hero==='werewolf'&&G.ht&&G.ht.wolfOn>0)?'wolf':(G.hero==='druid'&&G.ht&&G.ht.bearOn>0)?'bear':0,cast:G.castAt!=null&&G.castAt>=Math.max(G.atkAt==null?-9:G.atkAt,G.punchAt==null?-9:G.punchAt)};   /* form: forma de dragón (paladín) o de demonio (cazador) · cast: la acción actual es una habilidad, no el ataque básico */   /* form: forma de dragón del paladín (Forma de dragón) */
+  const st={run,atk,u,n:G.atkN||0,since,face:G.hface,vx:G.hvx,hurt,trans:G.hero==='druid'&&!!G.ht&&(G.t-(G.ht.bearAt==null?-9:G.ht.bearAt)<.55||G.t-(G.ht.bearEndAt==null?-9:G.ht.bearEndAt)<.45),form:(G.hero==='paladin'&&G.ht&&G.ht.wrathOn>0)?'dragon':(G.hero==='demon'&&G.ht&&G.ht.metaOn>0)?'demon':(G.hero==='werewolf'&&G.ht&&G.ht.wolfOn>0)?'wolf':(G.hero==='druid'&&G.ht&&G.ht.bearOn>0)?'bear':0,cast:G.castAt!=null&&G.castAt>=Math.max(G.atkAt==null?-9:G.atkAt,G.punchAt==null?-9:G.punchAt)};   /* form: forma de dragón (paladín) o de demonio (cazador) · cast: la acción actual es una habilidad, no el ataque básico */   /* form: forma de dragón del paladín (Forma de dragón) */
   ctx.save();ctx.translate(px+Math.cos(G.aim)*lu*.6,py+Math.sin(G.aim)*lu*.6);
   drawHeroOn(ctx,0,0,G.hero,G.t,G.aim,1.25,st);ctx.restore();
 }
@@ -3624,6 +3625,20 @@ function obDrawAlly(a,u){
   else id='ob_idle_'+(1+Math.floor(t*6+ph)%7);
   obFrame(id,0,0);
 }
+/* pantera de sombra (aliado del druida) con sus fotogramas: caminar, reposo, zarpazo, mordida y muerte */
+const PAK=.27;
+function paFrame(id,x,y,al){const z=SPR.size(id);if(!z)return false;return SPR.draw(ctx,id,x,y,{w:z.w*PAK,h:z.h*PAK,ax:.5,ay:1,a:al==null?1:al})}
+function paDrawAlly(a,u){
+  const t=G.t,ph=a.ph||0;let id;
+  if(u>=0)id=u<.5?'pa_zarpazo':'pa_mordida';
+  else if((a.sp||0)>.25)id=['pa_caminar_1','pa_caminar_2'][Math.floor(t*8+ph)%2];
+  else id='pa_reposo';
+  paFrame(id,0,13);
+}
+function paDrawDeath(d,u){
+  const id=u<.5?'pa_muerte_1':'pa_muerte_2',al=u<.75?1:Math.max(0,1-(u-.75)/.25);
+  ctx.save();ctx.translate(d.x,d.y);ctx.scale(d.fl*d.r/13,d.r/13);paFrame(id,0,13,al);ctx.restore();
+}
 function obDrawDeath(d,u){
   const id='ob_death_'+(1+Math.min(8,Math.floor(u*1.2*9))),al=u<.7?1:Math.max(0,1-(u-.7)/.3);
   ctx.save();ctx.translate(d.x,d.y);ctx.scale(d.fl*d.r/13,d.r/13);obFrame(id,0,0,al);ctx.restore();
@@ -3650,6 +3665,7 @@ function drawAllies(){
     if(!a.fly&&e<1){ctx.beginPath();ctx.rect(-30,-30,60,30+14*e+4);ctx.clip()}
     if((k==='skel'||k==='skelA')&&SPR.has('u_skelw_1'))SPR.draw(ctx,(k==='skel'?'u_skelw_':'u_skela_')+(1+Math.floor(G.t*5+(a.ph||0)*5)%2),0,13,{h:32,ax:.5,ay:1});
     else if(k==='spirit'&&SPR.has('spirit1'))SPR.draw(ctx,'spirit'+(1+Math.floor(G.t*10+(a.ph||0)*7)%4),0,0,{w:34,ax:.5,ay:.55});
+    else if(k==='panther'&&SPR.has('pa_reposo'))paDrawAlly(a,u);
     else if((k==='bear'||k==='sbear')&&SPR.has('ob_walk_1'))obDrawAlly(a,u);
     else if(ALLY_SPR[k]&&SPR.has(ALLY_SPR[k]+'_1'))SPR.drawFit(ctx,ALLY_SPR[k]+'_'+(1+Math.floor(G.t*5+(a.ph||0)*5)%2),0,13,54,38);
     else f(ctx,a,{t:G.t,ph:a.ph,sp:a.sp,u,dx:dxT/dl*a.face,dy:dyT/dl,fxn:a.fxn});
@@ -4546,6 +4562,7 @@ function heroTick3(h,dt,T,x0,y0,rdy,done,retry){
   const inR=(R)=>G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-x0,e.y-y0)<=R);
   const bestCluster=(R,rad,skip)=>{let b=null,bn=0;for(const e of inR(R)){if(skip&&skip.some(s=>Math.hypot(s.x-e.x,s.y-e.y)<rad))continue;const n=countNear(e.x,e.y,rad);if(n>bn){bn=n;b=e}}return b};
   for(const k of['loaOn','wolfOn','bearOn','starOn','bersOn','bladeOn','nirvOn','bastOn','callOn'])if(T[k]>0)T[k]-=dt;
+  if(T.bearOn>0)T._bw=1;else if(T._bw){T._bw=0;T.bearEndAt=G.t}   /* instante en que termina la forma de oso (para mostrar la transformación de vuelta) */
   if(h==='troll'){
     if((l=clv('t_regen'))){f=tf('t_regen');if(G.hp<S.maxHp*(f.thr||.5))G.hp=Math.min(S.maxHp,G.hp+.5*l*dt)}
     if((l=clv('t_raptor'))){f=tf('t_raptor');
@@ -4681,7 +4698,7 @@ function heroTick3(h,dt,T,x0,y0,rdy,done,retry){
     {queueHeroCast(rdy,'u_bear',()=>{l=clv('u_bear');f=tf('u_bear');if((l=clv('u_bear'))&&rdy('u_bear')){
       f=tf('u_bear');
       if(countNear(x0,y0,260)<3)retry('u_bear');
-      else{T.bearOn=(10+.35*l)*f.dur;T.bearTk=0;if(hxSpr('u_leafburst_1'))fxSeq('u_leafburst',4,{x:x0,y:y0-6,w:190,d:.7,fi:0,fo:.4,add:true});else{ring(x0,y0,120,'#a0764a',.5);ring(x0,y0,70,'#ffd2a0',.4)}txt(x0,y0-90,'🐻 ¡FORMA DE OSO!','#ffd2a0',22);done('u_bear',Math.max(40,70-1.5*l))}
+      else{T.bearOn=(10+.35*l)*f.dur;T.bearTk=0;T.bearAt=G.t;if(hxSpr('u_leafburst_1'))fxSeq('u_leafburst',4,{x:x0,y:y0-6,w:190,d:.7,fi:0,fo:.4,add:true});else{ring(x0,y0,120,'#a0764a',.5);ring(x0,y0,70,'#ffd2a0',.4)}txt(x0,y0-90,'🐻 ¡FORMA DE OSO!','#ffd2a0',22);done('u_bear',Math.max(40,70-1.5*l))}
     }});}
     if(T.bearOn>0&&(l=clv('u_bear'))){
       G.hp=Math.min(S.maxHp,G.hp+S.maxHp*.04*dt);
@@ -5574,6 +5591,7 @@ function drawDying(ctx){
     const u=Math.min(1,d.t/d.T),R=d.r,st=foeDeathSprite(d,u,d.t);
     if(d.fbid)fbDrawDeath(ctx,d,u);
     if(d.obear)obDrawDeath(d,u);
+    if(d.pant)paDrawDeath(d,u);
     if(st.al>0.01&&!d.nospr){
       if(SPR.on&&FOE_SPR[d.n]&&SPR.has('e_'+FOE_SPR[d.n]+'_1')){
         ctx.save();ctx.globalAlpha=Math.min(1,st.al);ctx.translate(d.x+st.dx,d.y+R*.9+st.dy);ctx.rotate(st.rot);ctx.scale(st.sx*d.fl,st.sy);
@@ -7043,7 +7061,7 @@ CLS.werewolf.push(
  {id:'w_silver',n:'Zarpas de plata',icon:'🥈',desc:'Tus zarpazos de plata hacen daño extra a jefes y enemigos blindados, rompen su invulnerabilidad e impiden que se curen o resuciten.',eff:l=>'+'+Math.round(18+1.2*l)+'% daño plata (x3 contra jefes y élites)'});
 CLS.druid.push(
  {id:'u_storm',n:'Compañero oso espiritual',icon:'🐻',desc:'Un oso espiritual te acompaña siempre: provoca a los enemigos, los aplasta y aturde y los deja marcados para recibir más daño. Si cae, regresa solo.',eff:l=>'Vida '+Math.round(300+55*l)+' · aplasta cada '+f1(Math.max(3,6-.1*l))+' s · marca +'+f1(15+.4*l)+'% de daño recibido'},
- {id:'u_eclipse',n:'Eclipse',icon:'🌗',desc:'Alternas entre fase solar (tus ataques pegan más fuerte) y fase lunar (te regeneras y atacas más rápido).',eff:l=>'Fase '+f1(Math.max(5,10-.1*l))+' s · solar +'+Math.round(25+l)+'% daño · lunar +'+f1(.8+.06*l)+'% vida/s y +50% velocidad'});
+ {id:'u_panther',n:'Invocar pantera',icon:'🐆',desc:'Invocas una pantera de sombra que salta sobre los enemigos, los desgarra y los muerde. Es permanente hasta que cae y se vuelve a invocar sola.',eff:l=>(1+Math.floor(l/12))+' pantera(s) · vida '+Math.round(220+40*l)+' · daño x1,6 · cada '+f1(Math.max(14,26-.5*l))+' s'});
 
 defTiers('a_hawk','Halcón compañero',[['Halcón veloz','El halcón marca un 30% más rápido.',{cd:.7}],['Garras afiladas','+50% de daño de las picadas.',{dm:1.5}],['Ojo de águila','Los marcados reciben +25% de daño y marcas 1 presa más.',{vmx:.25,cnt:1}],['Rey de los cielos','+1 presa, +40% de daño, -20% de enfriamiento y +50% de duración de la marca.',{cnt:1,dm:1.4,cd:.8,dur:1.5}]]);
 defTiers('n_abom','Abominación',[['Carne resistente','+50% de vida.',{hpm:1.5}],['Hachazo brutal','+50% de daño.',{dm:1.5}],['Segunda abominación','Fusionas una abominación más a la vez (necesita 2 esqueletos más).',{cnt:1}],['Coloso de huesos','+50% de vida, +40% de daño, +30% de duración y -25% de enfriamiento.',{hpm:1.5,dm:1.4,dur:1.3,cd:.75}]]);
@@ -7064,7 +7082,7 @@ defTiers('t_spear','Lanza explosiva',[['Lanza extra','+1 lanza.',{cnt:1}],['Ojiv
 defTiers('w_alpha','Lobo alfa',[['Alfa robusto','+50% de vida.',{hpm:1.5}],['Colmillos de alfa','+50% de daño.',{dm:1.5}],['Aullido del alfa','Su aullido da 3 s más de velocidad de ataque.',{haste:3}],['Líder de la manada','+1 lobo alfa, +40% de vida y +40% de daño.',{cnt:1,hpm:1.4,dm:1.4}]]);
 defTiers('w_silver','Zarpas de plata',[['Plata pura','+40% de daño.',{dm:1.4}],['Plata aturdidora','15% de probabilidad de aturdir 0,8 s.',{stun:[.15,.8]}],['Maldición de plata','Los golpeados reciben +20% de daño.',{mark:.2}],['Cazador de monstruos','+40% de daño, +20% de daño recibido por el golpeado y robo de vida.',{dm:1.4,mark:.2,heal:.05}]]);
 defTiers('u_storm','Oso espiritual',[['Oso robusto','+50% de vida.',{hpm:1.5}],['Zarpazo fuerte','+50% de daño.',{dm:1.5}],['Marca profunda','+15% de daño extra a los marcados.',{vmx:.15}],['Oso ancestral','+50% de vida, +40% de daño y -25% de enfriamiento.',{hpm:1.5,dm:1.4,cd:.75}]]);
-defTiers('u_eclipse','Eclipse',[['Eclipse largo','+40% de duración de cada fase.',{dur:1.4}],['Sol ardiente','+40% del bonus de daño solar.',{dm:1.4}],['Luna sanadora','+60% de curación lunar.',{hm:1.6}],['Eclipse total','Onda de energía al cambiar de fase, +30% de daño y de curación.',{nova:[2,240],dm:1.3,hm:1.3}]]);
+defTiers('u_panther','Invocar pantera',[['Pantera robusta','+50% de vida.',{hpm:1.5}],['Garras de sombra','+50% de daño.',{dm:1.5}],['Segunda pantera','+1 pantera.',{cnt:1}],['Cazadora alfa','+1 pantera, +40% de vida y de daño.',{cnt:1,hpm:1.4,dm:1.4}]]);
 
 /* ---- tanda 5: lógica, unidades y dibujo de las 26 habilidades nuevas ---- */
 /* ===== MAGO INVOCADOR (estilo Invoker): 3 orbes + 10 conjuros según la combinación de orbes ===== */
@@ -7512,7 +7530,6 @@ shot=function(t,dmg,b,h){
       if(tt.inv){tt.invT=0;tt.invCd=Math.max(tt.invCd||0,tt.inv.every)}tt.nhT=Math.max(tt.nhT||0,G.t+1.5);
       dealDamage(tt,dmg*(.18+.012*l)*(sp?3:1),'phys');ring5(tt.x,tt.y,tt.r+8,'#e8f0ff',.25)}});
   }
-  if(h==='druid'&&(l=clv('u_eclipse'))&&T.eclP!==1){const f=tf('u_eclipse'),k=1+(.25+.01*l)*f.dm;for(let i=n0;i<G.projs.length;i++){G.projs[i].dmg*=k;G.projs[i].col='#ffb040'}}
   return r;
 };
 
@@ -7774,15 +7791,13 @@ function tick5(h,dt,T,x0,y0,rdy,done,retry){
         for(const e of G.enemies){if(e.dead||Math.hypot(e.x-b.x,e.y-b.y)>R+e.r)continue;dealDamage(e,d,'magic');if(!e.dead&&!e.boss)e.stun=Math.max(e.stun||0,.6*f.dur)}
         if(hxSpr('u_cyc_1'))fxSeq('u_cyc',7,{x:b.x,y:b.y,w:R*2.2,d:.7,fi:0,fo:.3});else{ring5(b.x,b.y,R,'#5ab04a',.5);ring5(b.x,b.y,R*.55,'#e8ffb0',.45)}txt(b.x,b.y-50,'🌀 ¡Teletransporte!','#a8e87a',18);done('u_cyclone',Math.max(10,20-.5*l))}
     }});}
-    if((l=clv('u_eclipse'))){
-      f=tf('u_eclipse');T.eclT=(T.eclT??8)-dt;
-      if(T.eclT<=0){
-        T.eclP=1-(T.eclP||0);T.eclT=Math.max(5,10-.1*l)*f.dur;const sol=T.eclP!==1;
-        if(hxSpr('u_sun_1'))sprFx({anim:asSeq(sol?'u_sun':'u_moonf',4),fps:7,pos:()=>[cx(),cy()+12],w:130,ay:.85,d:T.eclT,fi:.15,fo:.2,a:.75});else{ring5(x0,y0,120,sol?'#ffb040':'#9fc4ff',.6);ring5(x0,y0,70,'#ffffff',.5)}txt(x0,y0-90,sol?'☀️ ECLIPSE SOLAR':'🌙 ECLIPSE LUNAR',sol?'#ffb040':'#9fc4ff',20);
-        if(f.nova){SRC='Eclipse';for(const e of alive5(x0,y0,f.nova[1]))dealDamage(e,hdmg(l)*f.nova[0],'magic');ring5(x0,y0,f.nova[1],'#ffffff',.5)}
-      }
-      if(T.eclP===1){G.hp=Math.min(S.maxHp,G.hp+S.maxHp*(.008+.0006*l)*f.hm*dt);G.haste=Math.max(G.haste||0,.3)}
-    }
+    {queueHeroCast(rdy,'u_panther',()=>{l=clv('u_panther');f=tf('u_panther');if((l=clv('u_panther'))&&rdy('u_panther')){
+      f=tf('u_panther');let have=0;for(const a of G.allies)if(ownAlly(a)&&a.kind==='panther')have++;
+      const want=1+Math.floor(l/12)+(f.cnt||0);
+      if(have>=want)retry('u_panther');
+      else{for(let i=have;i<want;i++){const a=addAlly('panther',x0+R5(-34,34),y0+R5(-20,20),allyHp(220+40*l)*f.hpm,hdmg(l)*1.6*tsc()*f.dm,1e9,'Pantera de sombra');a.perm=true;a.r=13;a.dk=.7;ring5(a.x,a.y,30,'#9a6ad8',.4)}
+        txt(x0,y0-70,'🐆 ¡Pantera de sombra!','#b090e8',18);done('u_panther',Math.max(14,26-.5*l))}
+    }});}
   }
 
   E.splice(0,E.length,...E.filter(o=>!o.dead&&o.t<o.life));
@@ -7857,10 +7872,6 @@ function draw5(x0,y0){
     for(let i=0;i<10;i++){const p=(G.t*.4+i/10)%1;hGlow(c,s.x+Math.sin(i*5.1)*R*.8,s.y+R*.6-p*R*1.3,3,'rgba(255,246,170,'+Math.sin(p*3.14)+')')}
     c.restore();
   }
-  if(h==='druid'&&clv('u_eclipse')){
-    const sol=T.eclP!==1,p=Math.sin(G.t*3)*.5+.5;c.save();hGlow(c,x0,y0,46+p*6,sol?'#ffb040':'#9fc4ff',.24);
-    c.font='20px "Segoe UI Emoji",serif';c.textAlign='center';c.fillText(sol?'☀️':'🌙',x0,y0-54);c.restore();
-  }
 }
 })();
 
@@ -7908,7 +7919,7 @@ AL.bear=(c,a,o)=>{
   if(bite>.3)hPoly(c,[15+bite*4,2,16+bite*4,5,17.6+bite*4,2],'#fff',.6);
   for(let i=0;i<3;i++)hPoly(c,[-8+i*5,12.6,-7+i*5,15,-6+i*5,12.6],'#e8e0d0',.5);
 };
-const _ad6=allyDie;allyDie=function(a){if(a.kind==='bear'||a.kind==='sbear'){const k=a.kind;a.kind='golem';try{_ad6(a)}finally{a.kind=k}if(SPR.on&&SPR.has('ob_death_1')&&G.dying&&G.dying.length){const d=G.dying[G.dying.length-1];d.obear=1;d.fl=a.face||1;d.T=Math.max(d.T,1.2)}}else _ad6(a)};
+const _ad6=allyDie;allyDie=function(a){if(a.kind==='panther'){a.kind='golem';try{_ad6(a)}finally{a.kind='panther'}if(SPR.on&&SPR.has('pa_muerte_1')&&G.dying&&G.dying.length){const d=G.dying[G.dying.length-1];d.pant=1;d.fl=a.face||1;d.T=Math.max(d.T,1)}}else if(a.kind==='bear'||a.kind==='sbear'){const k=a.kind;a.kind='golem';try{_ad6(a)}finally{a.kind=k}if(SPR.on&&SPR.has('ob_death_1')&&G.dying&&G.dying.length){const d=G.dying[G.dying.length-1];d.obear=1;d.fl=a.face||1;d.T=Math.max(d.T,1.2)}}else _ad6(a)};
 AL.sbear=AL.bear;
 
 /* ---- dibujo de la bola de relámpago ---- */
@@ -8035,8 +8046,9 @@ defTiers('x_trap','Trampa venenosa',[['Trampas amplias','+30% de radio.',{rad:1.
 defTiers('x_exec','Ejecución',[['Remate','Ejecuta bajo un 5% más de vida.',{thr:.05}],['Ejecución certera','Ejecuta bajo un 8% más de vida.',{thr:.08}],['Verdugo','Ejecuta bajo un 10% más y te curas 2% al hacerlo.',{thr:.1,kheal:.02}],['Verdugo supremo','Ejecuta bajo un 14% más de vida y te curas 4%.',{thr:.14,kheal:.04}]]);
 defTiers('x_dance','Danza mortal',[['Danza larga','+30% de duración.',{dur:1.3}],['Filos afilados','+40% de daño.',{dm:1.4}],['Danza veloz','-20% de enfriamiento.',{cd:.8}],['Danza suprema','+30% de duración y +40% de daño.',{dur:1.3,dm:1.4}]]);
 Object.assign(RNG,{x_blink:340,x_mark:340,x_daggers:300,x_smoke:300,x_trap:300});
-Object.assign(ALLYK,{sclone:{e:'👤',spd:240,rate:.45}});
+Object.assign(ALLYK,{sclone:{e:'👤',spd:240,rate:.45},panther:{e:'🐆',spd:270,rate:.5}});
 AL.sclone=(c,a,o)=>{c.globalAlpha=.6;AL.skel(c,a,o)};
+AL.panther=(c,a,o)=>{c.globalAlpha=.85;AL.skel(c,a,o)};
 HBASE.assassin={skin:'#d8b08c',sleeve:'#252836',boot:'#15161e',leg:'#252836',stance:1,fancy:1,size:.95,bracer:'#8a1e32',glove:'#15161e',cuff:'#8a1e32',knee:'#252836',toe:'#15161e'};
 function hDagger(c){
  gLimb(c,[-7,0,-2,0],2.4,'#3a2a1c');gPoly(c,[-3.5,-3.2,-1.6,-3.2,-1.6,3.2,-3.5,3.2],'#8a1e32',.6);
