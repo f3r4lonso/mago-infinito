@@ -476,7 +476,9 @@ body:not(.solo) .slot-wrap>.auto-upgrade{min-height:0;min-width:0;padding:1px}bo
 <script src="assets/dragon/pack-dragon.js"></script>
 <script src="assets/oso/pack-oso.js"></script>
 <script src="assets/asesino/pack-asesino.js"></script>
+<script src="assets/enano/pack-enano.js"></script>
 <script src="assets/ICONOS/jefes/pack-jefes2.js"></script>
+<script src="assets/ICONOS/jefes/pack-jefes3.js"></script>
 <script>
 "use strict";
 /* Si no se cargó assets/sprites.js (pruebas automáticas), SPR se comporta como "sin sprites" y se usa el dibujo vectorial. */
@@ -6755,13 +6757,19 @@ const FB={
   A:{idle:[0,1,2,3,4,5,6,7,8],walk:[9,10,11,12,13,14,15,16,17],atk:[18,19,20,21,24,25],cast:[26,27,28,29,30,31,32,33,34],hurt:[35,36],death:[41,42,43,44,45,46,47,48,49]},fps:{idle:6,walk:9},ab:['volley','summon','slam']},
  shaman_boss:{n:'Chamán de la tormenta',e:'⚡',hoja:'shaman',hp:320,sp:44,dmg:16,r:50,sc:1.95,
   A:{idle:[0,1,2,3],walk:[4,5,6,7,8,9,10],atk:[11,12,14,15,16],cast:[17,18,19,20,21],cast2:[23,24,25,26,28,29],hurt:[30,31],death:[35,36,37,38,39,40,41,42]},fps:{idle:5,walk:9},ab:['chain','heal','slam']},
+ orco_boss:{n:'Señor de la guerra orco',e:'🪓',hoja:'orco',hp:280,sp:56,dmg:17,r:48,sc:1.9,
+  A:{idle:[0,1,2],walk:[0,1,2,3,4],atk:[5,6,7,8,9],cast:[10,11,12,13,14,15,16],hurt:[17,18],death:[19,20,21,22,23]},fps:{idle:4,walk:9},ab:['slam','warcry','charge']},
+ leon_boss:{n:'León de guerra',e:'🦁',hoja:'leon',hp:330,sp:56,dmg:18,r:50,sc:1.9,
+  A:{idle:[0,1,2,3,4,5],walk:[0,1,2,3,4,5],atk:[6,7,8,9],cast:[10,11,12,13],hurt:[14]},fps:{idle:5,walk:8},ab:['slam','stomp','leap']},
+ rey_demonio:{n:'Rey demonio',e:'👑',hoja:'rey',hp:400,sp:42,dmg:21,r:56,sc:1.9,
+  A:{idle:[0,1,2],walk:[0,1,2,3,4],atk:[5,6,7,8,9],cast:[10,11,12,13,14,15,16],hurt:[17,18],death:[19,20,21,22,23,24,25]},fps:{idle:4,walk:7},ab:['slam','voidorb','stomp']},
  trent_buho:{n:'Búho del bosque',e:'🦉',hoja:'trent',hp:320,sp:52,dmg:17,r:54,sc:1.0,
   A:{idle:[5],walk:[5,6],atk:[7],cast:[6,7,6],hurt:[5]},fps:{idle:4,walk:6},ab:['nova','leap']},
 };
-const FB_ORDER=['jabali','escorpion','mantis','vampiro','ciclope_verde','trex','shaman_boss','demonio','necro_boss','ciclope_oscuro','trent_arbol','trent_buho'];
+const FB_ORDER=['jabali','escorpion','mantis','orco_boss','vampiro','ciclope_verde','trex','leon_boss','shaman_boss','demonio','necro_boss','ciclope_oscuro','trent_arbol','rey_demonio','trent_buho'];
 const FBDEF={};
 for(const id in FB){const b=FB[id];FBDEF[id]={n:b.n,e:b.e,armor:'Jefe final',hp:b.hp*.8,sp:b.sp,dmg:b.dmg*.5,xp:30,gold:45,r:b.r/1.8,from:0,fb:id,res:{phys:.85,magic:.9}}}
-Object.assign(FKIND,{'Jabalí colosal':'fall','Escorpión real':'fall','Mantis segadora':'leaves','Murciélago vampiro':'bat','Cíclope pantanoso':'crumble','Tiranosaurio rojo':'fall','Demonio alado':'demon','Cíclope de las calaveras':'crumble','Demonio del bosque':'leaves','Búho del bosque':'leaves','Nigromante maldito':'bones','Chamán de la tormenta':'zap'});
+Object.assign(FKIND,{'Jabalí colosal':'fall','Escorpión real':'fall','Mantis segadora':'leaves','Murciélago vampiro':'bat','Cíclope pantanoso':'crumble','Tiranosaurio rojo':'fall','Demonio alado':'demon','Cíclope de las calaveras':'crumble','Demonio del bosque':'leaves','Búho del bosque':'leaves','Nigromante maldito':'bones','Chamán de la tormenta':'zap','Señor de la guerra orco':'fall','León de guerra':'fall','Rey demonio':'demon'});
 /* habilidades: wind = aviso, run/air/hits = ejecución, rec = recuperación; mult = daño sobre el daño base del jefe */
 const FBAB={
  charge:{cd:8,range:470,min:160,wind:.9,run:.8,spd:560,mult:3,anim:'atk',tg:'line',rec:.7,txt:'¡Embestida!'},
@@ -6776,6 +6784,8 @@ const FBAB={
  leap:{cd:7,range:430,min:140,wind:.6,air:.65,R:95,mult:3,anim:'atk',tg:'circle',rec:.5,txt:'¡Salto!'},
  roots:{cd:9,range:540,wind:1.15,R:78,mult:3,n:3,anim:'cast',tg:'multi',rec:.5,txt:'¡Raíces!'},
  summon:{cd:14,range:620,wind:1,n:4,anim:'cast',rec:.4,txt:'¡Los muertos se alzan!'},
+ warcry:{cd:12,range:600,wind:1,R:280,anim:'cast',rec:.4,txt:'¡Grito de guerra!'},
+ voidorb:{cd:7,range:500,wind:.85,n:3,spread:.35,spd:240,mult:2,col:'#b050ff',anim:'cast',rec:.4,txt:'¡Orbe del vacío!'},
  chain:{cd:6,range:480,wind:.75,n:3,mult:1.7,anim:'cast',rec:.4,txt:'¡Rayo en cadena!'},
  heal:{cd:12,range:700,wind:1.1,R:230,pct:.14,anim:'cast2',rec:.4,txt:'¡Ola curativa!'}
 };
@@ -6823,6 +6833,10 @@ function fbAct(e,dt){
       if(a.id==='chain'){   /* rayo que salta entre varios blancos */
         const P=fbTargets().sort((p,q)=>Math.hypot(p.x-e.x,p.y-e.y)-Math.hypot(q.x-e.x,q.y-e.y)).slice(0,ab.n);let px=e.x,py=e.y-e.r*.5;
         for(const t of P){G.fx.push({k:'bolt',pts:[[px,py],[t.x,t.y]],t:.3,c:'#9fd0ff'});G.fx.push({k:'ring',x:t.x,y:t.y,r:24,t:.3,c:'#cfe8ff'});t.hit(dmg);px=t.x;py=t.y}
+      }
+      if(a.id==='warcry'){   /* los enemigos cercanos corren un 25% más rápido (una sola vez por enemigo) */
+        G.fx.push({k:'ring',x:e.x,y:e.y,r:ab.R,t:.6,c:'#ff8a3a'});
+        for(const o of G.enemies){if(o.dead||o._wc||Math.hypot(o.x-e.x,o.y-e.y)>ab.R)continue;o._wc=1;o.sp*=1.25;G.fx.push({k:'ring',x:o.x,y:o.y,r:o.r+10,t:.4,c:'#ff8a3a'})}
       }
       if(a.id==='heal'){   /* cura a los enemigos cercanos y un poco al propio jefe */
         G.fx.push({k:'ring',x:e.x,y:e.y,r:ab.R,t:.6,c:'#e6b8ff'});
